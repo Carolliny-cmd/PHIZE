@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'analisador_links_screen.dart';
+import 'analisador_prints_screen.dart';
+import 'comunidade_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -9,6 +12,7 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: const Color(0xFF1A1A2E),
       appBar: AppBar(
         backgroundColor: const Color(0xFF16213E),
+        automaticallyImplyLeading: false,
         title: Row(
           children: const [
             Icon(Icons.shield, color: Color(0xFF00D4FF), size: 24),
@@ -35,9 +39,8 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Saudação
             const Text(
-              'Olá, Guardião! 👋',
+              'Olá, Visitante! 👋',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -49,14 +52,15 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(fontSize: 14, color: Colors.white54),
             ),
             const SizedBox(height: 32),
-
-            // Cards principais
             _CardAnalise(
               icone: Icons.link,
               titulo: 'Analisar Link',
               descricao: 'Verifique se uma URL é segura ou maliciosa',
               cor: const Color(0xFF00D4FF),
-              onTap: () {},
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AnalisadorLinksScreen()),
+              ),
             ),
             const SizedBox(height: 16),
             _CardAnalise(
@@ -64,7 +68,10 @@ class HomeScreen extends StatelessWidget {
               titulo: 'Analisar Print',
               descricao: 'Envie um print de conversa para a IA analisar',
               cor: const Color(0xFF7B2FBE),
-              onTap: () {},
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AnalisadorPrintsScreen()),
+              ),
             ),
             const SizedBox(height: 16),
             _CardAnalise(
@@ -72,11 +79,12 @@ class HomeScreen extends StatelessWidget {
               titulo: 'Comunidade',
               descricao: 'Veja golpes reportados por outros usuários',
               cor: const Color(0xFF00B894),
-              onTap: () {},
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ComunidadeScreen()),
+              ),
             ),
             const SizedBox(height: 32),
-
-            // Termômetro de risco
             const Text(
               'Nível de Ameaça Atual',
               style: TextStyle(
@@ -106,13 +114,11 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
+                    child: const LinearProgressIndicator(
                       value: 0.78,
                       minHeight: 12,
                       backgroundColor: Colors.white12,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color(0xFFFF4757),
-                      ),
+                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF4757)),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -182,10 +188,7 @@ class _CardAnalise extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     descricao,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.white54,
-                    ),
+                    style: const TextStyle(fontSize: 12, color: Colors.white54),
                   ),
                 ],
               ),
