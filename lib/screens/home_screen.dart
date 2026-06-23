@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Olá, Guardião! 👋',
+              'Olá, Visitante! 👋',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
