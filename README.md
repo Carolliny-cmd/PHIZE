@@ -17,7 +17,6 @@ Diferente de antivírus tradicionais, o Phize atua na camada humana: usa Intelig
 
 | Nome | GitHub |
 |------|--------|
-| Gabriel Mascia | [@gabriel](https://github.com/) |
 | Hevelyn Leivas | [@hevelyn](https://github.com/) |
 | Maisa Grundler | [@maisa](https://github.com/) |
 
@@ -241,6 +240,7 @@ flutter pub get
 
 # 4. Rode o projeto
 flutter run
+flutter run -d chrome
 ```
 
 ---
