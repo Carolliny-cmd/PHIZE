@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'link_screen.dart';
+import 'print_screen.dart';
+import 'community_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -56,7 +59,12 @@ class HomeScreen extends StatelessWidget {
               titulo: 'Analisar Link',
               descricao: 'Verifique se uma URL é segura ou maliciosa',
               cor: const Color(0xFF00D4FF),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LinkScreen()),
+                );
+              },
             ),
             const SizedBox(height: 16),
             _CardAnalise(
@@ -64,7 +72,12 @@ class HomeScreen extends StatelessWidget {
               titulo: 'Analisar Print',
               descricao: 'Envie um print de conversa para a IA analisar',
               cor: const Color(0xFF7B2FBE),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PrintScreen()),
+                );
+              },
             ),
             const SizedBox(height: 16),
             _CardAnalise(
@@ -72,7 +85,14 @@ class HomeScreen extends StatelessWidget {
               titulo: 'Comunidade',
               descricao: 'Veja golpes reportados por outros usuários',
               cor: const Color(0xFF00B894),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CommunityScreen(),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 32),
 
