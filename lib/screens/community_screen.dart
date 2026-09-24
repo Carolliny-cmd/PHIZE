@@ -101,151 +101,180 @@ class _CommunityScreenState extends State<CommunityScreen> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 24,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: const [
-                      Icon(Icons.flag, color: Color(0xFF00B894)),
-                      SizedBox(width: 8),
-                      Text(
-                        'Reportar golpe',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+            // Limita a altura do modal para caber em telas pequenas e
+            // permite que o conteúdo role em vez de estourar (overflow)
+            // o rodapé quando o teclado abre ou a tela é curta.
+            final alturaMaxima = MediaQuery.of(context).size.height * 0.9;
+
+            return ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: alturaMaxima),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  left: 24,
+                  right: 24,
+                  top: 12,
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Alça de arraste (indica visualmente que o modal rola)
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.white24,
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Categoria
-                  const Text(
-                    'Categoria',
-                    style: TextStyle(color: Colors.white70, fontSize: 13),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: CategoriaGolpe.values.map((cat) {
-                      final selecionado = categoriaSelecionada == cat;
-                      return ChoiceChip(
-                        label: Text(cat.rotulo),
-                        selected: selecionado,
-                        onSelected: (_) {
-                          setModalState(() => categoriaSelecionada = cat);
-                        },
-                        avatar: Icon(cat.icone, size: 16, color: selecionado ? const Color(0xFF1A1A2E) : cat.cor),
-                        labelStyle: TextStyle(
-                          color: selecionado ? const Color(0xFF1A1A2E) : Colors.white70,
-                          fontSize: 12,
+                    ),
+                    Row(
+                      children: const [
+                        Icon(Icons.flag, color: Color(0xFF00B894)),
+                        SizedBox(width: 8),
+                        Text(
+                          'Reportar golpe',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        selectedColor: cat.cor,
-                        backgroundColor: const Color(0xFF1A1A2E),
-                        side: BorderSide(color: cat.cor.withOpacity(0.4)),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 20),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
 
-                  // Título
-                  TextField(
-                    controller: tituloController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'Título curto',
-                      labelStyle: const TextStyle(color: Colors.white54),
-                      hintText: 'Ex: Falso e-mail dos Correios',
-                      hintStyle: const TextStyle(color: Colors.white24),
-                      filled: true,
-                      fillColor: const Color(0xFF1A1A2E),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
+                    // Categoria
+                    const Text(
+                      'Categoria',
+                      style: TextStyle(color: Colors.white70, fontSize: 13),
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: CategoriaGolpe.values.map((cat) {
+                        final selecionado = categoriaSelecionada == cat;
+                        return ChoiceChip(
+                          label: Text(cat.rotulo),
+                          selected: selecionado,
+                          onSelected: (_) {
+                            setModalState(() => categoriaSelecionada = cat);
+                          },
+                          avatar: Icon(cat.icone,
+                              size: 16,
+                              color: selecionado
+                                  ? const Color(0xFF1A1A2E)
+                                  : cat.cor),
+                          labelStyle: TextStyle(
+                            color: selecionado
+                                ? const Color(0xFF1A1A2E)
+                                : Colors.white70,
+                            fontSize: 12,
+                          ),
+                          selectedColor: cat.cor,
+                          backgroundColor: const Color(0xFF1A1A2E),
+                          side: BorderSide(color: cat.cor.withOpacity(0.4)),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Título
+                    TextField(
+                      controller: tituloController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: 'Título curto',
+                        labelStyle: const TextStyle(color: Colors.white54),
+                        hintText: 'Ex: Falso e-mail dos Correios',
+                        hintStyle: const TextStyle(color: Colors.white24),
+                        filled: true,
+                        fillColor: const Color(0xFF1A1A2E),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  // Descrição
-                  TextField(
-                    controller: descricaoController,
-                    style: const TextStyle(color: Colors.white),
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      labelText: 'O que aconteceu?',
-                      labelStyle: const TextStyle(color: Colors.white54),
-                      hintText: 'Descreva como o golpe funcionou, o que pediram, etc.',
-                      hintStyle: const TextStyle(color: Colors.white24),
-                      filled: true,
-                      fillColor: const Color(0xFF1A1A2E),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
+                    // Descrição
+                    TextField(
+                      controller: descricaoController,
+                      style: const TextStyle(color: Colors.white),
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        labelText: 'O que aconteceu?',
+                        labelStyle: const TextStyle(color: Colors.white54),
+                        hintText:
+                            'Descreva como o golpe funcionou, o que pediram, etc.',
+                        hintStyle: const TextStyle(color: Colors.white24),
+                        filled: true,
+                        fillColor: const Color(0xFF1A1A2E),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (tituloController.text.trim().isEmpty ||
-                            descricaoController.text.trim().isEmpty) {
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (tituloController.text.trim().isEmpty ||
+                              descricaoController.text.trim().isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('Preencha o título e a descrição.'),
+                              ),
+                            );
+                            return;
+                          }
+                          setState(() {
+                            _golpes.insert(
+                              0,
+                              GolpeReportado(
+                                titulo: tituloController.text.trim(),
+                                descricao: descricaoController.text.trim(),
+                                categoria: categoriaSelecionada,
+                                data: DateTime.now(),
+                              ),
+                            );
+                          });
+                          Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Preencha o título e a descrição.'),
+                              content: Text(
+                                  'Obrigado! Seu report ajuda a proteger outras pessoas.'),
+                              backgroundColor: Color(0xFF00B894),
                             ),
                           );
-                          return;
-                        }
-                        setState(() {
-                          _golpes.insert(
-                            0,
-                            GolpeReportado(
-                              titulo: tituloController.text.trim(),
-                              descricao: descricaoController.text.trim(),
-                              categoria: categoriaSelecionada,
-                              data: DateTime.now(),
-                            ),
-                          );
-                        });
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Obrigado! Seu report ajuda a proteger outras pessoas.'),
-                            backgroundColor: Color(0xFF00B894),
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00B894),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00B894),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      child: const Text(
-                        'Enviar report',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                        child: const Text(
+                          'Enviar report',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
