@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
@@ -24,25 +25,33 @@ class DashboardPage extends StatelessWidget {
             const Text('O que você recebeu e quer verificar?'),
             const SizedBox(height: 24),
             FilledButton.icon(
+              key: const Key('dashboard_analisar_link'),
               onPressed: () =>
                   Navigator.of(context).pushNamed(AppRoutes.analisarLink),
               icon: const Icon(Icons.link),
               label: const Text('Analisar link'),
             ),
             const SizedBox(height: 12),
+            // Na web não há seleção de imagem com Zero-Persistence nem OCR
+            // embarcado (SeletorImagemGaleria, ReconhecedorTextoMlKit).
             FilledButton.icon(
-              onPressed: null,
+              key: const Key('dashboard_analisar_print'),
+              onPressed: kIsWeb
+                  ? null
+                  : () =>
+                        Navigator.of(context)
+                            .pushNamed(AppRoutes.analisarPrint),
               icon: const Icon(Icons.image_outlined),
               label: const Text('Analisar print'),
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 4, left: 4),
-              child: Text(
-                'Disponível apenas em dispositivos móveis (Android/iOS), '
-                'via compartilhamento nativo de imagem.',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+            if (kIsWeb)
+              const Padding(
+                padding: EdgeInsets.only(top: 4, left: 4),
+                child: Text(
+                  'Disponível apenas em dispositivos móveis (Android/iOS).',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
               ),
-            ),
           ],
         ),
       ),

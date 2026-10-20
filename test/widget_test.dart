@@ -172,7 +172,8 @@ void main() {
     final analisarPrint = tester.widget<FilledButton>(
       find.widgetWithText(FilledButton, 'Analisar print'),
     );
-    expect(analisarPrint.onPressed, isNull);
+    // Fase 6.3: habilitado fora da web (os testes não rodam como web).
+    expect(analisarPrint.onPressed, isNotNull);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Analisar link'));
     await tester.pumpAndSettle();

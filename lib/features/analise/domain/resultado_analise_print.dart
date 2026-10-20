@@ -106,8 +106,8 @@ enum MotivoInterrupcaoPrint {
 
   /// Resposta fora do formato esperado, descartada sem exibição parcial.
   respostaInvalida(
-    'Não conseguimos concluir a análise desta vez. Toque para tentar '
-    'novamente.',
+    'Não conseguimos concluir a análise desta vez. Para tentar de novo, '
+    'toque no botão abaixo e escolha o mesmo print outra vez na galeria.',
     permiteNovaTentativa: true,
   ),
 
@@ -123,9 +123,11 @@ enum MotivoInterrupcaoPrint {
     'instantes.',
   ),
 
-  /// Sem sessão válida para chamar a Function.
+  /// Sem sessão válida para chamar a Function. A tela oferece o botão que
+  /// encerra a sessão e leva ao login.
   naoAutenticado(
-    'Não foi possível confirmar sua sessão. Entre novamente no aplicativo.',
+    'Não conseguimos confirmar que é você quem está usando o aplicativo. '
+    'Toque no botão abaixo para entrar de novo com seu e-mail e senha.',
   ),
 
   /// Function ou provedor indisponível.

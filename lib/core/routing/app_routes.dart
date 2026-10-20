@@ -7,5 +7,6 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String historico = '/historico';
   static const String analisarLink = '/analisar-link';
+  static const String analisarPrint = '/analisar-print';
   static const String resultado = '/resultado';
 }

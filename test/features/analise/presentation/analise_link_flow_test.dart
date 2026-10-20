@@ -1,9 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:phize/core/constants/firebase_auth_codigos.dart';
 import 'package:phize/core/routing/app_router.dart';
 import 'package:phize/core/routing/app_routes.dart';
+import 'package:phize/features/analise/data/reputacao_dominio_client_http.dart';
 import 'package:phize/features/analise/domain/calculadora_score.dart';
 import 'package:phize/features/analise/domain/rdap_client.dart';
 import 'package:phize/features/analise/domain/reputacao_dominio_client.dart';
@@ -548,5 +553,65 @@ void main() {
         );
       });
     }
+  });
+
+  group('falha ao obter o token para o Safe Browsing, pelo cliente HTTP real',
+      () {
+    ReputacaoDominioClientHttp clienteComErroNoToken(Object erro) =>
+        ReputacaoDominioClientHttp(
+          obterToken: () async => throw erro,
+          clienteHttp: MockClient(
+            (_) async => http.Response('{"status":"nao_listado"}', 200),
+          ),
+          endpoint: Uri.parse('http://function.test/reputacaoDominio'),
+        );
+
+    testWidgets('sem conexão: verificação não concluída por indisponibilidade, '
+        'faixa elevada para amarelo, sem falar em sessão', (tester) async {
+      await _analisar(
+        tester,
+        _rdapDominioAntigo(),
+        'https://exemplo-qualquer.org/pagar',
+        reputacaoClient: clienteComErroNoToken(
+          FirebaseAuthException(
+            code: FirebaseAuthCodigos.falhaRede,
+          ),
+        ),
+      );
+
+      _verificarInvariantesDoResultado();
+      expect(find.text('Score de Risco: 0/100'), findsOneWidget);
+      expect(find.text(RotulosRisco.medioRisco), findsOneWidget);
+      expect(find.text(RotulosRisco.baixoRisco), findsNothing);
+      expect(
+        find.byKey(const Key('resultado_verificacao_incompleta')),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('não pôde ser consultado agora'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('sessão'), findsNothing);
+    });
+
+    testWidgets('token rejeitado: verificação não concluída por falta de '
+        'sessão, faixa elevada para amarelo', (tester) async {
+      await _analisar(
+        tester,
+        _rdapDominioAntigo(),
+        'https://exemplo-qualquer.org/pagar',
+        reputacaoClient: clienteComErroNoToken(
+          FirebaseAuthException(code: 'user-token-expired'),
+        ),
+      );
+
+      _verificarInvariantesDoResultado();
+      expect(find.text(RotulosRisco.medioRisco), findsOneWidget);
+      expect(
+        find.byKey(const Key('resultado_verificacao_incompleta')),
+        findsOneWidget,
+      );
+      expect(find.textContaining('sessão'), findsOneWidget);
+    });
   });
 }

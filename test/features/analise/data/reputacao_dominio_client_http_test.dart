@@ -1,9 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:phize/core/config/proxy_config.dart';
+import 'package:phize/core/constants/firebase_auth_codigos.dart';
+import 'package:phize/core/network/obter_token_id.dart';
 import 'package:phize/features/analise/data/reputacao_dominio_client_http.dart';
 import 'package:phize/features/analise/domain/consulta_reputacao_dominio.dart';
 import 'package:phize/features/analise/domain/reputacao_dominio_client.dart';
@@ -268,5 +273,65 @@ void main() {
       expect(resultado.status, StatusConsultaReputacao.naoConcluida);
       expect(chamou, isFalse);
     });
+  });
+
+  group('falha ao obter o token: rede x rejeição', () {
+    final casos = <String, (Object, Matcher, bool)>{
+      'sem conexão (network-request-failed)': (
+        FirebaseAuthException(
+          code: FirebaseAuthCodigos.falhaRede,
+        ),
+        isA<ReputacaoIndisponivelException>(),
+        false,
+      ),
+      'tempo esgotado': (
+        TimeoutException('token'),
+        isA<ReputacaoIndisponivelException>(),
+        false,
+      ),
+      'token rejeitado (user-token-expired)': (
+        FirebaseAuthException(code: 'user-token-expired'),
+        isA<ReputacaoNaoAutenticadoException>(),
+        true,
+      ),
+      'usuário desativado (user-disabled)': (
+        FirebaseAuthException(code: 'user-disabled'),
+        isA<ReputacaoNaoAutenticadoException>(),
+        true,
+      ),
+    };
+    for (final MapEntry(key: nome, value: (erro, tipo, falaDeSessao))
+        in casos.entries) {
+      test('$nome: exceção declarada, sem chamada de rede', () async {
+        var chamou = false;
+        final cliente = _cliente((_) async {
+          chamou = true;
+          return http.Response('{"status":"nao_listado"}', 200);
+        }, obterToken: () async => throw erro);
+
+        await expectLater(cliente.consultarUrl(_url), throwsA(tipo));
+        expect(chamou, isFalse);
+      });
+
+      test('$nome: verificação não concluída, com o motivo certo', () async {
+        final resultado = await _consultar(
+          _cliente(
+            _responde({'status': 'nao_listado'}),
+            obterToken: () async => throw erro,
+          ),
+        );
+
+        expect(resultado.status, StatusConsultaReputacao.naoConcluida);
+        expect(
+          resultado.motivoNaoConcluida,
+          falaDeSessao
+              ? contains('sessão')
+              : allOf(
+                  contains('não pôde ser consultado agora'),
+                  isNot(contains('sessão')),
+                ),
+        );
+      });
+    }
   });
 }

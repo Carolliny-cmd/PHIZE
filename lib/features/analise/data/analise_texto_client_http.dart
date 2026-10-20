@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../core/config/proxy_config.dart';
+import '../../../core/constants/firebase_auth_codigos.dart';
+import '../../../core/network/obter_token_id.dart';
 import '../domain/analise_texto_client.dart';
-import 'reputacao_dominio_client_http.dart' show ObterTokenId;
 
 /// Implementação real de [AnaliseTextoClient]: chama a Function
 /// `analiseTexto` da camada intermediária, que detém a chave do Gemini
@@ -40,6 +42,20 @@ class AnaliseTextoClientHttp implements AnaliseTextoClient {
     final String? token;
     try {
       token = await _obterToken();
+    } on FirebaseAuthException catch (e) {
+      // Token vencido exige rede para ser renovado: sem conexão, a falha é
+      // de conexão, como a do POST abaixo — não de identidade. Qualquer
+      // outro código (token revogado, usuário desativado...) é rejeição.
+      if (e.code == FirebaseAuthCodigos.falhaRede) {
+        throw const AnaliseTextoIndisponivelException(
+          'Falha de conexão ao obter o token.',
+        );
+      }
+      throw const AnaliseTextoNaoAutenticadoException();
+    } on TimeoutException {
+      throw const AnaliseTextoIndisponivelException(
+        'Tempo esgotado ao obter o token.',
+      );
     } catch (_) {
       throw const AnaliseTextoNaoAutenticadoException();
     }

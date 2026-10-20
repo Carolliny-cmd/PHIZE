@@ -11,6 +11,7 @@ class FakeAuthRepository implements AuthRepository {
   String? emailCadastrado;
   String? emailLogado;
   String? emailRedefinicaoSolicitado;
+  bool saiu = false;
 
   @override
   Future<void> cadastrar({required String email, required String senha}) async {
@@ -28,5 +29,10 @@ class FakeAuthRepository implements AuthRepository {
   Future<void> enviarEmailRedefinicaoSenha(String email) async {
     if (erroRedefinicaoSenha != null) throw erroRedefinicaoSenha!;
     emailRedefinicaoSolicitado = email;
+  }
+
+  @override
+  Future<void> sair() async {
+    saiu = true;
   }
 }

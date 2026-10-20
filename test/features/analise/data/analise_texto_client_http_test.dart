@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:phize/core/config/proxy_config.dart';
+import 'package:phize/core/constants/firebase_auth_codigos.dart';
+import 'package:phize/core/network/obter_token_id.dart';
 import 'package:phize/features/analise/data/analise_texto_client_http.dart';
-import 'package:phize/features/analise/data/reputacao_dominio_client_http.dart'
-    show ObterTokenId;
 import 'package:phize/features/analise/domain/analise_texto_client.dart';
 
 const _texto = 'Oi mãe, troquei de número. Me manda um Pix para [CHAVE_PIX]';
@@ -109,5 +112,40 @@ void main() {
 
   test('endereço padrão aponta para a Function analiseTexto', () {
     expect(ProxyConfig.analiseTexto.path, endsWith('/analiseTexto'));
+  });
+
+  group('falha ao obter o token: rede x rejeição', () {
+    final casos = <String, (Object, Matcher)>{
+      'sem conexão (network-request-failed)': (
+        FirebaseAuthException(
+          code: FirebaseAuthCodigos.falhaRede,
+        ),
+        isA<AnaliseTextoIndisponivelException>(),
+      ),
+      'tempo esgotado': (
+        TimeoutException('token'),
+        isA<AnaliseTextoIndisponivelException>(),
+      ),
+      'token rejeitado (user-token-expired)': (
+        FirebaseAuthException(code: 'user-token-expired'),
+        isA<AnaliseTextoNaoAutenticadoException>(),
+      ),
+      'usuário desativado (user-disabled)': (
+        FirebaseAuthException(code: 'user-disabled'),
+        isA<AnaliseTextoNaoAutenticadoException>(),
+      ),
+    };
+    for (final MapEntry(key: nome, value: (erro, tipo)) in casos.entries) {
+      test('$nome: exceção declarada, sem chamada de rede', () async {
+        var chamou = false;
+        final cliente = _cliente((_) async {
+          chamou = true;
+          return http.Response('{}', 200);
+        }, obterToken: () async => throw erro);
+
+        await expectLater(cliente.analisar(_texto), throwsA(tipo));
+        expect(chamou, isFalse);
+      });
+    }
   });
 }

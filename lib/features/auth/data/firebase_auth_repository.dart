@@ -55,4 +55,13 @@ class FirebaseAuthRepository implements AuthRepository {
       throw AuthException(mapearErroAutenticacao(e));
     }
   }
+
+  @override
+  Future<void> sair() async {
+    try {
+      await _auth.signOut();
+    } on FirebaseAuthException catch (e) {
+      throw AuthException(mapearErroAutenticacao(e));
+    }
+  }
 }

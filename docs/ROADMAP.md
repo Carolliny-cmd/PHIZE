@@ -7,9 +7,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 
 ## ONDE PARAMOS
 
-- **Data:** 2026-10-07
-- **Última tarefa concluída:** Prompt 6.2 — pipeline do UC04 (384 testes)
-- **Próximo passo:** conectar o pipeline do UC04 à tela de resultado
+- **Data:** 2026-10-19
+- **Última tarefa concluída:** Fase 6.3 — pipeline do UC04 conectado à interface, concluída quanto ao código, com as correções das duas auditorias (422 testes)
+- **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
+- **Próximo passo:** validar o fluxo do print em dispositivo Android; em seguida, Fase 7
 
 ---
 
@@ -660,6 +661,36 @@ Trate todas as exceções listadas no UC04.
 ```
 
 > **REGISTRO — mascaramento local na Fase 6:** a rotina de mascaramento recebeu cinco rodadas de correção durante a Fase 6 (boleto em formato impresso; boleto de convênio; telefone com espaços e celular de 11 dígitos rotulado como CPF; CPF com espaços ou barra e telefone sem DDD; chave Pix sem hífens e CNPJ com espaços ou alfanumérico). Somadas às duas rodadas da Fase 3, são sete. Todas as lacunas foram encontradas pela execução do código sobre textos reais, não pela suíte de testes, que passava integralmente a cada rodada. Os formatos que permanecem sem cobertura estão na limitação declarada do RNF07.
+
+---
+
+## FASE 6.3 — CONECTAR O PIPELINE DO PRINT À INTERFACE — concluída quanto ao código
+
+Análoga à Fase 5.1 para a trilha do link: o pipeline do UC04 (`analisador_print.dart`), implementado e testado no Prompt 6.2, passa a ser acionado pela interface. O pipeline não foi alterado.
+
+Escopo:
+- **Dashboard:** o botão "Analisar print", antes desabilitado, fica ao lado de "Analisar link", com a mesma hierarquia visual, e abre a nova tela "Analisar print". Na web segue desabilitado, porque não há seleção de imagem com Zero-Persistence nem OCR embarcado nessa plataforma.
+- **Tela "Analisar print"** (`analisar_print_page.dart`): aciona a seleção na galeria pelo `SeletorImagemGaleria`, executa o pipeline com `ReconhecedorTextoMlKit` e `AnaliseTextoClientHttp` (todos já existentes em `data/`) e exibe o feedback de carregamento imediatamente após o acionamento (RNF03). Cancelamento da seleção volta ao estado inicial sem mensagem.
+- **Interrupções:** cada motivo de `MotivoInterrupcaoPrint` é exibido com a mensagem própria dele, em linguagem não técnica (RNF04) — texto insuficiente antes e depois do mascaramento, falha de OCR, falha na chamada ao modelo e resposta inválida, esta com botão "Tentar novamente", que refaz a seleção (a imagem anterior já foi descartada). A tela nunca exibe nem registra em log a exceção original; em especial, a `FileSystemException` da captura, que traz o nome original do print.
+- **Tela de resultado** (`resultado_analise_page.dart`): passa a exibir os dois tipos — `ResultadoAnalisePage(resultado:)` para link, inalterado, e `ResultadoAnalisePage.print(resultado:)` para print. Termômetro, rótulo do RF07 e aviso permanente ficam num único ponto, comuns aos dois. Para o print, a tela lista os sinais identificados, a categoria da ameaça e a explicação pedagógica, além do aviso de verificação incompleta. O aviso de falibilidade do Safe Browsing continua exclusivo do link.
+- **Faixa verde bloqueada sem RAG:** a tela exibe a faixa que vem pronta de `CalculadoraScore`, que já recebe `verificacaoIncompleta: true` do pipeline enquanto `AnalisadorPrint.baseConhecimentoDisponivel` for `false`. A tela não recalcula nem reavalia a faixa e mostra `motivoSemBaseConhecimento` ao usuário.
+- **Nenhum conteúdo em estado:** a tela guarda apenas o indicador de carregamento e o motivo da interrupção. `AnalisePrintConcluida` não tem campo para imagem ou texto, e nada é persistido (a gravação no histórico é da Fase 8).
+
+> **PENDÊNCIA (Fase 6.3):** o RF04 e o UC04 (passo 9) pedem o destaque, na interface, das frases que motivaram cada gatilho. Isso não foi implementado: o resultado do pipeline não traz trechos do texto, por desenho (RNF07, descarte na origem), e o contrato da Function não devolve trechos. Exibir trechos exige decidir como conciliar o destaque com o descarte do texto — decisão da equipe, não da implementação.
+
+> **PENDÊNCIA (Fase 6.3):** o RNF03 prevê streaming progressivo do texto gerado. A tela exibe carregamento imediato, mas o resultado aparece de uma só vez, porque a Function devolve a resposta completa e validada.
+
+> **CORREÇÕES (auditoria da Fase 6.3):** D1 — sem sessão reconhecida pela Function, a mensagem deixou de usar a palavra "sessão" e a tela oferece o botão "Entrar de novo", que encerra a sessão (`AuthRepository.sair()`, método acrescentado sem alterar as demais regras de autenticação) e leva ao login; D2 — o estado vazio do resultado de print perdeu o ícone de confirmação e passou a dizer que nenhum sinal de golpe conhecido foi identificado e que a verificação não pôde ser completa; D3 — o texto da tela de seleção diz que a imagem não sai do celular e que o texto, com os dados estruturados escondidos, é enviado para análise; D4 — na resposta inválida, mensagem e botão ("Escolher o print de novo") deixam claro que o print precisa ser escolhido outra vez.
+
+> **CORREÇÕES (segunda auditoria da Fase 6.3):** D1-a — sem conexão para renovar o token vencido (`network-request-failed`) ou com tempo esgotado, os clientes `AnaliseTextoClientHttp` e `ReputacaoDominioClientHttp` passaram a lançar a exceção de indisponibilidade, como já faziam para falha de conexão no POST; token rejeitado, usuário desativado e demais códigos seguem como não autenticado. No print, a falha de rede mantém o caminho de nova tentativa; no link, aparece como verificação não concluída por indisponibilidade, com a faixa elevada pela regra de verificação incompleta. D3-a e D3-b — o texto da tela de seleção passou a dizer que é enviado o texto que aparece no print e que o app procura esconder dados como CPF, telefone e cartão.
+
+> **PENDÊNCIAS (auditoria da Fase 6.3, sem implementação):**
+> - Sair da tela "Analisar print" durante o processamento não interrompe a transmissão do texto mascarado já em curso: o pipeline segue até o fim e só o resultado é descartado.
+> - O aviso permanente do RF07 fica no fim da tela de resultado e pode exigir rolagem quando a explicação é longa. Definir se "permanente" significa sempre visível (ex.: fixo no rodapé).
+> - A regra que impede a faixa verde sem base de conhecimento vive apenas no pipeline (`AnalisadorPrint`). Construtores futuros de `AnalisePrintConcluida`, como o histórico da Fase 8 e o compartilhamento do UC11, poderiam produzir score inconsistente sem que a tela detecte. Avaliar validação defensiva na camada de apresentação.
+> - Os clientes HTTP instanciados no `builder` das rotas de link e de print (`app_router.dart`) nunca são fechados.
+
+> **VALIDAÇÃO PENDENTE:** o fluxo completo (galeria, ML Kit e Function) só pode ser exercitado em dispositivo ou emulador Android; os testes de widget usam dublês do seletor, do reconhecedor e do cliente.
 
 ---
 

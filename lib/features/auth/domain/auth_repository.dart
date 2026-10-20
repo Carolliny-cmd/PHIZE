@@ -7,4 +7,8 @@ abstract class AuthRepository {
   Future<void> entrar({required String email, required String senha});
 
   Future<void> enviarEmailRedefinicaoSenha(String email);
+
+  /// Encerra a sessão atual (ex.: quando a camada intermediária deixa de
+  /// reconhecê-la e o usuário precisa entrar de novo).
+  Future<void> sair();
 }
