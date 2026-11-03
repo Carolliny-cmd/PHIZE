@@ -28,6 +28,10 @@ import '../../features/analise/presentation/pages/resultado_analise_page.dart';
 import '../../features/auth/domain/auth_repository.dart';
 import '../../features/auth/presentation/pages/cadastro_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/conta/domain/compartilhador_arquivo.dart';
+import '../../features/conta/domain/conta_repository.dart';
+import '../../features/conta/presentation/pages/exclusao_pendente_page.dart';
+import '../../features/conta/presentation/pages/meus_dados_page.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -42,11 +46,16 @@ class AppRouter {
     ReconhecedorTexto? reconhecedorTexto,
     AnaliseTextoClient? analiseTextoClient,
     HistoricoRepository? historicoRepository,
+    ContaRepository? contaRepository,
+    CompartilhadorArquivo? compartilhador,
   }) {
     switch (settings.name) {
       case AppRoutes.login:
         return MaterialPageRoute(
-          builder: (_) => LoginPage(authRepository: authRepository),
+          builder: (_) => LoginPage(
+            authRepository: authRepository,
+            contaRepository: contaRepository,
+          ),
         );
       case AppRoutes.cadastro:
         return MaterialPageRoute(
@@ -91,6 +100,22 @@ class AppRouter {
             historicoRepository: historicoRepository,
           ),
         );
+      case AppRoutes.meusDados:
+        return MaterialPageRoute(
+          builder: (_) => MeusDadosPage(
+            contaRepository: contaRepository,
+            historicoRepository: historicoRepository,
+            compartilhador: compartilhador,
+            authRepository: authRepository,
+          ),
+        );
+      case AppRoutes.exclusaoPendente:
+        return MaterialPageRoute(
+          builder: (_) => ExclusaoPendentePage(
+            contaRepository: contaRepository,
+            authRepository: authRepository,
+          ),
+        );
       case AppRoutes.resultado:
         return MaterialPageRoute(
           builder: (_) => switch (settings.arguments) {
@@ -104,7 +129,10 @@ class AppRouter {
         );
       default:
         return MaterialPageRoute(
-          builder: (_) => LoginPage(authRepository: authRepository),
+          builder: (_) => LoginPage(
+            authRepository: authRepository,
+            contaRepository: contaRepository,
+          ),
         );
     }
   }

@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Prompt 8.1 — histórico real (UC06), com gravação das análises de link e print, regras do Firestore conferidas e telas de lista e detalhe (61 testes na Function, 459 no app); validado no emulador Android com análise de link
+- **Última tarefa concluída:** Prompt 8.2 — tela Meus dados (UC12), com exportação em arquivo e exclusão definitiva da conta (61 testes na Function, 481 no app), com auditoria e correções; validado no emulador Android, exceto a falha parcial na exclusão
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** Prompt 8.2 (UC12); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** Prompt 8.3 (UC11/RF10); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -231,7 +231,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - O cálculo do domínio registrável reconhece apenas `com`/`gov`/`org`/`net`/`edu` sob `.br`. Sufixos como `app.br`, `adv.br` e `co.uk` fazem a consulta RDAP no próprio sufixo, e a idade do domínio nunca é avaliada para eles. Degrada com segurança (verificação não concluída, nunca verde nem data falsa), mas a mensagem ao usuário é imprecisa. Solução futura: lista completa de sufixos públicos.
 - Dois testes de widget anteriores perderam asserções de rótulo e aviso ao eliminar o caminho fictício da tela de Resultado; a cobertura passou para `test/features/analise/presentation/analise_link_flow_test.dart`.
 - ~~A tela de Histórico exibe rótulos de faixa sem o aviso permanente~~ — **resolvida no Prompt 8.1**.
-- Resta dado fictício fora do fluxo de análise: saudação do Dashboard.
+- ~~Resta dado fictício fora do fluxo de análise: saudação do Dashboard~~ — **resolvida no Prompt 8.2**.
 - Migrar do emulador para a Function publicada antes de qualquer teste em Android real ou entrega que não rode na máquina de desenvolvimento.
 - Restringir no console as chaves públicas do Firebase às APIs do Firebase, impedindo que sejam usadas para chamar o Safe Browsing direto e contornar a Function.
 - O contador de rate limiting é mantido em memória e zera a cada reinício da Function; migrar para armazenamento compartilhado antes do deploy com mais de uma instância.
@@ -771,19 +771,40 @@ UC12 (exportação e exclusão de dados — RF12) e
 UC11/RF10 (recebimento por compartilhamento nativo).
 ```
 
-### Prompt 8.1 — Histórico (UC06) (concluído no código)
+### Prompt 8.1 — Histórico (UC06) (concluído)
 
 - **Onde:** cada análise concluída vira um documento em `users/{uid}/analises/{id}`. A tela de Histórico lê essa coleção, e tocar em um registro abre o detalhe.
 - **Campos:** score, faixa, categoria, explicação, tipo de entrada e data. `firestore.rules` só aceita esta lista, e um registro não pode ser alterado depois de gravado.
 - **Faixa gravada (decisão da equipe, 2026-11-03):** a regra de verificação incompleta pode exibir em amarelo uma pontuação que seria verde, então a faixa não pode ser recalculada do score. RNF01, RNF07, arquitetura 5.4 e CLAUDE.md foram atualizados.
 - **Link (decisão da equipe, 2026-11-03):** sem categoria, com explicação montada no app a partir dos títulos fixos das verificações, sem o endereço analisado e sem chamar a IA.
 - **Falha na gravação:** a tela de Resultado abre normalmente e o usuário recebe um aviso de que a análise não foi guardada (CLAUDE.md, Seção 8).
-- **Validação:** `flutter test`, `flutter analyze` e 18 conferências das regras no emulador do Firestore, com campo extra, outro usuário e usuário sem login recusados. No emulador Android, duas análises do mesmo link deram score 0: a primeira, com a reputação não concluída, voltou do histórico em amarelo, e a segunda em verde, na ordem mais recente primeiro. O documento gravado não trazia o endereço. A gravação de print pelo app coberta só por testes automáticos.
+- **Validação:** `flutter test`, `flutter analyze` e 18 conferências das regras no emulador do Firestore, com campo extra, outro usuário e usuário sem login recusados. No emulador Android, duas análises do mesmo link deram score 0: a primeira, com a reputação não concluída, voltou do histórico em amarelo, e a segunda em verde, na ordem mais recente primeiro. O documento gravado não trazia o endereço. A gravação de print pelo app está coberta só por testes automáticos; falta conferir à mão, porque o seletor de imagens do Android não pode ser automatizado.
 
 > **Pontos para a equipe:**
 > - A explicação do print vem do modelo, instruído a não repetir dados pessoais; o código não verifica isso, e o texto é gravado. A limitação já existia na decisão de persistir a explicação (RNF07), mas agora passa a valer na prática.
 > - O campo `data` usa o relógio do aparelho.
 > - Na primeira chamada depois de ligar os emuladores, a reputação ficou como não concluída; a mesma consulta funcionou em seguida, o que sugere tempo limite na partida a frio da Function. A causa não foi confirmada. Vale medir isso na Function publicada.
+
+### Prompt 8.2 — Exportação e exclusão de dados (UC12) (concluído)
+
+- **Onde:** ícone de perfil no Painel, que abre a tela Meus dados (`lib/features/conta/`).
+- **Exportação:** arquivo `phize-meus-dados.json` com e-mail, data do cadastro e histórico, entregue pelo menu de compartilhamento do sistema (`share_plus`). A cópia que fica no cache do app é removida na abertura seguinte e na exclusão da conta.
+- **Exclusão:** aviso de irreversibilidade e senha. A ordem é confirmar a senha, remover as análises, remover o perfil e remover a credencial. Senha errada não apaga nada.
+- **Falha parcial:** só a etapa de remoção pode deixar a conta pela metade. Nesse caso a exclusão fica marcada no aparelho, e a conta só abre a tela de bloqueio, de onde se conclui a remoção ou se sai. Repetir a exclusão é seguro. Falha antes dessa etapa não apaga nada e não bloqueia a conta.
+- **Validação:** `flutter test`, `flutter analyze`, compilação web e, no emulador Android, exportação com e sem internet, senha errada e exclusão com remoção da credencial, do perfil e das análises da conta. A tela de bloqueio foi coberta só por testes automáticos.
+- **Auditoria (2026-11-03), corrigido antes do commit:**
+  - sem internet logo após a senha, a conta era bloqueada mesmo sem nada ter sido apagado;
+  - o tempo limite na remoção da credencial podia bloquear uma conta já removida;
+  - a exportação sem internet podia entregar só o cache, como se fosse a íntegra dos dados;
+  - o arquivo exportado não trazia o identificador do usuário;
+  - a saudação "Olá, Maria" era fictícia;
+  - após login ou cadastro, a seta de voltar levava ao login sem encerrar a sessão; a tela Meus dados ganhou "Sair da conta", que o app não tinha;
+  - a ordem da exclusão passou a ter testes próprios.
+
+> **Pontos para a equipe:**
+> - A marca de exclusão pendente fica só no aparelho. Reinstalar o app ou entrar por outro aparelho a perde, e a conta volta a abrir, possivelmente sem parte dos dados. Uma Function que conclua a remoção no servidor resolveria isso, e depende do plano Blaze.
+> - O arquivo exportado é JSON: legível, mas pouco amigável para o público idoso. Vale avaliar na validação com usuários.
+> - A exclusão usa senha porque só há login por e-mail. O login social (T02/T04) exigirá outra forma de confirmação.
 
 ---
 

@@ -1,0 +1,122 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../auth/data/auth_error_mapper.dart';
+import '../../auth/domain/auth_exception.dart';
+import '../domain/conta_repository.dart';
+import '../domain/exclusao_conta.dart';
+import 'compartilhador_arquivo_nativo.dart';
+import 'pendencia_exclusao.dart';
+
+/// Sem este limite, a escrita no Firestore sem conexão deixaria a tela de
+/// exclusão carregando para sempre.
+const Duration limiteEtapaExclusao = Duration(seconds: 20);
+
+/// Limite de operações em um lote de escrita do Firestore.
+const int tamanhoLoteExclusao = 500;
+
+class ContaRepositoryFirebase implements ContaRepository {
+  ContaRepositoryFirebase({
+    FirebaseAuth? auth,
+    FirebaseFirestore? firestore,
+    PendenciaExclusao? pendencia,
+  }) : _auth = auth ?? FirebaseAuth.instance,
+       _firestore = firestore ?? FirebaseFirestore.instance,
+       _pendencia = pendencia ?? PendenciaExclusao();
+
+  final FirebaseAuth _auth;
+  final FirebaseFirestore _firestore;
+  final PendenciaExclusao _pendencia;
+
+  User get _usuario {
+    final usuario = _auth.currentUser;
+    if (usuario == null) throw StateError('Sem usuário autenticado.');
+    return usuario;
+  }
+
+  DocumentReference<Map<String, dynamic>> _perfil(String uid) =>
+      _firestore.collection('users').doc(uid);
+
+  @override
+  Future<PerfilConta> carregarPerfil() async {
+    final usuario = _usuario;
+    final documento = await _perfil(usuario.uid)
+        .get(const GetOptions(source: Source.server));
+    final criadaEm = documento.data()?['createdAt'];
+    return PerfilConta(
+      uid: usuario.uid,
+      email: usuario.email,
+      criadaEm: criadaEm is Timestamp ? criadaEm.toDate() : null,
+    );
+  }
+
+  @override
+  Future<void> excluirConta({required String senha}) async {
+    final usuario = _usuario;
+    final uid = usuario.uid;
+
+    // A senha vem antes de tudo porque o Firebase Auth só remove a credencial
+    // com login recente. A remoção da credencial não tem limite de tempo: ela
+    // falha sozinha sem rede, e desistir de esperar não a cancela, o que
+    // mandaria ao bloqueio uma conta que já deixou de existir.
+    await executarExclusaoConta(
+      confirmarSenha: () => _confirmarSenha(usuario, senha),
+      lerDocumentos: () => _lerAnalises(uid).timeout(limiteEtapaExclusao),
+      registrarPendencia: () => _pendencia.registrar(uid),
+      removerDocumentos: (analises) =>
+          _removerDocumentos(uid, analises).timeout(limiteEtapaExclusao),
+      removerCredencial: usuario.delete,
+      concluir: _pendencia.limpar,
+    );
+    await CompartilhadorArquivoNativo.removerCopiaLocal();
+  }
+
+  @override
+  Future<bool> exclusaoPendente() async {
+    final uid = _auth.currentUser?.uid;
+    return uid != null && await _pendencia.existePara(uid);
+  }
+
+  Future<void> _confirmarSenha(User usuario, String senha) async {
+    final email = usuario.email;
+    if (email == null) throw const AuthException(_mensagemFalhaConfirmacao);
+    try {
+      await usuario.reauthenticateWithCredential(
+        EmailAuthProvider.credential(email: email, password: senha),
+      );
+    } on FirebaseAuthException catch (e) {
+      throw AuthException(switch (e.code) {
+        'wrong-password' || 'invalid-credential' => 'Senha incorreta.',
+        _ => mapearErroAutenticacao(e),
+      });
+    }
+  }
+
+  /// Consulta o servidor, e não o cache do aparelho, para que nenhum registro
+  /// fique para trás.
+  Future<List<DocumentReference<Map<String, dynamic>>>> _lerAnalises(
+    String uid,
+  ) async {
+    final analises = await _perfil(uid)
+        .collection('analises')
+        .get(const GetOptions(source: Source.server));
+    return analises.docs.map((doc) => doc.reference).toList();
+  }
+
+  Future<void> _removerDocumentos(
+    String uid,
+    List<DocumentReference<Map<String, dynamic>>> analises,
+  ) async {
+    for (var i = 0; i < analises.length; i += tamanhoLoteExclusao) {
+      final lote = _firestore.batch();
+      analises.skip(i).take(tamanhoLoteExclusao).forEach(lote.delete);
+      await lote.commit();
+    }
+    await _perfil(uid).delete();
+  }
+
+  static const String _mensagemFalhaConfirmacao =
+      'Não foi possível confirmar sua senha. Tente novamente.';
+}

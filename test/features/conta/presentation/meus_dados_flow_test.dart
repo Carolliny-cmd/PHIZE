@@ -1,0 +1,264 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:phize/core/routing/app_router.dart';
+import 'package:phize/core/routing/app_routes.dart';
+import 'package:phize/features/auth/domain/auth_exception.dart';
+import 'package:phize/features/conta/domain/conta_repository.dart';
+import 'package:phize/features/conta/domain/exportacao_dados.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../support/fake_auth_repository.dart';
+import '../../../support/fake_conta_repository.dart';
+import '../../../support/fake_historico_repository.dart';
+
+const _senha = 'senha-de-teste';
+
+Future<void> _abrir(
+  WidgetTester tester, {
+  required FakeContaRepository conta,
+  FakeHistoricoRepository? historico,
+  FakeCompartilhador? compartilhador,
+  FakeAuthRepository? auth,
+  String rota = AppRoutes.meusDados,
+}) async {
+  await tester.pumpWidget(
+    MaterialApp(
+      onGenerateRoute: (settings) => AppRouter.onGenerateRoute(
+        settings,
+        contaRepository: conta,
+        historicoRepository: historico ?? FakeHistoricoRepository(),
+        compartilhador: compartilhador ?? FakeCompartilhador(),
+        authRepository: auth ?? FakeAuthRepository(),
+      ),
+      initialRoute: rota,
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
+Future<void> _abrirDialogo(WidgetTester tester) async {
+  await tester.tap(find.byKey(const Key('meus_dados_excluir')));
+  await tester.pumpAndSettle();
+}
+
+Future<void> _confirmarExclusao(WidgetTester tester) async {
+  await _abrirDialogo(tester);
+  await tester.enterText(find.byKey(const Key('excluir_conta_senha')), _senha);
+  await tester.tap(find.byKey(const Key('excluir_conta_confirmar')));
+  await tester.pumpAndSettle();
+}
+
+void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+
+  testWidgets('Painel abre Meus dados', (tester) async {
+    await _abrir(
+      tester,
+      conta: FakeContaRepository(),
+      rota: AppRoutes.dashboard,
+    );
+
+    await tester.tap(find.byKey(const Key('dashboard_meus_dados')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('meus_dados_exportar')), findsOneWidget);
+    expect(find.byKey(const Key('meus_dados_excluir')), findsOneWidget);
+  });
+
+  testWidgets('exportar entrega arquivo com perfil e histórico', (
+    tester,
+  ) async {
+    final compartilhador = FakeCompartilhador();
+    await _abrir(
+      tester,
+      conta: FakeContaRepository(),
+      compartilhador: compartilhador,
+    );
+
+    await tester.tap(find.byKey(const Key('meus_dados_exportar')));
+    await tester.pumpAndSettle();
+
+    expect(compartilhador.nomeArquivo, nomeArquivoExportacao);
+    final dados = jsonDecode(compartilhador.conteudo!) as Map<String, dynamic>;
+    expect(dados['perfil']['email'], 'maria@exemplo.com');
+  });
+
+  testWidgets('a exportação pede o histórico ao servidor, não ao cache', (
+    tester,
+  ) async {
+    final historico = FakeHistoricoRepository();
+    await _abrir(tester, conta: FakeContaRepository(), historico: historico);
+
+    await tester.tap(find.byKey(const Key('meus_dados_exportar')));
+    await tester.pumpAndSettle();
+
+    expect(historico.ultimaLeituraSomenteServidor, isTrue);
+  });
+
+  testWidgets('sair encerra a sessão e leva ao login', (tester) async {
+    final auth = FakeAuthRepository();
+    await _abrir(tester, conta: FakeContaRepository(), auth: auth);
+
+    await tester.tap(find.byKey(const Key('meus_dados_sair')));
+    await tester.pumpAndSettle();
+
+    expect(auth.saiu, isTrue);
+    expect(find.byKey(const Key('login_email')), findsOneWidget);
+    expect(find.byTooltip('Back'), findsNothing);
+  });
+
+  testWidgets('falha antes da remoção avisa que nada foi apagado e não '
+      'bloqueia a conta', (tester) async {
+    final conta = FakeContaRepository()..erroExclusao = StateError('sem rede');
+    await _abrir(tester, conta: conta);
+
+    await _confirmarExclusao(tester);
+
+    expect(find.textContaining('nada foi apagado'), findsOneWidget);
+    expect(find.byKey(const Key('meus_dados_excluir')), findsOneWidget);
+    expect(find.byKey(const Key('exclusao_pendente_concluir')), findsNothing);
+  });
+
+  testWidgets('falha ao exportar mostra mensagem e libera a tela', (
+    tester,
+  ) async {
+    final compartilhador = FakeCompartilhador();
+    await _abrir(
+      tester,
+      conta: FakeContaRepository()..falhaPerfil = true,
+      compartilhador: compartilhador,
+    );
+
+    await tester.tap(find.byKey(const Key('meus_dados_exportar')));
+    await tester.pumpAndSettle();
+
+    expect(compartilhador.conteudo, isNull);
+    expect(find.byKey(const Key('meus_dados_erro')), findsOneWidget);
+    final botao = tester.widget<OutlinedButton>(
+      find.byWidgetPredicate((w) => w is OutlinedButton).first,
+    );
+    expect(botao.onPressed, isNotNull);
+  });
+
+  testWidgets('aviso de irreversibilidade e cancelamento aborta', (
+    tester,
+  ) async {
+    final conta = FakeContaRepository();
+    await _abrir(tester, conta: conta);
+
+    await _abrirDialogo(tester);
+    expect(find.textContaining('não pode ser desfeita'), findsOneWidget);
+    await tester.tap(find.text('Cancelar'));
+    await tester.pumpAndSettle();
+
+    expect(conta.exclusoes, 0);
+    expect(find.byKey(const Key('meus_dados_excluir')), findsOneWidget);
+  });
+
+  testWidgets('sem senha, a exclusão não começa', (tester) async {
+    final conta = FakeContaRepository();
+    await _abrir(tester, conta: conta);
+
+    await _abrirDialogo(tester);
+    await tester.tap(find.byKey(const Key('excluir_conta_confirmar')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Informe sua senha.'), findsOneWidget);
+    expect(conta.exclusoes, 0);
+  });
+
+  testWidgets('exclusão concluída volta ao login sem caminho de retorno', (
+    tester,
+  ) async {
+    final conta = FakeContaRepository();
+    await _abrir(tester, conta: conta);
+
+    await _confirmarExclusao(tester);
+
+    expect(conta.senhaRecebida, _senha);
+    expect(find.byKey(const Key('login_email')), findsOneWidget);
+    expect(find.text('Sua conta foi excluída.'), findsOneWidget);
+    expect(find.byTooltip('Back'), findsNothing);
+  });
+
+  testWidgets('senha incorreta mostra o erro e fica na tela', (tester) async {
+    final conta = FakeContaRepository()
+      ..erroExclusao = const AuthException('Senha incorreta.');
+    await _abrir(tester, conta: conta);
+
+    await _confirmarExclusao(tester);
+
+    expect(find.text('Senha incorreta.'), findsOneWidget);
+    expect(find.byKey(const Key('meus_dados_excluir')), findsOneWidget);
+  });
+
+  testWidgets('falha parcial bloqueia a conta até a exclusão terminar', (
+    tester,
+  ) async {
+    final conta = FakeContaRepository()
+      ..erroExclusao = const ExclusaoIncompletaException();
+    await _abrir(tester, conta: conta);
+
+    await _confirmarExclusao(tester);
+
+    expect(find.byKey(const Key('exclusao_pendente_concluir')), findsOneWidget);
+    expect(find.byTooltip('Back'), findsNothing);
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('exclusao_pendente_concluir')), findsOneWidget);
+
+    await tester.enterText(
+      find.byKey(const Key('exclusao_pendente_senha')),
+      _senha,
+    );
+    await tester.tap(find.byKey(const Key('exclusao_pendente_concluir')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('exclusao_pendente_erro')), findsOneWidget);
+
+    conta.erroExclusao = null;
+    await tester.tap(find.byKey(const Key('exclusao_pendente_concluir')));
+    await tester.pumpAndSettle();
+
+    expect(conta.exclusoes, 3);
+    expect(find.byKey(const Key('login_email')), findsOneWidget);
+  });
+
+  testWidgets('login com exclusão pendente vai direto ao bloqueio', (
+    tester,
+  ) async {
+    await _abrir(
+      tester,
+      conta: FakeContaRepository(pendente: true),
+      rota: AppRoutes.login,
+    );
+
+    await tester.enterText(
+      find.byKey(const Key('login_email')),
+      'maria@exemplo.com',
+    );
+    await tester.enterText(find.byKey(const Key('login_senha')), _senha);
+    await tester.tap(find.widgetWithText(FilledButton, 'Entrar'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('exclusao_pendente_concluir')), findsOneWidget);
+    expect(find.byKey(const Key('dashboard_meus_dados')), findsNothing);
+  });
+
+  testWidgets('do bloqueio é possível sair', (tester) async {
+    final auth = FakeAuthRepository();
+    await _abrir(
+      tester,
+      conta: FakeContaRepository(pendente: true),
+      auth: auth,
+      rota: AppRoutes.exclusaoPendente,
+    );
+
+    await tester.tap(find.text('Sair'));
+    await tester.pumpAndSettle();
+
+    expect(auth.saiu, isTrue);
+    expect(find.byKey(const Key('login_email')), findsOneWidget);
+  });
+}

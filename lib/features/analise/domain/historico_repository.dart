@@ -7,5 +7,10 @@ abstract class HistoricoRepository {
 
   /// Devolve as análises do usuário, da mais recente para a mais antiga.
   /// Lança em caso de falha.
-  Future<List<AnaliseRisco>> listar();
+  ///
+  /// Sem conexão, a consulta normal pode devolver só o que está no cache do
+  /// aparelho. Com [somenteServidor], ela falha nesse caso: é o que a
+  /// exportação precisa, para não entregar um arquivo incompleto como se
+  /// fosse a íntegra dos dados (RF12).
+  Future<List<AnaliseRisco>> listar({bool somenteServidor = false});
 }

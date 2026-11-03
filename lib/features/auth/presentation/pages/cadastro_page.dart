@@ -59,7 +59,9 @@ class _CadastroPageState extends State<CadastroPage> {
         senha: _senhaController.text,
       );
       if (!mounted) return;
-      Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(AppRoutes.dashboard, (_) => false);
     } on AuthException catch (e) {
       if (!mounted) return;
       setState(() {

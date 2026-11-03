@@ -9,11 +9,16 @@ import 'package:phize/features/auth/domain/auth_exception.dart';
 import 'package:phize/main.dart';
 
 import 'support/fake_auth_repository.dart';
+import 'support/fake_conta_repository.dart';
 
 Widget telaLogin(FakeAuthRepository repo) {
   return MaterialApp(
     onGenerateRoute: (settings) =>
-        AppRouter.onGenerateRoute(settings, authRepository: repo),
+        AppRouter.onGenerateRoute(
+          settings,
+          authRepository: repo,
+          contaRepository: FakeContaRepository(),
+        ),
     initialRoute: AppRoutes.login,
   );
 }
@@ -21,7 +26,11 @@ Widget telaLogin(FakeAuthRepository repo) {
 Widget telaCadastro(FakeAuthRepository repo) {
   return MaterialApp(
     onGenerateRoute: (settings) =>
-        AppRouter.onGenerateRoute(settings, authRepository: repo),
+        AppRouter.onGenerateRoute(
+          settings,
+          authRepository: repo,
+          contaRepository: FakeContaRepository(),
+        ),
     initialRoute: AppRoutes.cadastro,
   );
 }

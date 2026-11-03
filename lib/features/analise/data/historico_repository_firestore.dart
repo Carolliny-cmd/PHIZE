@@ -73,8 +73,14 @@ class HistoricoRepositoryFirestore implements HistoricoRepository {
   }
 
   @override
-  Future<List<AnaliseRisco>> listar() async {
-    final consulta = await _analises.orderBy('data', descending: true).get();
+  Future<List<AnaliseRisco>> listar({bool somenteServidor = false}) async {
+    final consulta = await _analises
+        .orderBy('data', descending: true)
+        .get(
+          GetOptions(
+            source: somenteServidor ? Source.server : Source.serverAndCache,
+          ),
+        );
     return consulta.docs
         .map((doc) => analiseDeDocumento(doc.id, doc.data()))
         .nonNulls

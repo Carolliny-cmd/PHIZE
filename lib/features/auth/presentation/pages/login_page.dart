@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
+import '../../../conta/data/conta_repository_firebase.dart';
+import '../../../conta/domain/conta_repository.dart';
 import '../../data/firebase_auth_repository.dart';
 import '../../data/login_attempt_tracker.dart';
 import '../../domain/auth_exception.dart';
@@ -10,9 +12,12 @@ import '../widgets/esqueci_senha_dialog.dart';
 
 /// Tela de Login (RF02 / UC02).
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, this.authRepository});
+  const LoginPage({super.key, this.authRepository, this.contaRepository});
 
   final AuthRepository? authRepository;
+
+  /// Usado só para conferir se há exclusão de conta pendente (UC12).
+  final ContaRepository? contaRepository;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -76,8 +81,11 @@ class _LoginPageState extends State<LoginPage> {
         senha: _senhaController.text,
       );
       await _tentativas.resetar();
+      final pendente = await _exclusaoPendente();
       if (!mounted) return;
-      Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
+      Navigator.of(context).pushReplacementNamed(
+        pendente ? AppRoutes.exclusaoPendente : AppRoutes.dashboard,
+      );
     } on AuthException catch (e) {
       await _tentativas.registrarFalha();
       final bloqueado = await _tentativas.bloqueado();
@@ -87,6 +95,16 @@ class _LoginPageState extends State<LoginPage> {
         _bloqueado = bloqueado;
         _carregando = false;
       });
+    }
+  }
+
+  /// A marca fica no aparelho; uma falha ao lê-la não impede o login.
+  Future<bool> _exclusaoPendente() async {
+    try {
+      final conta = widget.contaRepository ?? ContaRepositoryFirebase();
+      return await conta.exclusaoPendente();
+    } catch (_) {
+      return false;
     }
   }
 

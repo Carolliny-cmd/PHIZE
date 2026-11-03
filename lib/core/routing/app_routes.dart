@@ -10,4 +10,6 @@ class AppRoutes {
   static const String analisarLink = '/analisar-link';
   static const String analisarPrint = '/analisar-print';
   static const String resultado = '/resultado';
+  static const String meusDados = '/meus-dados';
+  static const String exclusaoPendente = '/exclusao-pendente';
 }

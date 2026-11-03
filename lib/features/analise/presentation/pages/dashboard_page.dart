@@ -11,16 +11,24 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Phize')),
+      appBar: AppBar(
+        title: const Text('Phize'),
+        actions: [
+          IconButton(
+            key: const Key('dashboard_meus_dados'),
+            tooltip: 'Meus dados',
+            icon: const Icon(Icons.person_outline),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AppRoutes.meusDados),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              'Olá, Maria',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+            Text('Olá!', style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 4),
             const Text('O que você recebeu e quer verificar?'),
             const SizedBox(height: 24),

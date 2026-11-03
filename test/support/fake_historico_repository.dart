@@ -12,6 +12,7 @@ class FakeHistoricoRepository implements HistoricoRepository {
   bool falhaAoSalvar;
   bool falhaAoListar;
   int leituras = 0;
+  bool? ultimaLeituraSomenteServidor;
 
   @override
   Future<void> salvar(AnaliseRisco analise) async {
@@ -20,8 +21,9 @@ class FakeHistoricoRepository implements HistoricoRepository {
   }
 
   @override
-  Future<List<AnaliseRisco>> listar() async {
+  Future<List<AnaliseRisco>> listar({bool somenteServidor = false}) async {
     leituras++;
+    ultimaLeituraSomenteServidor = somenteServidor;
     if (falhaAoListar) throw StateError('falha simulada');
     return analises;
   }

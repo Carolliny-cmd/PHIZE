@@ -10,6 +10,7 @@ import 'core/routing/app_router.dart';
 import 'core/routing/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'features/analise/data/limpeza_copias_seletor.dart';
+import 'features/conta/data/compartilhador_arquivo_nativo.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -17,6 +18,7 @@ Future<void> main() async {
   // Sem await: a varredura de cópias órfãs do seletor (RNF01) nunca lança
   // e não deve atrasar a abertura do app.
   unawaited(LimpezaCopiasSeletor.executar());
+  unawaited(CompartilhadorArquivoNativo.removerCopiaLocal());
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final emuladores = EmulatorConfig.emuladores;
   final emuladorAuth = emuladores.auth;
@@ -45,7 +47,11 @@ class PhizeApp extends StatelessWidget {
       title: 'Phize',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      initialRoute: AppRoutes.login,
+      // `initialRoute` empilharia também a rota '/', que cai no login: o
+      // Painel ganharia uma seta para voltar ao login sem encerrar a sessão.
+      onGenerateInitialRoutes: (_) => [
+        AppRouter.onGenerateRoute(const RouteSettings(name: AppRoutes.login)),
+      ],
       onGenerateRoute: AppRouter.onGenerateRoute,
     );
   }
