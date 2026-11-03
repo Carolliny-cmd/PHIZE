@@ -1,0 +1,37 @@
+{
+  "id": "whatsapp-pedido-de-codigo",
+  "modalidade": "Golpe do WhatsApp: pedido do código de verificação",
+  "categoria": "roubo_de_dados",
+  "canais": [
+    "WhatsApp",
+    "SMS"
+  ],
+  "gatilhosLinguisticos": [
+    "somos do atendimento da loja onde você tem cadastro",
+    "precisamos atualizar o seu cadastro",
+    "estamos fazendo uma manutenção na sua conta",
+    "você vai receber um código por SMS, me informe para confirmar",
+    "me passa o código de 6 dígitos que chegou no seu celular",
+    "é só para gerar o número do protocolo"
+  ],
+  "padraoSolicitacaoFinanceira": "Não há pedido financeiro direto: o golpista pede o código de verificação do WhatsApp para clonar a conta e depois pedir dinheiro aos contatos da vítima.",
+  "orientacaoPreventiva": "Nunca informe a ninguém o código que chega por SMS. Ative a confirmação em duas etapas do WhatsApp e deixe a foto de perfil visível só para contatos.",
+  "fontes": [
+    {
+      "titulo": "Golpe do Whatsapp",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/DetalheAntifraude/7/pt-br/",
+      "consultadoEm": "2026-11-03"
+    },
+    {
+      "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/noticia/4279/pt-br/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "Hevelyn",
+    "revisadoEm": "2026-11-03"
+  }
+}

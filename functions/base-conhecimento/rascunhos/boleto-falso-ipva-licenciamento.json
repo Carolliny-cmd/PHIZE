@@ -1,0 +1,32 @@
+{
+  "id": "boleto-falso-ipva-licenciamento",
+  "modalidade": "Boleto falso de IPVA ou licenciamento",
+  "categoria": "cobranca_ou_boleto_falso",
+  "canais": [
+    "WhatsApp",
+    "SMS",
+    "E-mail",
+    "Site"
+  ],
+  "gatilhosLinguisticos": [
+    "seu IPVA vence hoje, pague com desconto",
+    "pendência no licenciamento do seu veículo",
+    "desconto especial para pagamento por Pix",
+    "acesse o link para emitir a guia do IPVA",
+    "regularize o débito do veículo para evitar multa"
+  ],
+  "padraoSolicitacaoFinanceira": "Pagamento de boleto ou Pix por site ou link falso; o dinheiro vai para o golpista e o imposto continua em aberto.",
+  "orientacaoPreventiva": "Emita a guia só no site ou aplicativo oficial da Secretaria da Fazenda ou do Detran, digitando o endereço. O órgão não envia guia por WhatsApp, SMS ou e-mail. Antes de pagar, confira se o beneficiário é o governo do estado.",
+  "fontes": [
+    {
+      "titulo": "Sefaz alerta para falsos boletos e sites fraudulentos em golpes no IPVA",
+      "publicador": "Secretaria de Fazenda de Mato Grosso",
+      "url": "https://www5.sefaz.mt.gov.br/w/sefaz-alerta-para-falsos-boletos-e-sites-fraudulentos-em-golpes-no-ipva",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}

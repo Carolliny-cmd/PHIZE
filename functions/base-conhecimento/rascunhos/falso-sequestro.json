@@ -1,0 +1,28 @@
+{
+  "id": "falso-sequestro",
+  "modalidade": "Falso sequestro de familiar",
+  "categoria": "ameaca_ou_extorsao",
+  "canais": [
+    "Ligação"
+  ],
+  "gatilhosLinguisticos": [
+    "estamos com seu filho",
+    "não desligue e não fale com ninguém",
+    "seu parente sofreu um acidente, aqui é da polícia",
+    "faça o que eu mandar ou ele vai sofrer"
+  ],
+  "padraoSolicitacaoFinanceira": "A fonte destaca a busca por dados pessoais e nomes de parentes para pressionar a vítima; em geral, a pressão termina num pedido de dinheiro.",
+  "orientacaoPreventiva": "Mantenha a calma e não dê dados pessoais nem nomes de parentes. Desligue e ligue para a pessoa que estaria sequestrada; se não conseguir, procure alguém que esteja com ela. Desconfie de ligações a cobrar ou de número restrito.",
+  "fontes": [
+    {
+      "titulo": "Dica da Polícia Civil: Alerta sobre o golpe do falso sequestro",
+      "publicador": "Secretaria de Justiça e Segurança Pública de Mato Grosso do Sul",
+      "url": "https://www.sejusp.ms.gov.br/dica-da-policia-civil-alerta-sobre-o-golpe-do-falso-sequestro/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}

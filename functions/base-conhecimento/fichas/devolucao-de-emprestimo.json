@@ -1,0 +1,29 @@
+{
+  "id": "devolucao-de-emprestimo",
+  "modalidade": "Golpe da devolução do empréstimo",
+  "categoria": "falsa_central_ou_instituicao",
+  "canais": [
+    "Ligação",
+    "WhatsApp"
+  ],
+  "gatilhosLinguisticos": [
+    "caiu na sua conta um empréstimo por engano",
+    "precisamos cancelar o empréstimo contratado em seu nome",
+    "devolva o valor por Pix para cancelar",
+    "pague este boleto para estornar o empréstimo"
+  ],
+  "padraoSolicitacaoFinanceira": "Devolução, por Pix ou boleto, de um empréstimo que o próprio golpista contratou em nome da vítima.",
+  "orientacaoPreventiva": "Não devolva valores a pessoas ou empresas desconhecidas. Procure o banco pelos canais oficiais: devoluções verdadeiras são feitas pela própria instituição.",
+  "fontes": [
+    {
+      "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/noticia/4279/pt-br/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "Hevelyn",
+    "revisadoEm": "2026-11-03"
+  }
+}

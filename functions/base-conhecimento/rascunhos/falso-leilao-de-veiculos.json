@@ -1,0 +1,31 @@
+{
+  "id": "falso-leilao-de-veiculos",
+  "modalidade": "Falso leilão de veículos em site que imita o Detran",
+  "categoria": "oferta_ou_premio_falso",
+  "canais": [
+    "Site",
+    "Redes sociais",
+    "WhatsApp"
+  ],
+  "gatilhosLinguisticos": [
+    "leilão oficial de veículos do Detran",
+    "carros e caminhões apreendidos com lance abaixo da tabela",
+    "você arrematou o veículo, segue o boleto",
+    "envio do certificado de arrematação após o pagamento",
+    "pague hoje para garantir o lote"
+  ],
+  "padraoSolicitacaoFinanceira": "Pagamento de boleto ou Pix por veículo supostamente arrematado em leilão que não existe.",
+  "orientacaoPreventiva": "Os leilões verdadeiros são conduzidos por leiloeiros oficiais, com edital publicado no site do Detran. Acesse o site oficial digitando o endereço e desconfie de preço muito abaixo do mercado.",
+  "fontes": [
+    {
+      "titulo": "Detran-PR alerta sobre golpe de falsos leilões de veículos",
+      "publicador": "Detran-PR",
+      "url": "https://www.detran.pr.gov.br/Noticia/Detran-PR-alerta-sobre-golpe-de-falsos-leiloes-de-veiculos-0",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}

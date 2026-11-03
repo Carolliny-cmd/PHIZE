@@ -1,0 +1,31 @@
+{
+  "id": "falsa-vaga-de-emprego",
+  "modalidade": "Falsa vaga de emprego",
+  "categoria": "oferta_ou_premio_falso",
+  "canais": [
+    "WhatsApp",
+    "E-mail",
+    "Redes sociais"
+  ],
+  "gatilhosLinguisticos": [
+    "vaga imperdível com salário acima da média",
+    "oportunidade irrecusável, poucas exigências",
+    "para garantir a vaga, faça o curso obrigatório",
+    "pague o exame admissional para seguir no processo",
+    "mande foto dos documentos e seus dados bancários"
+  ],
+  "padraoSolicitacaoFinanceira": "Taxas de curso, exame ou inscrição, além de documentos e dados bancários usados depois em outros golpes.",
+  "orientacaoPreventiva": "Empresas sérias não cobram para participar de seleção, exame ou curso. Confirme a vaga no site oficial da empresa e não envie documentos nem dados bancários antes de uma entrevista.",
+  "fontes": [
+    {
+      "titulo": "Febraban alerta para o golpe do falso emprego",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/noticia/4449/pt-br/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}

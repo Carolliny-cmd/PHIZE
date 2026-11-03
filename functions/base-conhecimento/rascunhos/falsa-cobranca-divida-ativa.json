@@ -1,0 +1,32 @@
+{
+  "id": "falsa-cobranca-divida-ativa",
+  "modalidade": "Falsa cobrança ou negociação de dívida em nome da PGFN",
+  "categoria": "cobranca_ou_boleto_falso",
+  "canais": [
+    "Correspondência",
+    "WhatsApp",
+    "E-mail",
+    "Aplicativo falso"
+  ],
+  "gatilhosLinguisticos": [
+    "quite sua dívida com a União com desconto",
+    "pague por Pix para regularizar sua pendência",
+    "você tem uma restituição ou reembolso a receber",
+    "nosso escritório é parceiro da PGFN",
+    "baixe o aplicativo para negociar sua dívida"
+  ],
+  "padraoSolicitacaoFinanceira": "Pagamento por Pix ou transferência, dados pessoais e bancários ou instalação de aplicativo falso.",
+  "orientacaoPreventiva": "Dívidas com a União são negociadas só no REGULARIZE e pagas por documento de arrecadação (DARF, DAS, GPS ou GRRF), nunca por Pix. A PGFN não tem escritórios parceiros nem aplicativo do REGULARIZE para celular.",
+  "fontes": [
+    {
+      "titulo": "Alerta sobre tentativas de golpes e fraudes em nome da PGFN",
+      "publicador": "Procuradoria-Geral da Fazenda Nacional",
+      "url": "https://www.gov.br/pgfn/pt-br/servicos/alerta-sobre-tentativas-de-golpes-e-fraudes-em-nome-da-pgfn",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "falsa-central-falso-funcionario",
+  "modalidade": "Falsa central telefônica ou falso funcionário do banco",
+  "categoria": "falsa_central_ou_instituicao",
+  "canais": [
+    "Ligação",
+    "WhatsApp",
+    "SMS"
+  ],
+  "gatilhosLinguisticos": [
+    "aqui é da central de segurança do seu banco",
+    "identificamos uma movimentação suspeita na sua conta",
+    "seus dados estão desatualizados",
+    "precisamos regularizar sua conta ou seu cartão",
+    "confirme sua senha para cancelar a compra",
+    "faça uma transferência para estornar o valor"
+  ],
+  "padraoSolicitacaoFinanceira": "Senha, dados pessoais, código de segurança ou transferência apresentada como estorno ou regularização.",
+  "orientacaoPreventiva": "Bancos não pedem senha, código de segurança nem transferência para estorno. Desligue e ligue para o banco pelos canais oficiais, de outro telefone.",
+  "fontes": [
+    {
+      "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/noticia/4279/pt-br/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "Hevelyn",
+    "revisadoEm": "2026-11-03"
+  }
+}

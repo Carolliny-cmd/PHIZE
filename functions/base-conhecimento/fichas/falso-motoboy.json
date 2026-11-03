@@ -1,0 +1,28 @@
+{
+  "id": "falso-motoboy",
+  "modalidade": "Falso motoboy",
+  "categoria": "falsa_central_ou_instituicao",
+  "canais": [
+    "Ligação"
+  ],
+  "gatilhosLinguisticos": [
+    "seu cartão foi clonado",
+    "corte o cartão ao meio",
+    "informe a senha para bloquearmos o cartão",
+    "um portador vai buscar o cartão para perícia"
+  ],
+  "padraoSolicitacaoFinanceira": "Entrega do cartão (cortado, com o chip intacto) e da senha a um falso portador.",
+  "orientacaoPreventiva": "Nenhum banco pede o cartão de volta nem manda alguém buscá-lo. Desligue e ligue para o banco de outro aparelho.",
+  "fontes": [
+    {
+      "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/noticia/4279/pt-br/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "Hevelyn",
+    "revisadoEm": "2026-11-03"
+  }
+}

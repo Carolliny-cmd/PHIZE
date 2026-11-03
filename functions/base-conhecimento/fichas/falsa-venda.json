@@ -1,0 +1,32 @@
+{
+  "id": "falsa-venda",
+  "modalidade": "Falsa venda em loja, site ou perfil falso",
+  "categoria": "oferta_ou_premio_falso",
+  "canais": [
+    "Redes sociais",
+    "Site",
+    "WhatsApp"
+  ],
+  "gatilhosLinguisticos": [
+    "promoção só hoje",
+    "últimas unidades com desconto",
+    "preço bem abaixo do que se vê em outras lojas",
+    "pagamento só por Pix",
+    "liquidação de estoque",
+    "envio imediato depois do pagamento"
+  ],
+  "padraoSolicitacaoFinanceira": "Pagamento antecipado, geralmente por Pix ou boleto, por produto que não existe ou não será entregue.",
+  "orientacaoPreventiva": "Desconfie de preço muito abaixo do mercado. Pesquise a reputação da loja, prefira sites conhecidos e não compre por links recebidos em mensagens.",
+  "fontes": [
+    {
+      "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/noticia/4279/pt-br/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "Hevelyn",
+    "revisadoEm": "2026-11-03"
+  }
+}

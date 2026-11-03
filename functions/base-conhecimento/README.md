@@ -10,6 +10,7 @@ A curadoria é humana: nenhum conteúdo entra na base de forma automática. A IA
 | --- | --- |
 | `fichas/<id>.json` | Uma ficha por modalidade. O nome do arquivo é o `id` da ficha. |
 | `modelo-ficha.json` | Modelo para copiar. Fica fora de `fichas/` e não é indexado. |
+| `rascunhos/<id>.json` | Fichas ainda não revisadas, com `curadoria` em branco. Não são indexadas. |
 | `indice.json` | Índice gerado pelo script. Não editar à mão. |
 
 O índice fica dentro de `functions/` porque a consulta (Prompt 7.2) precisa gerar o embedding do texto com a chave do Gemini, que só existe na camada intermediária. Ele é publicado junto com a Function.
@@ -49,6 +50,23 @@ Nunca use conversa real de alguém como fonte ou como gatilho (RNF01, RNF07). Os
    ```
    O script valida todas as fichas e para com a lista de erros se alguma estiver incompleta. Com as fichas válidas, gera embedding só para as novas ou alteradas e reaproveita as demais. Precisa de `GEMINI_API_KEY` em `functions/.env.local`. Recusas temporárias do provedor (503, 429) são repetidas automaticamente.
 3. Faça commit da ficha **e** do `indice.json` juntos.
+
+## Rascunhos
+
+Um rascunho (escrito por alguém da equipe ou com ajuda da IA) fica em `rascunhos/` até ser revisado. Para revisar:
+
+1. Abra cada fonte listada e confira que a ficha diz o que a fonte diz: modalidade, pretextos, pedido e orientação. Ajuste o que estiver impreciso.
+2. Confira que os gatilhos descrevem o padrão do golpe e não reproduzem a conversa de alguém.
+3. Preencha `curadoria.revisadoPor` com o seu nome e `curadoria.revisadoEm` com a data da revisão.
+4. Mova o arquivo para `fichas/` e rode `npm run indexar-base`.
+
+Quem preenche a curadoria responde pelo conteúdo da ficha. Rascunho sem revisão não entra no índice.
+
+Os rascunhos de 2026-11-03 foram escritos com ajuda da IA a partir de páginas oficiais (Febraban, Detran, Secretarias de Fazenda, INSS, Receita Federal, PGFN e órgãos de segurança pública), listadas em `fontes` de cada um. Eles parafraseiam as fontes; os gatilhos são exemplos de frases que seguem os pretextos descritos, não citações.
+
+As datas de `consultadoEm` e `revisadoEm` usam o formato AAAA-MM-DD (ex.: `2026-11-03`), não DD/MM/AAAA.
+
+## Conferir sem chamar a API
 
 Para conferir sem chamar a API:
 

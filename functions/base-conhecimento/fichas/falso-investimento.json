@@ -1,0 +1,32 @@
+{
+  "id": "falso-investimento",
+  "modalidade": "Falso investimento",
+  "categoria": "oferta_ou_premio_falso",
+  "canais": [
+    "Redes sociais",
+    "WhatsApp",
+    "Anúncios"
+  ],
+  "gatilhosLinguisticos": [
+    "rendimento garantido toda semana",
+    "lucro alto e rápido, sem risco",
+    "veja quanto meus clientes já ganharam",
+    "últimas vagas, decida hoje",
+    "comece com pouco e veja o retorno",
+    "invista mais para liberar o saque"
+  ],
+  "padraoSolicitacaoFinanceira": "Depósitos em supostos investimentos; pequenos retornos iniciais estimulam valores maiores, que somem.",
+  "orientacaoPreventiva": "Desconfie de retornos muito acima do mercado e de pressão para decidir rápido. Verifique se a empresa é autorizada a operar antes de investir.",
+  "fontes": [
+    {
+      "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/noticia/4279/pt-br/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "Hevelyn",
+    "revisadoEm": "2026-11-03"
+  }
+}

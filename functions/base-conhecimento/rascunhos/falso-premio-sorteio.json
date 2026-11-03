@@ -1,0 +1,31 @@
+{
+  "id": "falso-premio-sorteio",
+  "modalidade": "Falso prêmio ou sorteio",
+  "categoria": "oferta_ou_premio_falso",
+  "canais": [
+    "WhatsApp",
+    "SMS",
+    "E-mail"
+  ],
+  "gatilhosLinguisticos": [
+    "parabéns, você foi sorteado",
+    "você ganhou um prêmio do programa de nota fiscal",
+    "pague a taxa para liberar o seu prêmio",
+    "resgate seu prêmio pelo link antes que expire",
+    "você ganhou um carro no sorteio"
+  ],
+  "padraoSolicitacaoFinanceira": "Pagamento de taxa para liberar um prêmio que não existe.",
+  "orientacaoPreventiva": "Nunca pague para receber prêmio. Confira no site ou aplicativo oficial do programa e não clique em links nem ligue para números enviados na mensagem.",
+  "fontes": [
+    {
+      "titulo": "Secretaria da Fazenda alerta sobre golpe com falsos prêmios do Nota Paraná",
+      "publicador": "Secretaria da Fazenda do Paraná",
+      "url": "https://www.fazenda.pr.gov.br/Noticia/Secretaria-da-Fazenda-alerta-sobre-golpe-com-falsos-premios-do-Nota-Parana",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}

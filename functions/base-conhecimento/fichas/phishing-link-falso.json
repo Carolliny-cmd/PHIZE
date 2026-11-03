@@ -1,0 +1,31 @@
+{
+  "id": "phishing-link-falso",
+  "modalidade": "Phishing: link para página falsa",
+  "categoria": "roubo_de_dados",
+  "canais": [
+    "SMS",
+    "E-mail",
+    "WhatsApp"
+  ],
+  "gatilhosLinguisticos": [
+    "clique no link para atualizar seus dados",
+    "sua conta será bloqueada, acesse o link",
+    "confirme seu cadastro no link abaixo",
+    "você tem um valor a receber, acesse aqui",
+    "regularize sua situação pelo link"
+  ],
+  "padraoSolicitacaoFinanceira": "Não há pedido financeiro direto: a página falsa coleta dados pessoais, senhas e dados de cartão.",
+  "orientacaoPreventiva": "Não clique em links recebidos por mensagem ou e-mail. Na dúvida, entre no site ou aplicativo oficial digitando o endereço você mesmo, ou consulte o banco.",
+  "fontes": [
+    {
+      "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/noticia/4279/pt-br/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "Hevelyn",
+    "revisadoEm": "2026-11-03"
+  }
+}

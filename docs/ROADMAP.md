@@ -10,7 +10,8 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Data:** 2026-11-03
 - **Última tarefa concluída:** Fase 7.1 — schema das fichas, validação e script de indexação da base de conhecimento (45 testes na Function); antes, Fase 6.3 validada no emulador Android
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
-- **Próximo passo:** catalogação das primeiras modalidades pela equipe (`functions/base-conhecimento/README.md`); com algumas fichas indexadas, Prompt 7.2
+- **Base de conhecimento:** 10 fichas revisadas e indexadas (fonte: Febraban); 10 rascunhos do segundo lote aguardando revisão em `functions/base-conhecimento/rascunhos/`
+- **Próximo passo:** Prompt 7.2, em paralelo com a revisão do segundo lote; a base continua crescendo depois do 7.2
 
 ---
 
@@ -723,6 +724,10 @@ arquivos catalogados manualmente, gera embeddings e persiste o
 > **CONCLUÍDO (2026-11-03):** fichas em `functions/base-conhecimento/fichas/`, uma por modalidade, com os campos da seção 3.2 (a) da arquitetura, a categoria de `docs/categorias-ameaca.md` e, obrigatoriamente, fontes e curadoria (quem revisou e quando). `npm run indexar-base` valida as fichas, gera embeddings com o `gemini-embedding-2` (768 dimensões, `functions/src/config.ts`) só para as fichas novas ou alteradas e grava `indice.json`; `--verificar` confere sem chamar a API, e o `npm test` reprova ficha inválida ou índice desatualizado. Instruções de catalogação em `functions/base-conhecimento/README.md`. A base versionada está vazia: o conteúdo é catalogado pela equipe (RDEV04).
 >
 > **ÍNDICE NA FUNCTION:** o índice fica em `functions/` porque a consulta precisa do embedding do texto mascarado, gerado com a chave do Gemini, que só existe na camada intermediária. Consequência: atualizar a base exige publicar as Functions de novo, e não lançar nova versão do app como diz a arquitetura (seção 3.2 b). O índice continua em arquivo local versionado no repositório, como a arquitetura prevê. Pendente de revisão do documento pela equipe.
+>
+> **RASCUNHOS (2026-11-03):** 10 fichas em `functions/base-conhecimento/rascunhos/`, escritas com ajuda da IA a partir de duas páginas da Febraban (os 10 golpes mais aplicados em 2024 e o golpe do WhatsApp), com a curadoria em branco. Ficam fora do índice até a revisão de alguém da equipe. A troca de cartão na maquininha ficou de fora, por ser presencial e não aparecer em print. Numa cópia temporária indexada fora do repositório, o texto fictício dos prints de golpe teve a ficha da modalidade certa em primeiro lugar, e as conversas comuns ficaram abaixo de todas as fichas relacionadas a golpe.
+>
+> **PRIMEIRO LOTE REVISADO E SEGUNDO LOTE (2026-11-03):** as 10 fichas do primeiro lote foram revisadas pela equipe, sem alteração de conteúdo, e indexadas. O segundo lote tem 10 rascunhos a partir de páginas oficiais: falso leilão de veículos (Detran-PR), boleto falso de IPVA (Sefaz-MT), Pix errado (Febraban), falso consignado (INSS), falsa vaga de emprego (Febraban), falso sequestro (Sejusp-MS, alerta de 2017), golpe do amor (Agência Brasília), falso prêmio (Sefa-PR), taxa falsa de encomenda (Receita Federal) e falsa cobrança de dívida ativa (PGFN). O "valores a receber" do Banco Central ficou de fora: a página oficial não pôde ser lida. Numa cópia temporária com as 20 fichas, 11 mensagens fictícias de golpe tiveram a ficha da modalidade certa em primeiro lugar, e 4 conversas comuns ficaram abaixo de todas as mensagens de golpe.
 >
 > **SONDAGEM PARA O 7.2:** com duas fichas de teste fora do repositório, o texto fictício de cada print ficou mais próximo da ficha da sua modalidade, e a conversa comum ficou abaixo das duas. A distância entre "relacionado" e "sem relação" foi pequena, então o limiar de similaridade precisa ser calibrado com fichas reais e registrado em documento de calibração.
 

@@ -1,0 +1,30 @@
+{
+  "id": "falso-boleto",
+  "modalidade": "Falso boleto",
+  "categoria": "cobranca_ou_boleto_falso",
+  "canais": [
+    "E-mail",
+    "WhatsApp",
+    "Correspondência"
+  ],
+  "gatilhosLinguisticos": [
+    "segue o boleto atualizado",
+    "o boleto anterior foi cancelado, pague este",
+    "segunda via com novo vencimento",
+    "evite juros, pague ainda hoje"
+  ],
+  "padraoSolicitacaoFinanceira": "Pagamento de boleto adulterado, cujo dinheiro vai para a conta do golpista.",
+  "orientacaoPreventiva": "Antes de pagar, confira o nome e o CPF ou CNPJ do beneficiário, o valor e o vencimento. Na dúvida, fale com a empresa pelo SAC oficial.",
+  "fontes": [
+    {
+      "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024",
+      "publicador": "Febraban",
+      "url": "https://portal.febraban.org.br/noticia/4279/pt-br/",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "Hevelyn",
+    "revisadoEm": "2026-11-03"
+  }
+}

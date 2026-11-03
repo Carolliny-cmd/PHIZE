@@ -1,0 +1,32 @@
+{
+  "id": "falso-consignado-inss",
+  "modalidade": "Falsa oferta de consignado em nome do INSS",
+  "categoria": "falsa_central_ou_instituicao",
+  "canais": [
+    "Ligação",
+    "WhatsApp",
+    "E-mail",
+    "Redes sociais"
+  ],
+  "gatilhosLinguisticos": [
+    "aqui é do INSS, temos um empréstimo consignado liberado para você",
+    "condição especial para aposentados e pensionistas",
+    "confirme seus dados bancários para liberar o crédito",
+    "vamos mandar um portador na sua casa",
+    "clique no link para fazer a contratação"
+  ],
+  "padraoSolicitacaoFinanceira": "Senhas, dados bancários e documentos, usados para contratar empréstimo em nome da vítima.",
+  "orientacaoPreventiva": "O INSS não oferece empréstimo por ligação, mensagem ou e-mail e não manda ninguém à sua casa. Não passe senha nem dados bancários. É possível bloquear a contratação de consignado pelo Meu INSS ou pela Central 135.",
+  "fontes": [
+    {
+      "titulo": "INSS alerta para golpes com consignado",
+      "publicador": "INSS",
+      "url": "https://www.gov.br/inss/pt-br/noticias/inss-alerta-para-golpes-com-consignado",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}

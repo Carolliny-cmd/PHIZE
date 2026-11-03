@@ -1,0 +1,32 @@
+{
+  "id": "taxa-falsa-encomenda-internacional",
+  "modalidade": "Taxa falsa para liberar encomenda internacional",
+  "categoria": "cobranca_ou_boleto_falso",
+  "canais": [
+    "WhatsApp",
+    "SMS",
+    "E-mail",
+    "Ligação"
+  ],
+  "gatilhosLinguisticos": [
+    "sua encomenda está retida na Receita Federal",
+    "pague os impostos para liberar a encomenda",
+    "taxa de despesas postais pendente",
+    "pague por Pix ou QR Code para evitar a devolução",
+    "seu nome será negativado se não pagar"
+  ],
+  "padraoSolicitacaoFinanceira": "Pagamento de imposto ou taxa falsa por Pix, QR Code, cartão ou transferência.",
+  "orientacaoPreventiva": "A Receita Federal não liga nem manda mensagem cobrando para liberar mercadoria e não aceita Pix, QR Code ou cartão. Encomendas dos Correios: pague só pelo Minhas Importações, no site ou aplicativo dos Correios.",
+  "fontes": [
+    {
+      "titulo": "Golpes em Compras Internacionais",
+      "publicador": "Receita Federal",
+      "url": "https://www.gov.br/receitafederal/pt-br/assuntos/noticias/2024/junho/golpes-em-compras-internacionais",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}

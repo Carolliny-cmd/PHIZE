@@ -1,0 +1,31 @@
+{
+  "id": "golpe-do-amor",
+  "modalidade": "Golpe do amor (estelionato amoroso)",
+  "categoria": "outro_golpe",
+  "canais": [
+    "Redes sociais",
+    "Aplicativos de relacionamento",
+    "WhatsApp"
+  ],
+  "gatilhosLinguisticos": [
+    "nunca senti isso por ninguém",
+    "estou com um problema e só posso contar com você",
+    "preciso de ajuda com dinheiro, depois te devolvo",
+    "não posso fazer chamada de vídeo agora",
+    "não conte para ninguém sobre nós"
+  ],
+  "padraoSolicitacaoFinanceira": "Dinheiro ou outros favores financeiros, pedidos cedo no relacionamento e justificados por emergências.",
+  "orientacaoPreventiva": "Desconfie de relacionamento que avança rápido demais e de pedido de dinheiro logo no começo. Prefira chamada de vídeo e converse com alguém de confiança antes de transferir qualquer valor.",
+  "fontes": [
+    {
+      "titulo": "Golpe do amor: Como prevenir, identificar e denunciar estelionato amoroso",
+      "publicador": "Agência Brasília (Governo do Distrito Federal)",
+      "url": "https://www.agenciabrasilia.df.gov.br/w/golpe-do-amor-como-prevenir-identificar-e-denunciar-estelionato-amoroso",
+      "consultadoEm": "2026-11-03"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}
