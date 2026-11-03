@@ -40,6 +40,19 @@ export const TIMEOUT_LLM_MS = 25_000;
 /** Maior texto mascarado aceito, em caracteres. */
 export const TAMANHO_MAXIMO_TEXTO = 8_000;
 
+/**
+ * Modelo de embeddings da base de conhecimento (arquitetura, seção 3.2 b).
+ * O índice registra o modelo com que foi gerado; a consulta (Prompt 7.2)
+ * precisa usar o mesmo, ou os vetores não são comparáveis.
+ */
+export const MODELO_EMBEDDING = "gemini-embedding-2";
+
+/** Dimensão dos vetores pedida ao modelo de embeddings. */
+export const DIMENSAO_EMBEDDING = 768;
+
+/** Tempo máximo de espera por um embedding. */
+export const TIMEOUT_EMBEDDING_MS = 20_000;
+
 /** Nome da variável de ambiente que guarda a chave do Gemini. */
 export const VARIAVEL_CHAVE_GEMINI = "GEMINI_API_KEY";
 

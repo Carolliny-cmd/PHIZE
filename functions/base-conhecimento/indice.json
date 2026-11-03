@@ -1,0 +1,6 @@
+{
+  "versaoSchema": 1,
+  "modeloEmbedding": "gemini-embedding-2",
+  "dimensao": 768,
+  "fichas": []
+}

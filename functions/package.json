@@ -9,8 +9,9 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "test": "tsc && node --test lib/test/safeBrowsing.test.js lib/test/analiseTexto.test.js",
-    "serve": "npm run build && firebase emulators:start --only functions"
+    "test": "tsc && node --test lib/test/safeBrowsing.test.js lib/test/analiseTexto.test.js lib/test/baseConhecimento.test.js",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "indexar-base": "tsc && node lib/scripts/indexarBase.js"
   },
   "dependencies": {
     "firebase-admin": "^14.5.0",

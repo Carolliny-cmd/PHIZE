@@ -1,0 +1,24 @@
+{
+  "id": "nome-do-arquivo-sem-extensao",
+  "modalidade": "<nome do golpe, como as fontes o chamam>",
+  "categoria": "<uma categoria de docs/categorias-ameaca.md, exceto sem_indicios>",
+  "canais": ["<canal em que o golpe chega, ex.: WhatsApp>"],
+  "gatilhosLinguisticos": [
+    "<frase ou expressão típica que o golpista usa>",
+    "<outra frase típica>"
+  ],
+  "padraoSolicitacaoFinanceira": "<o que o golpista pede: Pix, boleto, dados do cartão, código de verificação; ou 'não há pedido financeiro direto'>",
+  "orientacaoPreventiva": "<o que a pessoa deve fazer, segundo as fontes>",
+  "fontes": [
+    {
+      "titulo": "<título da cartilha, alerta ou matéria>",
+      "publicador": "<Febraban, Banco Central, Procon, banco, veículo de imprensa>",
+      "url": "https://<endereço, se houver>",
+      "consultadoEm": "AAAA-MM-DD"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "<membro da equipe que revisou a ficha>",
+    "revisadoEm": "AAAA-MM-DD"
+  }
+}

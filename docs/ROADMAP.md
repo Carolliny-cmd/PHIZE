@@ -8,9 +8,9 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Fase 6.3 — pipeline do UC04 conectado à interface e validado no emulador Android com os quatro prints fictícios (435 testes no app, 20 na Function)
+- **Última tarefa concluída:** Fase 7.1 — schema das fichas, validação e script de indexação da base de conhecimento (45 testes na Function); antes, Fase 6.3 validada no emulador Android
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
-- **Próximo passo:** Fase 7
+- **Próximo passo:** catalogação das primeiras modalidades pela equipe (`functions/base-conhecimento/README.md`); com algumas fichas indexadas, Prompt 7.2
 
 ---
 
@@ -210,6 +210,9 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | Validação da troca do OCR para reconhecimento embarcado (ML Kit), decisão de 2026-10-07 | Não bloqueante | RNF06 |
 | Validação das categorias de ameaça v1.0 (docs/categorias-ameaca.md) | Não bloqueante | RNF07 / UC04 |
 | Validação do limite de texto v1.1 (docs/limite-texto-ocr.md) | Não bloqueante | RF04 / UC04 |
+| **Catalogar as modalidades iniciais da base de conhecimento** — trabalho manual da equipe (RDEV04), uma ficha por modalidade | Prompt 7.2 (validação com fichas reais) | RNF05 / RDEV04 |
+| Limiar de similaridade para "correspondência com padrão catalogado" — deve ficar em documento de calibração, não no código | Prompt 7.2 | RF07 / RNF05 |
+| Índice da base dentro da Function: a atualização da base passa a exigir nova publicação das Functions, não nova versão do app (arquitetura, seção 3.2 b, fala em nova versão do aplicativo) | Revisão do documento | Arquitetura 3.2 b |
 
 > Padrão adotado: **não bloquear**, seguindo o UC01.
 
@@ -716,6 +719,12 @@ conforme a seção 3.2(a) da arquitetura, mais um script que lê os
 arquivos catalogados manualmente, gera embeddings e persiste o
 índice vetorial em arquivo local versionado no repositório.
 ```
+
+> **CONCLUÍDO (2026-11-03):** fichas em `functions/base-conhecimento/fichas/`, uma por modalidade, com os campos da seção 3.2 (a) da arquitetura, a categoria de `docs/categorias-ameaca.md` e, obrigatoriamente, fontes e curadoria (quem revisou e quando). `npm run indexar-base` valida as fichas, gera embeddings com o `gemini-embedding-2` (768 dimensões, `functions/src/config.ts`) só para as fichas novas ou alteradas e grava `indice.json`; `--verificar` confere sem chamar a API, e o `npm test` reprova ficha inválida ou índice desatualizado. Instruções de catalogação em `functions/base-conhecimento/README.md`. A base versionada está vazia: o conteúdo é catalogado pela equipe (RDEV04).
+>
+> **ÍNDICE NA FUNCTION:** o índice fica em `functions/` porque a consulta precisa do embedding do texto mascarado, gerado com a chave do Gemini, que só existe na camada intermediária. Consequência: atualizar a base exige publicar as Functions de novo, e não lançar nova versão do app como diz a arquitetura (seção 3.2 b). O índice continua em arquivo local versionado no repositório, como a arquitetura prevê. Pendente de revisão do documento pela equipe.
+>
+> **SONDAGEM PARA O 7.2:** com duas fichas de teste fora do repositório, o texto fictício de cada print ficou mais próximo da ficha da sua modalidade, e a conversa comum ficou abaixo das duas. A distância entre "relacionado" e "sem relação" foi pequena, então o limiar de similaridade precisa ser calibrado com fichas reais e registrado em documento de calibração.
 
 ### Prompt 7.2 — Recuperação e prompt do LLM
 
