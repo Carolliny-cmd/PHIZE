@@ -11,17 +11,24 @@
   "gatilhosLinguisticos": [
     "aqui é do INSS, temos um empréstimo consignado liberado para você",
     "condição especial para aposentados e pensionistas",
+    "você tem um valor alto a receber da sua aposentadoria",
+    "é só dizer que aceita para liberar",
     "confirme seus dados bancários para liberar o crédito",
-    "vamos mandar um portador na sua casa",
-    "clique no link para fazer a contratação"
+    "para cancelar, faça o estorno nesta outra conta"
   ],
-  "padraoSolicitacaoFinanceira": "Senhas, dados bancários e documentos, usados para contratar empréstimo em nome da vítima.",
+  "padraoSolicitacaoFinanceira": "Concordância verbal, foto e dados usados para contratar consignado em nome da vítima; quando ela tenta cancelar, pedem o \"estorno\" para conta de terceiro.",
   "orientacaoPreventiva": "O INSS não oferece empréstimo por ligação, mensagem ou e-mail e não manda ninguém à sua casa. Não passe senha nem dados bancários. É possível bloquear a contratação de consignado pelo Meu INSS ou pela Central 135.",
   "fontes": [
     {
       "titulo": "INSS alerta para golpes com consignado",
       "publicador": "INSS",
       "url": "https://www.gov.br/inss/pt-br/noticias/inss-alerta-para-golpes-com-consignado",
+      "consultadoEm": "2026-11-03"
+    },
+    {
+      "titulo": "Procon Goiás alerta aposentados e pensionistas do INSS para golpe do empréstimo consignado",
+      "publicador": "Procon Goiás",
+      "url": "https://goias.gov.br/procon/procon-goias-alerta-aposentados-e-pensionistas-do-inss-para-golpe-do-emprestimo-consignado/",
       "consultadoEm": "2026-11-03"
     }
   ],
