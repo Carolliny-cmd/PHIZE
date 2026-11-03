@@ -42,6 +42,7 @@ const _explicacao =
 Map<String, dynamic> _concluida({
   List<String> sinais = const ['pedido_financeiro', 'alegacao_troca_contato'],
   String categoria = 'falso_contato',
+  bool? baseConsultada,
 }) => {
   'status': 'concluida',
   'analise': {
@@ -49,6 +50,7 @@ Map<String, dynamic> _concluida({
     'categoria': categoria,
     'explicacao': _explicacao,
   },
+  'baseConsultada': ?baseConsultada,
 };
 
 /// Resposta fora do contrato: `sinais` não é lista.
@@ -245,7 +247,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.textContaining(AnalisadorPrint.motivoSemBaseConhecimento),
+      find.textContaining(AnalisadorPrint.motivoBaseNaoConsultada),
       findsOneWidget,
     );
   });
@@ -269,6 +271,68 @@ void main() {
     expect(
       find.byKey(const Key('resultado_verificacao_incompleta')),
       findsOneWidget,
+    );
+  });
+
+  testWidgets('com a base consultada: a correspondência com golpe '
+      'catalogado aparece entre os sinais, sem aviso de verificação '
+      'incompleta', (tester) async {
+    await _analisar(
+      tester,
+      cliente: _ClienteFalso(
+        respostas: [
+          _concluida(
+            sinais: const [
+              'correspondencia_padrao_catalogado',
+              'pedido_financeiro',
+            ],
+            baseConsultada: true,
+          ),
+        ],
+      ),
+    );
+
+    final esperado = CalculadoraScore.calcular(
+      SinaisIdentificados(
+        textoPrint: {
+          SinalTextoPrint.correspondenciaPadraoCatalogado,
+          SinalTextoPrint.pedidoFinanceiro,
+        },
+      ),
+    );
+    _verificarResultadoPrint();
+    expect(
+      find.text('Score de Risco: ${esperado.pontuacao}/100'),
+      findsOneWidget,
+    );
+    expect(find.text('Semelhança com golpe já catalogado'), findsOneWidget);
+    expect(
+      find.byKey(const Key('resultado_verificacao_incompleta')),
+      findsNothing,
+    );
+  });
+
+  testWidgets('com a base consultada e nenhum sinal: o rótulo da faixa '
+      'verde aparece, sem aviso de verificação incompleta', (tester) async {
+    await _analisar(
+      tester,
+      cliente: _ClienteFalso(
+        respostas: [
+          _concluida(
+            sinais: const [],
+            categoria: 'sem_indicios',
+            baseConsultada: true,
+          ),
+        ],
+      ),
+    );
+
+    _verificarResultadoPrint();
+    expect(find.text('Score de Risco: 0/100'), findsOneWidget);
+    expect(find.text(RotulosRisco.baixoRisco), findsOneWidget);
+    expect(
+      find.byKey(const Key('resultado_verificacao_incompleta')),
+      findsNothing,
     );
   });
 
@@ -702,9 +766,7 @@ void main() {
           'identidade, e o caminho de nova tentativa continua', (tester) async {
         final (auth, chamadas) = await abrirComToken(
           tester,
-          FirebaseAuthException(
-            code: FirebaseAuthCodigos.falhaRede,
-          ),
+          FirebaseAuthException(code: FirebaseAuthCodigos.falhaRede),
         );
 
         _verificarInterrupcao(MotivoInterrupcaoPrint.indisponivel);

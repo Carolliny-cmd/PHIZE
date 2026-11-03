@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Fase 7.1 — schema das fichas, validação e script de indexação da base de conhecimento (45 testes na Function); antes, Fase 6.3 validada no emulador Android
+- **Última tarefa concluída:** Fase 7.2 — recuperação na base e prompt com RAG conectados à análise de print (61 testes na Function, 443 no app); validada com a API real, ainda não no emulador Android
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** Prompt 7.2, em paralelo com a revisão do segundo lote; a base continua crescendo depois do 7.2
+- **Próximo passo:** validar a análise de print com RAG no emulador Android, com os quatro prints fictícios; em seguida, Fase 8. A base continua crescendo em paralelo
 
 ---
 
@@ -212,7 +212,9 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | Validação das categorias de ameaça v1.0 (docs/categorias-ameaca.md) | Não bloqueante | RNF07 / UC04 |
 | Validação do limite de texto v1.1 (docs/limite-texto-ocr.md) | Não bloqueante | RF04 / UC04 |
 | **Catalogar as modalidades iniciais da base de conhecimento** — trabalho manual da equipe (RDEV04), uma ficha por modalidade | Prompt 7.2 (validação com fichas reais) | RNF05 / RDEV04 |
-| Limiar de similaridade para "correspondência com padrão catalogado" — deve ficar em documento de calibração, não no código | Prompt 7.2 | RF07 / RNF05 |
+| ~~Limiar de similaridade para "correspondência com padrão catalogado"~~ — **proposto: v1.0, ver docs/calibracao-recuperacao.md** | ~~Prompt 7.2~~ Resolvida | RF07 / RNF05 |
+| Validação da calibração da recuperação v1.0 (docs/calibracao-recuperacao.md) | Não bloqueante | RF07 / RNF05 |
+| RAG na análise de link (UC03, passo 6 do fluxo principal) — o Prompt 7.2 conectou a base só à análise de print | Revisão do escopo | UC03 / RNF05 |
 | Índice da base dentro da Function: a atualização da base passa a exigir nova publicação das Functions, não nova versão do app (arquitetura, seção 3.2 b, fala em nova versão do aplicativo) | Revisão do documento | Arquitetura 3.2 b |
 
 > Padrão adotado: **não bloquear**, seguindo o UC01.
@@ -751,6 +753,12 @@ O modelo NÃO retorna score numérico.
 Valide o JSON; resposta fora do formato é descartada
 sem exibição parcial ao usuário.
 ```
+
+> **CONCLUÍDO (2026-11-03):** a Function `analiseTexto` gera o embedding do texto mascarado, recupera as fichas mais parecidas (`functions/src/recuperacao.ts`; quantidade e limiar em `docs/calibracao-recuperacao.md`) e as envia ao Gemini junto com a mensagem. O modelo só emite `correspondencia_padrao_catalogado` apontando em `padraoCorrespondente` uma das fichas enviadas; sinal sem padrão, padrão sem sinal ou padrão não enviado descartam a resposta inteira. A resposta informa `baseConsultada`; no app, só `true` remove o aviso de verificação incompleta, e correspondência sem base consultada é descartada. Se o índice faltar ou o embedding da consulta falhar, a análise segue sem a base e a faixa verde fica impedida (degradação controlada). Timeout do app passou a 35 s, acima da soma dos timeouts da Function. `npm run avaliar-recuperacao` mede a recuperação com as mensagens fictícias de `functions/base-conhecimento/avaliacao/`.
+>
+> **VALIDAÇÃO COM A API (2026-11-03):** pelo mesmo caminho da Function, sem o app: os prints fictícios de golpe e quatro golpes da avaliação apontaram a ficha certa, com explicação que cita a modalidade e a orientação da ficha; três mensagens legítimas que recebem fichas próximas (racha de conta, aviso de compra no cartão, boleto de condomínio) não tiveram correspondência; os prints comuns não passaram do limiar. Duas explicações vieram sem parte dos acentos, apesar da instrução: limitação do `gemini-3.5-flash-lite`, a observar na troca de modelo ou no faturamento.
+>
+> **VALIDAÇÃO PENDENTE:** a análise com RAG ainda não foi exercitada no emulador Android.
 
 ---
 

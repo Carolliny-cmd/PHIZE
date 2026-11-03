@@ -13,6 +13,7 @@ import 'resposta_modelo.dart';
 import 'resultado_analise_print.dart';
 import 'seletor_imagem.dart';
 import 'sinais_identificados.dart';
+import 'sinal_texto_print.dart';
 import 'texto_em_memoria.dart';
 
 /// Orquestra a análise de print do UC04 (Prompt 6.2), nesta ordem exata:
@@ -24,7 +25,9 @@ import 'texto_em_memoria.dart';
 /// 5. mascaramento local (`mascararTextoLocal`, RNF07 etapa 1);
 /// 6. segunda verificação de volume mínimo, sobre o texto mascarado e
 ///    contando apenas o que fica fora dos marcadores;
-/// 7. envio do texto mascarado ao LLM via Function ([AnaliseTextoClient]);
+/// 7. envio do texto mascarado à Function ([AnaliseTextoClient]), que o
+///    compara com a base de conhecimento e o submete ao LLM junto com os
+///    padrões recuperados (RAG, Prompt 7.2);
 /// 8. identificação dos sinais, validada por [RespostaModelo];
 /// 9. score pelo motor determinístico ([CalculadoraScore], RF07);
 /// 10. descarte do texto (RNF07 etapa 3), em `finally`.
@@ -34,11 +37,11 @@ import 'texto_em_memoria.dart';
 /// - nenhum texto é transmitido antes do mascaramento e das duas
 ///   verificações de volume mínimo; falha em qualquer delas encerra o
 ///   fluxo sem transmissão;
-/// - sem RAG nesta etapa (docs/ROADMAP.md, decisão de 2026-10-07): o
-///   modelo julga apenas o texto recebido, e a análise é tratada como
-///   verificação incompleta — a faixa verde fica impedida e o usuário é
-///   informado de que a comparação com padrões catalogados não foi feita
-///   (docs/score-calibracao.md, regra de verificação incompleta);
+/// - se a Function não confirmar que a base de conhecimento foi consultada
+///   (`baseConsultada`), a análise é verificação incompleta — a faixa
+///   verde fica impedida e o usuário é informado de que a comparação com
+///   padrões catalogados não foi concluída (docs/score-calibracao.md,
+///   regra de verificação incompleta; degradação controlada);
 /// - o modelo não calcula score; um score enviado por ele é ignorado;
 /// - nada é persistido aqui, e nada do conteúdo vai para log ou para a
 ///   mensagem de interrupção;
@@ -62,20 +65,17 @@ class AnalisadorPrint {
   final DateTime Function() _agora;
   final void Function(TextoEmMemoria texto)? _aoCriarTexto;
 
-  /// Tempo máximo de espera pela Function, por tentativa. Maior que o
-  /// timeout da Function para o Gemini, para que ela responda "não
-  /// concluída" antes de o app desistir.
-  static const Duration timeoutAnalise = Duration(seconds: 30);
+  /// Tempo máximo de espera pela Function, por tentativa. Maior que a soma
+  /// dos timeouts da Function (embedding da consulta e Gemini), para que
+  /// ela responda "não concluída" antes de o app desistir.
+  static const Duration timeoutAnalise = Duration(seconds: 35);
 
-  /// `false` enquanto a base de conhecimento (RAG, Fase 7) não existir.
-  /// Nessa condição, toda análise de print é verificação incompleta.
-  static const bool baseConhecimentoDisponivel = false;
-
-  /// Informado ao usuário enquanto [baseConhecimentoDisponivel] for `false`.
-  static const String motivoSemBaseConhecimento =
-      'A comparação com padrões de golpe já catalogados não foi realizada: '
-      'a base de conhecimento do Phize ainda não está disponível. Sem essa '
-      'comparação, nenhum resultado é exibido na faixa verde.';
+  /// Informado ao usuário quando a Function não confirma a consulta à base
+  /// de conhecimento.
+  static const String motivoBaseNaoConsultada =
+      'A comparação com padrões de golpe já catalogados não pôde ser '
+      'concluída. Sem essa comparação, nenhum resultado é exibido na faixa '
+      'verde.';
 
   /// Intervalos progressivos entre novas tentativas quando o provedor
   /// recusa por limite de uso (UC04). Esgotados, o usuário é orientado a
@@ -179,21 +179,22 @@ class AnalisadorPrint {
 
       return switch (envio) {
         _EnvioFalhou(:final motivo) => AnalisePrintInterrompida(motivo),
-        _EnvioConcluido(:final resposta) => AnalisePrintConcluida(
-          score: CalculadoraScore.calcular(
-            SinaisIdentificados(
-              textoPrint: resposta.sinais,
-              verificacaoIncompleta: !baseConhecimentoDisponivel,
+        _EnvioConcluido(:final resposta, :final baseConsultada) =>
+          AnalisePrintConcluida(
+            score: CalculadoraScore.calcular(
+              SinaisIdentificados(
+                textoPrint: resposta.sinais,
+                verificacaoIncompleta: !baseConsultada,
+              ),
             ),
+            sinais: resposta.sinais,
+            categoria: resposta.categoria,
+            explicacao: resposta.explicacao,
+            data: _agora(),
+            verificacoesNaoConcluidas: [
+              if (!baseConsultada) motivoBaseNaoConsultada,
+            ],
           ),
-          sinais: resposta.sinais,
-          categoria: resposta.categoria,
-          explicacao: resposta.explicacao,
-          data: _agora(),
-          verificacoesNaoConcluidas: const [
-            if (!baseConhecimentoDisponivel) motivoSemBaseConhecimento,
-          ],
-        ),
       };
     } catch (_) {
       // Rede de segurança: nenhuma falha não prevista escapa para quem
@@ -248,13 +249,24 @@ class AnalisadorPrint {
   /// Contrato da Function `analiseTexto` (functions/src/index.ts). Qualquer
   /// formato fora do contrato é descartado inteiro — nunca tratado como
   /// "sem sinais", o que levaria à faixa verde.
+  ///
+  /// Só `baseConsultada: true` conta como base consultada; ausente ou de
+  /// outro tipo, a análise é verificação incompleta. Correspondência com
+  /// padrão catalogado sem base consultada é contradição e invalida a
+  /// resposta.
   static _ResultadoEnvio _interpretar(Map<String, dynamic> resposta) {
     switch (resposta['status']) {
       case 'concluida':
         final analise = RespostaModelo.deJson(resposta['analise']);
-        return analise == null
-            ? const _EnvioFalhou(MotivoInterrupcaoPrint.respostaInvalida)
-            : _EnvioConcluido(analise);
+        final baseConsultada = resposta['baseConsultada'] == true;
+        if (analise == null ||
+            (!baseConsultada &&
+                analise.sinais.contains(
+                  SinalTextoPrint.correspondenciaPadraoCatalogado,
+                ))) {
+          return const _EnvioFalhou(MotivoInterrupcaoPrint.respostaInvalida);
+        }
+        return _EnvioConcluido(analise, baseConsultada: baseConsultada);
       case 'nao_concluida':
         return _EnvioFalhou(switch (resposta['motivo']) {
           'limite_provedor' => MotivoInterrupcaoPrint.limiteProvedor,
@@ -280,9 +292,10 @@ sealed class _ResultadoEnvio {
 }
 
 final class _EnvioConcluido extends _ResultadoEnvio {
-  const _EnvioConcluido(this.resposta);
+  const _EnvioConcluido(this.resposta, {required this.baseConsultada});
 
   final RespostaModelo resposta;
+  final bool baseConsultada;
 }
 
 final class _EnvioFalhou extends _ResultadoEnvio {

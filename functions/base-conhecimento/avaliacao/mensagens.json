@@ -1,0 +1,35 @@
+{
+  "descricao": "Mensagens inventadas para calibrar a recuperação (docs/calibracao-recuperacao.md). Nenhuma vem de conversa real. Dados pessoais aparecem já mascarados, como chegam à Function.",
+  "golpes": [
+    { "esperado": "whatsapp-pedido-de-codigo", "texto": "Ola, aqui e do suporte da Loja Bom Preco. Estamos atualizando seu cadastro. Chegou um codigo de 6 digitos por SMS no seu celular, me passa para eu confirmar." },
+    { "esperado": "falso-parente-numero-novo", "texto": "Oi mae, troquei de numero, salva esse. Meu celular caiu na agua. Preciso pagar um boleto urgente hoje, me faz um pix de 800 reais? Te devolvo amanha." },
+    { "esperado": "falsa-venda", "texto": "Liquidacao! iPhone 15 lacrado por 1.900 reais, ultimas unidades. Pagamento so no Pix, envio no mesmo dia." },
+    { "esperado": "falsa-central-falso-funcionario", "texto": "Ola. Este e o novo canal oficial de atendimento do Banco Vale Sereno. Identificamos uma movimentacao irregular na sua conta. Informe nome completo, CPF [CPF], data de nascimento e a senha do cartao." },
+    { "esperado": "phishing-link-falso", "texto": "BANCO: seu acesso sera bloqueado hoje. Atualize seus dados no link bit.ly/atualiza-cadastro para evitar o bloqueio." },
+    { "esperado": "falso-investimento", "texto": "Rendimento de 5% por semana garantido, sem risco. Meus clientes ja estao lucrando. Comece com 200 reais, so restam 3 vagas." },
+    { "esperado": "falso-boleto", "texto": "Prezado cliente, segue o boleto atualizado da sua mensalidade. O boleto anterior foi cancelado, favor pagar este ate hoje para evitar juros." },
+    { "esperado": "devolucao-de-emprestimo", "texto": "Ola, aqui e do setor de credito do banco. Caiu na sua conta um emprestimo de 3 mil contratado por engano. Para cancelar, devolva o valor por Pix nesta chave." },
+    { "esperado": "mao-fantasma", "texto": "Sua conta foi invadida e estamos vendo transacoes suspeitas. Para bloquear, instale agora o aplicativo de seguranca deste link e me passe o codigo que aparecer." },
+    { "esperado": "falso-motoboy", "texto": "Senhora, seu cartao foi clonado. Corte o cartao ao meio, nao corte o chip, e informe a senha. Um portador do banco vai buscar o cartao para pericia." },
+    { "esperado": "falso-leilao-de-veiculos", "texto": "Leilao Detran: Hilux 2021 com lance inicial de 35 mil. Parabens, seu lance venceu! Segue o boleto, pague hoje para receber o termo de arrematacao." },
+    { "esperado": "boleto-falso-ipva-licenciamento", "texto": "SEFAZ: seu IPVA 2026 vence hoje. Pague agora com 30% de desconto via Pix pelo link." },
+    { "esperado": "pix-enviado-por-engano", "texto": "Boa tarde, mandei um pix de 500 reais pra voce sem querer, errei o numero. Consegue me devolver nessa outra chave aqui? E urgente." },
+    { "esperado": "falso-consignado-inss", "texto": "Central INSS informa: o senhor tem um emprestimo consignado pre-aprovado de 12 mil. Para liberar, confirme agencia, conta e senha." },
+    { "esperado": "falsa-vaga-de-emprego", "texto": "Vaga de auxiliar administrativo home office, salario 4.800. Para garantir sua vaga e preciso pagar o curso de integracao de 89 reais." },
+    { "esperado": "falso-sequestro", "texto": "Estamos com a sua filha. Nao desliga e nao fala com ninguem, senao ela vai sofrer. Faz exatamente o que eu mandar." },
+    { "esperado": "golpe-do-amor", "texto": "Meu amor, voce e a pessoa mais especial que ja conheci. Estou preso na alfandega e preciso de 2 mil para liberar minha bagagem, te devolvo quando chegar." },
+    { "esperado": "falso-premio-sorteio", "texto": "Parabens! Seu CPF foi sorteado no programa Nota Premiada. Para receber o premio de 5 mil, pague a taxa de liberacao de 49,90." },
+    { "esperado": "taxa-falsa-encomenda-internacional", "texto": "Correios: sua encomenda internacional esta retida. Pague a taxa de importacao de 67,40 via Pix para evitar a devolucao ao remetente." },
+    { "esperado": "falsa-cobranca-divida-ativa", "texto": "PGFN: consta divida ativa em seu CPF. Quite hoje com 90% de desconto via Pix e evite protesto." }
+  ],
+  "semGolpe": [
+    { "nome": "aniversario", "texto": "Oi! Voce vai no aniversario da Bia no sabado? Vou levar bolo de cenoura. Eu levo os salgados. Comeca as quatro da tarde." },
+    { "nome": "excursao", "texto": "Ja fiz minha inscricao na excursao do grupo de caminhada. Coloquei meus dados na ficha: CPF [CPF] e celular [TELEFONE]. A saida e as sete da manha." },
+    { "nome": "trabalho", "texto": "Bom dia, a reuniao de amanha foi mudada para as 10h. Pode trazer o relatorio impresso? Obrigado." },
+    { "nome": "mercado", "texto": "Amor, passa no mercado e traz pao, leite e banana? Chego as sete." },
+    { "nome": "racha de conta", "texto": "Gente, a conta do churrasco deu 60 pra cada. Quem puder manda o pix pra mim ate sexta, minha chave e o email." },
+    { "nome": "aviso de compra no cartao", "texto": "Seu pagamento de 120 reais na Farmacia Central foi aprovado. Se nao reconhece, ligue para o numero no verso do seu cartao." },
+    { "nome": "boleto do condominio", "texto": "Boa tarde, moradores. O boleto do condominio de novembro ja esta disponivel no aplicativo da administradora, com vencimento dia 10." },
+    { "nome": "consulta medica", "texto": "Lembrete: sua consulta com a Dra. Paula esta marcada para quinta as 14h. Responda SIM para confirmar." }
+  ]
+}

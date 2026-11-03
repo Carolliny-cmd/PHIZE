@@ -50,8 +50,22 @@ export const MODELO_EMBEDDING = "gemini-embedding-2";
 /** Dimensão dos vetores pedida ao modelo de embeddings. */
 export const DIMENSAO_EMBEDDING = 768;
 
-/** Tempo máximo de espera por um embedding. */
+/** Tempo máximo de espera por um embedding na indexação (script). */
 export const TIMEOUT_EMBEDDING_MS = 20_000;
+
+/**
+ * Recuperação na base (Prompt 7.2). Fonte única destes valores e do
+ * registro das calibragens: docs/calibracao-recuperacao.md.
+ */
+export const QUANTIDADE_PADROES = 3;
+export const LIMIAR_SIMILARIDADE = 0.7;
+
+/**
+ * Tempo máximo de espera pelo embedding da consulta, dentro da análise.
+ * Curto: se o provedor demorar, a análise segue sem a base (degradação
+ * controlada) em vez de estourar o timeout do app.
+ */
+export const TIMEOUT_EMBEDDING_CONSULTA_MS = 4_000;
 
 /** Nome da variável de ambiente que guarda a chave do Gemini. */
 export const VARIAVEL_CHAVE_GEMINI = "GEMINI_API_KEY";

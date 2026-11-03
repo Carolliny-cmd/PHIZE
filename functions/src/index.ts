@@ -15,6 +15,8 @@
  * Não há endpoint de OCR: a extração de caracteres é embarcada no
  * dispositivo e a imagem nunca sai dele (RNF06; decisão de 2026-10-07).
  */
+import path from "node:path";
+
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import * as logger from "firebase-functions/logger";
@@ -22,12 +24,17 @@ import { onRequest } from "firebase-functions/v2/https";
 
 import { analisarTextoGemini, textoValido } from "./analiseTexto";
 import {
+  DIMENSAO_EMBEDDING,
   JANELA_LIMITE_MS,
+  LIMIAR_SIMILARIDADE,
   LIMITE_ANALISES_TEXTO_POR_USUARIO,
   LIMITE_REQUISICOES_POR_USUARIO,
+  MODELO_EMBEDDING,
   MODELO_GEMINI_PADRAO,
+  QUANTIDADE_PADROES,
   REGIAO,
   TAMANHO_MAXIMO_TEXTO,
+  TIMEOUT_EMBEDDING_CONSULTA_MS,
   TIMEOUT_LLM_MS,
   TIMEOUT_SAFE_BROWSING_MS,
   VARIAVEL_CHAVE_GEMINI,
@@ -35,6 +42,7 @@ import {
   VARIAVEL_MODELO_GEMINI,
 } from "./config";
 import { LimiteRequisicoes } from "./limiteRequisicoes";
+import { carregarIndice, consultarBase } from "./recuperacao";
 import { consultarSafeBrowsing, urlValida } from "./safeBrowsing";
 
 initializeApp();
@@ -47,6 +55,17 @@ const limite = new LimiteRequisicoes(
 const limiteAnaliseTexto = new LimiteRequisicoes(
   LIMITE_ANALISES_TEXTO_POR_USUARIO,
   JANELA_LIMITE_MS,
+);
+
+/**
+ * Índice da base de conhecimento, publicado junto com a Function
+ * (functions/base-conhecimento/README.md). Lido uma vez por instância;
+ * ausente ou de outro modelo, as análises seguem sem a base e o app é
+ * avisado por `baseConsultada: false`.
+ */
+const indiceBase = carregarIndice(
+  path.join(__dirname, "..", "..", "base-conhecimento", "indice.json"),
+  { modelo: MODELO_EMBEDDING, dimensao: DIMENSAO_EMBEDDING },
 );
 
 /**
@@ -134,8 +153,14 @@ export const reputacaoDominio = onRequest(
  * 8). POST com `Authorization: Bearer <ID token do Firebase Auth>` e corpo
  * `{ "texto": "..." }` — texto JÁ MASCARADO no dispositivo (RNF07, etapa 1).
  *
+ * Antes do modelo, o texto é comparado com a base de conhecimento
+ * (Prompt 7.2), e os padrões mais parecidos vão no prompt. Se a base não
+ * puder ser consultada, a análise segue sem ela (degradação controlada) e
+ * a resposta diz isso, para o app tratar como verificação incompleta.
+ *
  * Respostas:
- * - 200 `{ status: "concluida", analise: { sinais, categoria, explicacao } }`
+ * - 200 `{ status: "concluida", baseConsultada, analise: { sinais,
+ *   padraoCorrespondente, categoria, explicacao } }`
  * - 200 `{ status: "nao_concluida", motivo: "..." }` (inclui
  *   `limite_provedor` quando o Gemini recusa por cota)
  * - 400 texto ausente, vazio ou longo demais
@@ -183,23 +208,39 @@ export const analiseTexto = onRequest(
         return;
       }
 
-      const resultado = await analisarTextoGemini(
-        texto,
-        process.env[VARIAVEL_CHAVE_GEMINI],
-        {
-          modelo: process.env[VARIAVEL_MODELO_GEMINI] || MODELO_GEMINI_PADRAO,
-          timeoutMs: TIMEOUT_LLM_MS,
-        },
-      );
+      const chave = process.env[VARIAVEL_CHAVE_GEMINI];
+      const base = await consultarBase(texto, chave, {
+        indice: indiceBase,
+        quantidade: QUANTIDADE_PADROES,
+        limiar: LIMIAR_SIMILARIDADE,
+        timeoutMs: TIMEOUT_EMBEDDING_CONSULTA_MS,
+      });
+      if (base.status === "nao_consultada") {
+        // Só o motivo — nunca o texto.
+        logger.warn("Base de conhecimento não consultada", {
+          motivo: base.motivo,
+        });
+      }
+
+      const resultado = await analisarTextoGemini(texto, chave, {
+        modelo: process.env[VARIAVEL_MODELO_GEMINI] || MODELO_GEMINI_PADRAO,
+        timeoutMs: TIMEOUT_LLM_MS,
+        padroes: base.status === "consultada" ? base.padroes : [],
+      });
 
       if (resultado.status === "nao_concluida") {
         // Só o motivo — nunca o texto.
         logger.warn("Análise de texto não concluída", {
           motivo: resultado.motivo,
         });
+        res.status(200).json(resultado);
+        return;
       }
 
-      res.status(200).json(resultado);
+      res.status(200).json({
+        ...resultado,
+        baseConsultada: base.status === "consultada",
+      });
     } catch {
       // Rede de segurança: nenhuma falha derruba a Function nem expõe o
       // texto na resposta ou no log.

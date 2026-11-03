@@ -21,10 +21,13 @@ class RespostaModelo {
 
   static const int tamanhoMaximoExplicacao = 2000;
 
-  /// Códigos trocados com a Function. Sem RAG nesta etapa (decisão de
-  /// 2026-10-07), `correspondenciaPadraoCatalogado` não tem código: o
-  /// modelo não consulta base alguma e não pode emitir esse sinal.
+  /// Códigos trocados com a Function. A correspondência com padrão
+  /// catalogado só chega quando a base foi consultada; a Function confere
+  /// que o padrão apontado pelo modelo estava entre os recuperados, e o
+  /// `AnalisadorPrint` recusa o sinal sem `baseConsultada`.
   static const Map<String, SinalTextoPrint> codigosSinais = {
+    'correspondencia_padrao_catalogado':
+        SinalTextoPrint.correspondenciaPadraoCatalogado,
     'pedido_financeiro': SinalTextoPrint.pedidoFinanceiro,
     'solicitacao_dados_pessoais': SinalTextoPrint.solicitacaoDadosPessoais,
     'alegacao_troca_contato': SinalTextoPrint.alegacaoTrocaContato,

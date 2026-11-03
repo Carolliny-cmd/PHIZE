@@ -12,8 +12,11 @@ A curadoria é humana: nenhum conteúdo entra na base de forma automática. A IA
 | `modelo-ficha.json` | Modelo para copiar. Fica fora de `fichas/` e não é indexado. |
 | `rascunhos/<id>.json` | Fichas ainda não revisadas, com `curadoria` em branco. Não são indexadas. |
 | `indice.json` | Índice gerado pelo script. Não editar à mão. |
+| `avaliacao/mensagens.json` | Mensagens inventadas, rotuladas, para medir a recuperação (`npm run avaliar-recuperacao`; ver `docs/calibracao-recuperacao.md`). |
 
-O índice fica dentro de `functions/` porque a consulta (Prompt 7.2) precisa gerar o embedding do texto com a chave do Gemini, que só existe na camada intermediária. Ele é publicado junto com a Function.
+O índice fica dentro de `functions/` porque a consulta (Prompt 7.2) precisa gerar o embedding do texto com a chave do Gemini, que só existe na camada intermediária. Ele é publicado junto com a Function, que o lê ao iniciar: uma ficha nova só vale na análise depois que as Functions forem publicadas de novo (ou o emulador reiniciado).
+
+Na análise, a Function recupera as fichas mais parecidas com o texto mascarado e as envia ao modelo, que só pode apontar correspondência com uma delas. Quantidade e limiar: `docs/calibracao-recuperacao.md`. Depois de um lote novo de fichas, rode `npm run avaliar-recuperacao` e, se preciso, inclua em `avaliacao/mensagens.json` uma mensagem inventada para cada modalidade nova.
 
 ## Campos da ficha
 

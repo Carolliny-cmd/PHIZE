@@ -34,9 +34,16 @@ const _analiseValida = {
       'ser golpista. Ligue para o número antigo antes de pagar.',
 };
 
+/// Resposta concluída. Sem [baseConsultada], o campo fica ausente, como
+/// numa Function que não confirma a consulta à base.
 Map<String, dynamic> _concluida([
   Map<String, Object?> analise = _analiseValida,
-]) => {'status': 'concluida', 'analise': analise};
+  Object? baseConsultada,
+]) => {
+  'status': 'concluida',
+  'analise': analise,
+  'baseConsultada': ?baseConsultada,
+};
 
 Map<String, dynamic> _naoConcluida(String motivo) => {
   'status': 'nao_concluida',
@@ -363,7 +370,7 @@ void main() {
     }
   });
 
-  group('sem base de conhecimento: verificação incompleta', () {
+  group('base de conhecimento não consultada: verificação incompleta', () {
     const semSinais = {
       'sinais': <String>[],
       'categoria': 'sem_indicios',
@@ -398,10 +405,7 @@ void main() {
       expect(r.verificacoesNaoConcluidas, hasLength(1));
       expect(
         r.verificacoesNaoConcluidas.single,
-        allOf(
-          contains('comparação com padrões'),
-          contains('não foi realizada'),
-        ),
+        allOf(contains('comparação com padrões'), contains('não pôde ser')),
       );
       expect(r.verificacoesNaoConcluidas.single, isNot(contains('Seguro')));
     });
@@ -413,8 +417,85 @@ void main() {
 
       expect(r.score.verificacaoIncompleta, isTrue);
       expect(r.verificacoesNaoConcluidas, [
-        AnalisadorPrint.motivoSemBaseConhecimento,
+        AnalisadorPrint.motivoBaseNaoConsultada,
       ]);
+    });
+
+    for (final valor in <Object>[false, 'true', 1]) {
+      test('baseConsultada = ${valor.runtimeType}($valor) não conta como '
+          'consultada', () async {
+        final c = _Cenario(respostas: [_concluida(semSinais, valor)]);
+
+        final r = await c.analisarCaptura() as AnalisePrintConcluida;
+
+        expect(r.score.verificacaoIncompleta, isTrue);
+        expect(r.score.faixa, isNot(FaixaRisco.baixo));
+      });
+    }
+  });
+
+  group('base de conhecimento consultada (RAG)', () {
+    const semSinais = {
+      'sinais': <String>[],
+      'padraoCorrespondente': null,
+      'categoria': 'sem_indicios',
+      'explicacao':
+          'Não identificamos sinais típicos de golpe nesta '
+          'mensagem. Na dúvida, confirme por outro canal.',
+    };
+    const comCorrespondencia = {
+      'sinais': [
+        'correspondencia_padrao_catalogado',
+        'pedido_financeiro',
+        'alegacao_troca_contato',
+      ],
+      'padraoCorrespondente': 'falso-parente-numero-novo',
+      'categoria': 'falso_contato',
+      'explicacao':
+          'Esta mensagem segue o golpe do falso parente com número '
+          'novo. Ligue para o número antigo antes de pagar.',
+    };
+
+    test('sem sinais: a faixa verde volta a ser possível e não há aviso '
+        'de verificação incompleta', () async {
+      final c = _Cenario(respostas: [_concluida(semSinais, true)]);
+
+      final r = await c.analisarCaptura() as AnalisePrintConcluida;
+
+      expect(r.score.verificacaoIncompleta, isFalse);
+      expect(r.score.faixa, FaixaRisco.baixo);
+      expect(r.verificacoesNaoConcluidas, isEmpty);
+    });
+
+    test('a correspondência com padrão catalogado entra no score pelo '
+        'motor determinístico', () async {
+      final c = _Cenario(respostas: [_concluida(comCorrespondencia, true)]);
+
+      final r = await c.analisarCaptura() as AnalisePrintConcluida;
+
+      expect(
+        r.sinais,
+        contains(SinalTextoPrint.correspondenciaPadraoCatalogado),
+      );
+      expect(
+        r.score.pontuacao,
+        CalculadoraScore.calcular(SinaisIdentificados(textoPrint: r.sinais))
+            .pontuacao,
+      );
+      expect(r.verificacoesNaoConcluidas, isEmpty);
+    });
+
+    test('correspondência sem base consultada é contradição: resposta '
+        'descartada', () async {
+      final c = _Cenario(respostas: [_concluida(comCorrespondencia)]);
+
+      final r = await c.analisarCaptura();
+
+      expect(r, isA<AnalisePrintInterrompida>());
+      expect(
+        (r as AnalisePrintInterrompida).motivo,
+        MotivoInterrupcaoPrint.respostaInvalida,
+      );
     });
   });
 
@@ -428,7 +509,7 @@ void main() {
         ..._analiseValida,
         'sinais': ['x'],
       }),
-      'sinal da base sem RAG': _concluida({
+      'sinal da base sem base consultada': _concluida({
         ..._analiseValida,
         'sinais': ['correspondencia_padrao_catalogado'],
       }),
