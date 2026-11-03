@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Somente debug: libera HTTP sem TLS apenas para o emulador local do
+     Firebase (Auth 9099, Firestore 8085, Functions 5001), cujo tráfego não sai da máquina de
+     desenvolvimento. Qualquer outro destino continua exigindo TLS (RNF07).
+     Ver docs/emulador-local.md. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Máquina de desenvolvimento vista do emulador Android -->
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <!-- Dispositivo conectado com redirecionamento de porta (adb reverse) -->
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+</network-security-config>

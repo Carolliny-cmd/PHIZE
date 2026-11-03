@@ -46,5 +46,9 @@ export const VARIAVEL_CHAVE_GEMINI = "GEMINI_API_KEY";
 /** Variável de ambiente opcional com o modelo do Gemini a usar. */
 export const VARIAVEL_MODELO_GEMINI = "GEMINI_MODEL";
 
-/** Modelo usado quando VARIAVEL_MODELO_GEMINI não está definida. */
-export const MODELO_GEMINI_PADRAO = "gemini-2.5-flash";
+/**
+ * Modelo usado quando VARIAVEL_MODELO_GEMINI não está definida. O
+ * `gemini-2.5-flash` deixou de ser oferecido a chaves novas (404 em
+ * 2026-10-27); o substituto é o indicado pela própria mensagem de erro.
+ */
+export const MODELO_GEMINI_PADRAO = "gemini-3.8-flash";

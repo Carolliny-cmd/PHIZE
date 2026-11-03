@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'core/config/emulator_config.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/app_routes.dart';
 import 'core/theme/app_theme.dart';
@@ -15,6 +18,21 @@ Future<void> main() async {
   // e não deve atrasar a abertura do app.
   unawaited(LimpezaCopiasSeletor.executar());
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final emuladores = EmulatorConfig.emuladores;
+  final emuladorAuth = emuladores.auth;
+  if (emuladorAuth != null) {
+    await FirebaseAuth.instance.useAuthEmulator(
+      emuladorAuth.host,
+      emuladorAuth.porta,
+    );
+  }
+  final emuladorFirestore = emuladores.firestore;
+  if (emuladorFirestore != null) {
+    FirebaseFirestore.instance.useFirestoreEmulator(
+      emuladorFirestore.host,
+      emuladorFirestore.porta,
+    );
+  }
   runApp(const PhizeApp());
 }
 

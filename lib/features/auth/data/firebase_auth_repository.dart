@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../domain/auth_exception.dart';
 import '../domain/auth_repository.dart';
 import 'auth_error_mapper.dart';
+import 'inicializacao_perfil.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
   FirebaseAuthRepository({FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
@@ -21,11 +22,14 @@ class FirebaseAuthRepository implements AuthRepository {
         password: senha,
       );
       final uid = credencial.user!.uid;
-      await _firestore.collection('users').doc(uid).set({
-        'uid': uid,
-        'email': email,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+      await inicializarPerfilOuDesfazer(
+        gravarPerfil: () => _firestore.collection('users').doc(uid).set({
+          'uid': uid,
+          'email': email,
+          'createdAt': FieldValue.serverTimestamp(),
+        }),
+        desfazerConta: () => credencial.user!.delete(),
+      );
       try {
         await credencial.user!.sendEmailVerification();
       } catch (_) {

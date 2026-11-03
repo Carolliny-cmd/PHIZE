@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerador de Prints Fictícios</title>
+<style>
+  :root {
+    --fundo: #f5f7fa;
+    --cartao: #ffffff;
+    --borda: #d0d5dd;
+    --texto: #101828;
+    --texto-2: #475467;
+    --acao: #1d4ed8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px 16px 48px;
+    background: var(--fundo);
+    color: var(--texto);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  main { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 8px; }
+  .aviso {
+    background: #fff7e6;
+    border: 1px solid #f5c26b;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 16px 0 24px;
+  }
+  .grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .cenario {
+    background: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .cenario h2 { font-size: 1.05rem; margin: 0 0 4px; }
+  .cenario p { margin: 0 0 12px; color: var(--texto-2); font-size: 0.9rem; }
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  button {
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background: var(--acao);
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+  }
+  button:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Gerador de prints fictícios</h1>
+  <p>Conversas inventadas para a validação manual da trilha de análise de print (UC04). Veja o <code>README.md</code> desta pasta.</p>
+  <div class="aviso">
+    Todo o conteúdo é fictício: pessoas, instituições, CPF e telefone foram inventados. Não use prints de conversas reais nesta fase (RNF07).
+  </div>
+  <div class="grade" id="grade"></div>
+</main>
+
+<!-- Dados dos cenários. "eu" = mensagem enviada (à direita). -->
+<script id="dados" type="application/json">
+[
+  {
+    "id": "1-falso-parente",
+    "titulo": "1. Falso parente que alega troca de número",
+    "descricao": "Alegação de troca de contato, pedido financeiro e indução de urgência.",
+    "contato": "Contato novo",
+    "mensagens": [
+      { "de": "ele", "hora": "09:12", "texto": "Oi mãe, tudo bem? Troquei de número, esse aqui é o meu novo. Pode apagar o antigo e salvar este." },
+      { "de": "eu",  "hora": "09:15", "texto": "Oi filho! Salvei sim. Aconteceu alguma coisa com o outro celular?" },
+      { "de": "ele", "hora": "09:16", "texto": "Caiu na água e parou de funcionar. Mãe, preciso de um favor urgente: tenho um pagamento que vence hoje e o aplicativo do banco ainda não funciona no chip novo." },
+      { "de": "ele", "hora": "09:17", "texto": "Faz um Pix de R$ 1.850,00 pra mim agora? Amanhã cedo eu te devolvo tudo, prometo." },
+      { "de": "ele", "hora": "09:17", "texto": "Tem que ser nos próximos minutos, senão eu perco o prazo. Te mando a chave em seguida." }
+    ]
+  },
+  {
+    "id": "2-falsa-central",
+    "titulo": "2. Falsa central de segurança bancária",
+    "descricao": "Falso contato (novo canal oficial), solicitação de dados pessoais e ameaça.",
+    "contato": "Central de Segurança Vale Sereno",
+    "mensagens": [
+      { "de": "ele", "hora": "14:03", "texto": "Olá. Este é o novo canal oficial de atendimento do Banco Vale Sereno. O número antigo da central foi desativado; salve este contato para receber nossos avisos." },
+      { "de": "ele", "hora": "14:04", "texto": "Identificamos uma movimentação irregular na sua conta. Para confirmar que é você, informe seu nome completo, CPF, data de nascimento e a senha do cartão." },
+      { "de": "eu",  "hora": "14:10", "texto": "Que movimentação? Eu não reconheço nada." },
+      { "de": "ele", "hora": "14:11", "texto": "Sem a confirmação dos dados, sua conta será encerrada e seu nome será incluído nos cadastros de inadimplentes. A responsabilidade pelo prejuízo passará a ser sua." }
+    ]
+  },
+  {
+    "id": "3-conversa-comum",
+    "titulo": "3. Conversa cotidiana, sem sinais",
+    "descricao": "Nenhum sinal de fraude. Verifica zero sinais e o bloqueio da faixa verde sem base de conhecimento.",
+    "contato": "Carla",
+    "mensagens": [
+      { "de": "ele", "hora": "18:20", "texto": "Oi! Você vai no aniversário da Bia no sábado?" },
+      { "de": "eu",  "hora": "18:24", "texto": "Vou sim! Vou levar aquele bolo de cenoura com cobertura de chocolate." },
+      { "de": "ele", "hora": "18:25", "texto": "Ótimo, ela vai adorar. Eu levo os salgados e o suco." },
+      { "de": "eu",  "hora": "18:27", "texto": "Combinado. Que horas começa mesmo?" },
+      { "de": "ele", "hora": "18:28", "texto": "Às quatro da tarde, na casa da mãe dela. Depois a gente combina de voltar juntas." }
+    ]
+  },
+  {
+    "id": "4-dados-estruturados",
+    "titulo": "4. CPF e telefone visíveis no texto",
+    "descricao": "CPF no formato 000.000.000-00 e celular no formato (00) 00000-0000, ambos inventados. Valida o mascaramento no fluxo real.",
+    "contato": "Rafael",
+    "mensagens": [
+      { "de": "ele", "hora": "10:05", "texto": "Bom dia! Já fiz minha inscrição na excursão do grupo de caminhada para a serra." },
+      { "de": "ele", "hora": "10:06", "texto": "Coloquei meus dados na ficha: CPF 384.716.205-53 e celular (21) 99734-5180. Se a organização precisar falar comigo, pode passar esse número." },
+      { "de": "eu",  "hora": "10:12", "texto": "Boa! Eu faço a minha hoje à noite. A saída é às sete da manhã, né?" },
+      { "de": "ele", "hora": "10:13", "texto": "Isso, em frente à praça da igreja. Leva casaco que lá em cima faz frio." }
+    ]
+  }
+]
+</script>
+
+<script>
+  // Desenho em canvas a 1080 px de largura (resolução típica de print de
+  // celular). Cores de alto contraste e fonte grande, sem ícones nem emojis,
+  // para que o OCR leia só o texto da conversa.
+  const LARGURA = 1080;
+  const FONTE = 'Arial, Helvetica, sans-serif';
+  const COR = {
+    fundo: '#f5f7fa',
+    cabecalho: '#e9edf2',
+    divisor: '#d0d5dd',
+    avatar: '#475467',
+    texto: '#101828',
+    secundario: '#475467',
+    recebida: '#ffffff',
+    enviada: '#d6e8ff',
+  };
+  const TAM_TEXTO = 40;
+  const ALTURA_LINHA = 54;
+  const TAM_HORA = 28;
+  const PAD_X = 34;
+  const PAD_Y = 24;
+  const LARGURA_MAX_BALAO = 800;
+  const MARGEM = 40;
+  const ALTURA_CABECALHO = 150;
+
+  function quebrarLinhas(ctx, texto, larguraMax) {
+    const linhas = [];
+    let atual = '';
+    for (const palavra of texto.split(' ')) {
+      const tentativa = atual ? atual + ' ' + palavra : palavra;
+      if (ctx.measureText(tentativa).width <= larguraMax || !atual) {
+        atual = tentativa;
+      } else {
+        linhas.push(atual);
+        atual = palavra;
+      }
+    }
+    if (atual) linhas.push(atual);
+    return linhas;
+  }
+
+  function retanguloArredondado(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function iniciais(nome) {
+    return nome.split(' ').filter(Boolean).slice(0, 2)
+      .map((p) => p[0].toUpperCase()).join('');
+  }
+
+  function medirBaloes(ctx, mensagens) {
+    ctx.font = `${TAM_TEXTO}px ${FONTE}`;
+    return mensagens.map((m) => {
+      const linhas = quebrarLinhas(ctx, m.texto, LARGURA_MAX_BALAO - 2 * PAD_X);
+      const larguraTexto = Math.max(...linhas.map((l) => ctx.measureText(l).width));
+      ctx.font = `${TAM_HORA}px ${FONTE}`;
+      const larguraHora = ctx.measureText(m.hora).width;
+      ctx.font = `${TAM_TEXTO}px ${FONTE}`;
+      const largura = Math.max(larguraTexto, larguraHora) + 2 * PAD_X;
+      const altura = PAD_Y + linhas.length * ALTURA_LINHA + 8 + TAM_HORA + PAD_Y;
+      return { ...m, linhas, largura, altura };
+    });
+  }
+
+  function desenhar(canvas, cenario) {
+    const ctx = canvas.getContext('2d');
+    const baloes = medirBaloes(ctx, cenario.mensagens);
+    const ESPACO = 28;
+    const altura = ALTURA_CABECALHO + 110 +
+      baloes.reduce((s, b) => s + b.altura + ESPACO, 0) + MARGEM;
+    canvas.width = LARGURA;
+    canvas.height = altura;
+
+    ctx.fillStyle = COR.fundo;
+    ctx.fillRect(0, 0, LARGURA, altura);
+
+    // Cabeçalho: avatar com iniciais e nome do contato.
+    ctx.fillStyle = COR.cabecalho;
+    ctx.fillRect(0, 0, LARGURA, ALTURA_CABECALHO);
+    ctx.fillStyle = COR.divisor;
+    ctx.fillRect(0, ALTURA_CABECALHO - 2, LARGURA, 2);
+    ctx.fillStyle = COR.avatar;
+    ctx.beginPath();
+    ctx.arc(MARGEM + 46, ALTURA_CABECALHO / 2, 46, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `bold 36px ${FONTE}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(iniciais(cenario.contato), MARGEM + 46, ALTURA_CABECALHO / 2 + 2);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = COR.texto;
+    ctx.font = `bold 42px ${FONTE}`;
+    ctx.fillText(cenario.contato, MARGEM + 120, ALTURA_CABECALHO / 2);
+
+    // Marcador de data.
+    ctx.font = `${TAM_HORA}px ${FONTE}`;
+    const rotulo = 'Hoje';
+    const wRotulo = ctx.measureText(rotulo).width + 40;
+    const yRotulo = ALTURA_CABECALHO + 30;
+    ctx.fillStyle = COR.cabecalho;
+    retanguloArredondado(ctx, (LARGURA - wRotulo) / 2, yRotulo, wRotulo, 50, 25);
+    ctx.fill();
+    ctx.fillStyle = COR.secundario;
+    ctx.textAlign = 'center';
+    ctx.fillText(rotulo, LARGURA / 2, yRotulo + 26);
+
+    // Balões.
+    let y = ALTURA_CABECALHO + 110;
+    ctx.textBaseline = 'top';
+    for (const b of baloes) {
+      const enviada = b.de === 'eu';
+      const x = enviada ? LARGURA - MARGEM - b.largura : MARGEM;
+      ctx.fillStyle = enviada ? COR.enviada : COR.recebida;
+      retanguloArredondado(ctx, x, y, b.largura, b.altura, 26);
+      ctx.fill();
+      if (!enviada) {
+        ctx.strokeStyle = COR.divisor;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      ctx.fillStyle = COR.texto;
+      ctx.font = `${TAM_TEXTO}px ${FONTE}`;
+      ctx.textAlign = 'left';
+      b.linhas.forEach((linha, i) => {
+        ctx.fillText(linha, x + PAD_X, y + PAD_Y + i * ALTURA_LINHA + 4);
+      });
+      ctx.fillStyle = COR.secundario;
+      ctx.font = `${TAM_HORA}px ${FONTE}`;
+      ctx.textAlign = 'right';
+      ctx.fillText(b.hora, x + b.largura - PAD_X,
+        y + PAD_Y + b.linhas.length * ALTURA_LINHA + 8);
+      y += b.altura + ESPACO;
+    }
+  }
+
+  function baixar(canvas, nome) {
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `phize-print-${nome}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  const cenarios = JSON.parse(document.getElementById('dados').textContent);
+  const grade = document.getElementById('grade');
+  for (const cenario of cenarios) {
+    const secao = document.createElement('section');
+    secao.className = 'cenario';
+    const h2 = document.createElement('h2');
+    h2.textContent = cenario.titulo;
+    const p = document.createElement('p');
+    p.textContent = cenario.descricao;
+    const canvas = document.createElement('canvas');
+    canvas.setAttribute('role', 'img');
+    canvas.setAttribute('aria-label', `Print fictício: ${cenario.titulo}`);
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.textContent = 'Baixar PNG';
+    botao.addEventListener('click', () => baixar(canvas, cenario.id));
+    secao.append(h2, p, canvas, botao);
+    grade.appendChild(secao);
+    desenhar(canvas, cenario);
+  }
+</script>
+</body>
+</html>
