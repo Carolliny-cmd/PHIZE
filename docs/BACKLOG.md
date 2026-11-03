@@ -34,7 +34,7 @@ Tarefas técnicas derivadas dos Requisitos Funcionais (RF01–RF12) e Não Funci
 | T28 | Implementar consulta assíncrona de reputação de domínio (blacklists) | RF03 | MVP | T25 |
 | T29 | Implementar exibição individualizada dos sinais verificados em linguagem não técnica, com atribuição da fonte consultada | RF03 | MVP | T26, T27, T28 |
 | T30 | Integrar os sinais do URL Checker ao cálculo do Score de Risco | RF03, RF07 | MVP | T28, T21 |
-| T31 | Implementar persistência seletiva no histórico (apenas Score de Risco, categoria da ameaça, explicação pedagógica, tipo de entrada e data — sem o conteúdo analisado) | RNF01, RNF07 | MVP | T21, T14 |
+| T31 | Implementar persistência seletiva no histórico (apenas Score de Risco, faixa de risco, categoria da ameaça, explicação pedagógica, tipo de entrada e data — sem o conteúdo analisado) | RNF01, RNF07 | MVP | T21, T14 |
 | T32 | Implementar feedback visual de carregamento imediato com streaming progressivo, apresentando a primeira porção do resultado em até 5 segundos | RNF03 | MVP | T17 |
 | T33 | Implementar tela de consentimento informando a limitação do mascaramento local (nomes próprios e conteúdo livre não são mascarados no dispositivo) | RNF07 | MVP | T12 |
 | T34 | Implementar exportação dos dados vinculados à conta em formato legível | RF12 | MVP | T03 |

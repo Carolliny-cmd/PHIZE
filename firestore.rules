@@ -8,6 +8,41 @@ service cloud.firestore {
 
     match /users/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      // Histórico (UC06). Lista fechada de campos: o conteúdo analisado não
+      // tem onde ser gravado (RNF01, RNF07 etapa 4; arquitetura, 5.4). Um
+      // registro não muda depois de gravado.
+      match /analises/{analise} {
+        allow read, delete: if request.auth != null && request.auth.uid == uid;
+        allow create: if request.auth != null
+          && request.auth.uid == uid
+          && analiseValida(request.resource.data);
+      }
+    }
+
+    function analiseValida(dados) {
+      return dados.keys().hasOnly(
+            ['score', 'faixa', 'categoria', 'explicacao', 'tipoEntrada', 'data'])
+        && dados.keys().hasAll(
+            ['score', 'faixa', 'explicacao', 'tipoEntrada', 'data'])
+        && dados.score is int
+        && dados.score >= 0
+        && dados.score <= 100
+        && dados.faixa in ['baixo', 'medio', 'alto']
+        && dados.explicacao is string
+        && dados.explicacao.size() <= 2000
+        && dados.tipoEntrada in ['link', 'imagem']
+        && dados.data is timestamp
+        && (!('categoria' in dados) || dados.categoria in [
+              'falso_contato',
+              'falsa_central_ou_instituicao',
+              'cobranca_ou_boleto_falso',
+              'oferta_ou_premio_falso',
+              'ameaca_ou_extorsao',
+              'roubo_de_dados',
+              'outro_golpe',
+              'sem_indicios'
+            ]);
     }
   }
 }

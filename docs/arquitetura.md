@@ -126,7 +126,7 @@ A comunicação com as APIs externas ocorre sobre TLS. A transmissão de conteú
 
 ## **5.4 Persistência Seletiva no Histórico**
 
-O Cloud Firestore armazena, por análise, apenas: identificador do usuário, score de risco, categoria da ameaça, explicação pedagógica, tipo de entrada (link ou imagem) e data. O conteúdo analisado não é gravado. Em decorrência, o histórico informa ao usuário o que foi verificado e qual foi o veredito, sem reconstituir a conversa original — inclusive para a própria equipe de desenvolvimento, que não dispõe de meio técnico para acessar o teor das mensagens analisadas.
+O Cloud Firestore armazena, por análise, apenas: identificador do usuário, score de risco, faixa de risco, categoria da ameaça, explicação pedagógica, tipo de entrada (link ou imagem) e data. A faixa é gravada porque a regra de verificação incompleta pode exibir em amarelo uma pontuação que sozinha seria verde (RF07), de modo que ela não pode ser recalculada a partir do score. Análises de link não têm categoria de ameaça, e sua explicação é montada no aplicativo com os títulos fixos das verificações, sem o endereço analisado. O conteúdo analisado não é gravado. Em decorrência, o histórico informa ao usuário o que foi verificado e qual foi o veredito, sem reconstituir a conversa original — inclusive para a própria equipe de desenvolvimento, que não dispõe de meio técnico para acessar o teor das mensagens analisadas.
 
 ## **5.5 Proteção da Base Comunitária**
 

@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../auth/data/firebase_auth_repository.dart';
 import '../../../auth/domain/auth_repository.dart';
+import '../../data/historico_repository_firestore.dart';
 import '../../domain/analisador_print.dart';
+import '../../domain/analise_risco.dart';
 import '../../domain/captura_imagem.dart';
+import '../../domain/historico_repository.dart';
 import '../../domain/resultado_analise_print.dart';
+import '../registro_historico.dart';
 
 /// Tela "Analisar print" (UC04, passo 1): o usuário escolhe o print na
 /// galeria e o pipeline (`AnalisadorPrint`) é executado.
@@ -22,6 +26,7 @@ class AnalisarPrintPage extends StatefulWidget {
     required this.analisadorPrint,
     required this.captura,
     this.authRepository,
+    this.historicoRepository,
   });
 
   final AnalisadorPrint analisadorPrint;
@@ -30,6 +35,8 @@ class AnalisarPrintPage extends StatefulWidget {
   /// Usado só para encerrar a sessão quando a Function não a reconhece
   /// ([MotivoInterrupcaoPrint.naoAutenticado]).
   final AuthRepository? authRepository;
+
+  final HistoricoRepository? historicoRepository;
 
   @override
   State<AnalisarPrintPage> createState() => _AnalisarPrintPageState();
@@ -40,6 +47,8 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
   // inicializado.
   late final AuthRepository _authRepository =
       widget.authRepository ?? FirebaseAuthRepository();
+  late final HistoricoRepository _historico =
+      widget.historicoRepository ?? HistoricoRepositoryFirestore();
   bool _carregando = false;
   MotivoInterrupcaoPrint? _interrupcao;
 
@@ -84,6 +93,11 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
         });
       case AnalisePrintConcluida():
         setState(() => _carregando = false);
+        registrarNoHistorico(
+          mensageiro: ScaffoldMessenger.of(context),
+          repositorio: _historico,
+          analise: AnaliseRisco.doPrint(resultado),
+        );
         await Navigator.of(context)
             .pushNamed(AppRoutes.resultado, arguments: resultado);
     }

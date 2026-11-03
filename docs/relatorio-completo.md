@@ -324,7 +324,7 @@ O detalhamento integral dos requisitos, incluindo critérios de aceitação e ju
 
 **Prioridade: **Alta
 
-**Descrição: **O sistema deve tratar o dado do usuário sob o princípio de minimização, aplicando três garantias cumulativas: (a) as imagens submetidas são processadas exclusivamente em memória volátil e descartadas imediatamente após a extração textual, não sendo gravadas em disco local nem em servidor e não sendo transmitidas a terceiro algum, uma vez que a extração textual é executada no próprio dispositivo (RNF06); (b) o texto extraído sofre mascaramento local de dados pessoais estruturados antes de qualquer transmissão à nuvem; (c) nenhum conteúdo de conversa, em imagem ou em texto, é persistido no banco de dados, o histórico armazena apenas o resultado da análise (Score de Risco, categoria da ameaça, explicação pedagógica e data).
+**Descrição: **O sistema deve tratar o dado do usuário sob o princípio de minimização, aplicando três garantias cumulativas: (a) as imagens submetidas são processadas exclusivamente em memória volátil e descartadas imediatamente após a extração textual, não sendo gravadas em disco local nem em servidor e não sendo transmitidas a terceiro algum, uma vez que a extração textual é executada no próprio dispositivo (RNF06); (b) o texto extraído sofre mascaramento local de dados pessoais estruturados antes de qualquer transmissão à nuvem; (c) nenhum conteúdo de conversa, em imagem ou em texto, é persistido no banco de dados, o histórico armazena apenas o resultado da análise (Score de Risco, faixa de risco, categoria da ameaça, explicação pedagógica, tipo de entrada e data).
 
 **Justificativa: **Assegurar a confidencialidade das comunicações privadas do usuário e atender aos princípios de finalidade, necessidade e minimização previstos no Art. 6º da Lei nº 13.709/2018 (LGPD). A limitação do dado persistido reduz a superfície de exposição em caso de incidente e dispensa o tratamento de dado pessoal sensível em base própria.
 
@@ -418,7 +418,7 @@ O detalhamento integral dos requisitos, incluindo critérios de aceitação e ju
 
 - Descarte na origem: concluída a resposta, o texto é removido da memória da aplicação, não sendo escrito em cache, log ou arquivo temporário.
 
-- Persistência seletiva: grava-se no Cloud Firestore somente o resultado da análise, score numérico, categoria da ameaça, explicação pedagógica gerada e timestamp. O texto analisado não é gravado em nenhuma hipótese.
+- Persistência seletiva: grava-se no Cloud Firestore somente o resultado da análise, score numérico, faixa de risco, categoria da ameaça, explicação pedagógica gerada, tipo de entrada e timestamp. Análises de link não têm categoria de ameaça. O texto analisado não é gravado em nenhuma hipótese.
 
 **Justificativa: **A garantia de não persistência da imagem é insuficiente isoladamente, pois o texto extraído preserva o mesmo teor sensível da conversa original. A especificação explícita do ciclo completo do dado textual torna a política de privacidade verificável em auditoria e delimita com precisão o que o sistema efetivamente conhece sobre o usuário.
 

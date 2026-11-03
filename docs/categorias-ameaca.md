@@ -1,11 +1,12 @@
 # Categorias de Ameaça (UC04)
 
-Este documento é a **fonte** das categorias de ameaça atribuídas à análise de print. A categoria é escolhida pelo modelo de linguagem dentro desta lista fechada e gravada no histórico junto com score, explicação pedagógica, tipo de entrada e data (RNF07, etapa 4; arquitetura, seção 5.4).
+Este documento é a **fonte** das categorias de ameaça atribuídas à análise de print. A categoria é escolhida pelo modelo de linguagem dentro desta lista fechada e gravada no histórico junto com score, faixa, explicação pedagógica, tipo de entrada e data (RNF07, etapa 4; arquitetura, seção 5.4). A análise de link não tem categoria.
 
-O código espelha esta lista em dois pontos, que devem mudar junto com ela:
+O código espelha esta lista em três pontos, que devem mudar junto com ela:
 
 - `functions/src/analiseTexto.ts` (`CATEGORIAS_PERMITIDAS`), que restringe a resposta do modelo;
-- `lib/features/analise/domain/categoria_ameaca.dart` (`CategoriaAmeaca`), que valida a resposta no app.
+- `lib/features/analise/domain/categoria_ameaca.dart` (`CategoriaAmeaca`), que valida a resposta no app;
+- `firestore.rules` (`analiseValida`), que recusa categoria fora da lista na gravação do histórico.
 
 ## Versão 1.0 (2026-10-07)
 

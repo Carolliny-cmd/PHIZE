@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
+import '../../data/historico_repository_firestore.dart';
 import '../../domain/analisador_link.dart';
+import '../../domain/analise_risco.dart';
+import '../../domain/historico_repository.dart';
+import '../registro_historico.dart';
 
 /// Tela "Analisar Link" (UC03, passos 1 e 2): o usuário cola a URL e
 /// aciona a verificação. O endereço fica apenas em memória, no campo de
 /// texto, e é limpo assim que a análise termina — nunca é persistido
 /// (UC03, pós-condições).
 class AnalisarLinkPage extends StatefulWidget {
-  const AnalisarLinkPage({super.key, required this.analisadorLink});
+  const AnalisarLinkPage({
+    super.key,
+    required this.analisadorLink,
+    this.historicoRepository,
+  });
 
   final AnalisadorLink analisadorLink;
+  final HistoricoRepository? historicoRepository;
 
   @override
   State<AnalisarLinkPage> createState() => _AnalisarLinkPageState();
 }
 
 class _AnalisarLinkPageState extends State<AnalisarLinkPage> {
+  // Resolvido só quando usado: criar o repositório real exige o Firebase
+  // inicializado.
+  late final HistoricoRepository _historico =
+      widget.historicoRepository ?? HistoricoRepositoryFirestore();
   final _urlController = TextEditingController();
   bool _carregando = false;
   String? _erro;
@@ -49,6 +62,11 @@ class _AnalisarLinkPageState extends State<AnalisarLinkPage> {
 
     _urlController.clear();
     setState(() => _carregando = false);
+    registrarNoHistorico(
+      mensageiro: ScaffoldMessenger.of(context),
+      repositorio: _historico,
+      analise: AnaliseRisco.doLink(resultado, DateTime.now()),
+    );
     await Navigator.of(context).pushNamed(
       AppRoutes.resultado,
       arguments: resultado,

@@ -24,14 +24,14 @@ Estas regras derivam de RNF01 e RNF07 e **não podem ser flexibilizadas, contorn
 
 1. Imagens submetidas são processadas exclusivamente em memória volátil e descartadas imediatamente após a extração textual — nunca gravadas em disco local ou em servidor, e nunca transmitidas a terceiro algum (o OCR é executado no próprio dispositivo; o único terceiro que recebe conteúdo derivado da conversa é o provedor de LLM, e apenas o texto já mascarado).
 2. O texto extraído sofre mascaramento local de dados pessoais estruturados antes de qualquer transmissão à nuvem.
-3. Nenhum conteúdo de conversa (imagem ou texto) é persistido no banco de dados — o histórico armazena apenas o resultado da análise (Score de Risco, categoria da ameaça, explicação pedagógica e data).
+3. Nenhum conteúdo de conversa (imagem ou texto) é persistido no banco de dados — o histórico armazena apenas o resultado da análise (Score de Risco, faixa de risco, categoria da ameaça, explicação pedagógica, tipo de entrada e data).
 
 ### RNF07 — Quatro etapas obrigatórias do ciclo de vida do dado textual (nesta ordem)
 
 1. **Mascaramento local:** antes da transmissão, o dispositivo aplica regex sobre o texto extraído, substituindo por marcadores genéricos (ex.: `[TELEFONE]`) os dados estruturados: CPF, CNPJ, telefone, e-mail, chave Pix aleatória, número de cartão e código de barras de boleto.
 2. **Transmissão:** texto mascarado enviado ao provedor de LLM via TLS 1.2+, exclusivamente por APIs corporativas cujos termos vedem uso do conteúdo para treinamento de modelos.
 3. **Descarte na origem:** concluída a resposta, o texto é removido da memória da aplicação — nunca escrito em cache, log ou arquivo temporário.
-4. **Persistência seletiva:** grava-se no Cloud Firestore somente score numérico, categoria da ameaça, explicação pedagógica e timestamp. O texto analisado **não é gravado em nenhuma hipótese**.
+4. **Persistência seletiva:** grava-se no Cloud Firestore somente score numérico, faixa de risco, categoria da ameaça, explicação pedagógica, tipo de entrada e timestamp. Análises de link não têm categoria de ameaça. O texto analisado **não é gravado em nenhuma hipótese**.
 
 > Limitação declarada (RNF07): o mascaramento local cobre apenas dados de formato previsível. Nomes próprios e conteúdo livre não são mascarados no dispositivo — mitigado por provedores com retenção zero e não persistência do texto.
 

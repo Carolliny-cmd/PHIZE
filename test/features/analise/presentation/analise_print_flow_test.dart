@@ -29,6 +29,7 @@ import 'package:phize/features/analise/domain/verificacao_link.dart';
 import 'package:phize/features/analise/presentation/pages/resultado_analise_page.dart';
 
 import '../../../support/fake_auth_repository.dart';
+import '../../../support/fake_historico_repository.dart';
 
 /// Texto de golpe que passa nas duas verificações de volume mínimo.
 const _textoGolpe =
@@ -140,6 +141,7 @@ Future<void> _abrir(
   required SeletorImagem seletor,
   ReconhecedorTexto? reconhecedor,
   AnaliseTextoClient? cliente,
+  FakeHistoricoRepository? historico,
   String rotaInicial = AppRoutes.analisarPrint,
 }) async {
   await tester.pumpWidget(
@@ -149,6 +151,7 @@ Future<void> _abrir(
         seletorImagem: seletor,
         reconhecedorTexto: reconhecedor ?? _ReconhecedorFalso(),
         analiseTextoClient: cliente ?? _ClienteFalso(),
+        historicoRepository: historico ?? FakeHistoricoRepository(),
       ),
       initialRoute: rotaInicial,
     ),
@@ -334,6 +337,40 @@ void main() {
       find.byKey(const Key('resultado_verificacao_incompleta')),
       findsNothing,
     );
+  });
+
+  testWidgets('análise concluída é gravada no histórico', (
+    tester,
+  ) async {
+    final historico = FakeHistoricoRepository();
+    await _abrir(
+      tester,
+      seletor: _SeletorFalso(arquivo: _ArquivoFalso()),
+      historico: historico,
+    );
+    await tester.tap(find.byKey(const Key('analisar_print_botao')));
+    await tester.pumpAndSettle();
+
+    final registro = historico.analises.single;
+    expect(registro.tipoEntrada, TipoEntrada.imagem);
+    expect(registro.categoria, isNotNull);
+    expect(registro.explicacao, isNot(contains(_textoGolpe)));
+  });
+
+  testWidgets('análise interrompida não é gravada no histórico', (tester) async {
+    final semRegistro = FakeHistoricoRepository();
+    await _abrir(
+      tester,
+      seletor: _SeletorFalso(arquivo: _ArquivoFalso()),
+      cliente: _ClienteFalso(
+        respostas: [const AnaliseTextoNaoAutenticadoException()],
+      ),
+      historico: semRegistro,
+    );
+    await tester.tap(find.byKey(const Key('analisar_print_botao')));
+    await tester.pumpAndSettle();
+
+    expect(semRegistro.analises, isEmpty);
   });
 
   testWidgets('feedback de carregamento aparece imediatamente após o '
@@ -685,6 +722,7 @@ void main() {
             analiseTextoClient: _ClienteFalso(
               respostas: [const AnaliseTextoNaoAutenticadoException()],
             ),
+            historicoRepository: FakeHistoricoRepository(),
           ),
           initialRoute: AppRoutes.analisarPrint,
         ),

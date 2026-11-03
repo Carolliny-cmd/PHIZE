@@ -22,6 +22,18 @@ enum CategoriaAmeaca {
   /// Valor trocado com a Function.
   final String codigo;
 
+  /// Nome exibido ao usuário (`docs/categorias-ameaca.md`, coluna "Nome").
+  String get nome => switch (this) {
+    falsoContato => 'Falso contato',
+    falsaCentralOuInstituicao => 'Falsa central ou instituição',
+    cobrancaOuBoletoFalso => 'Cobrança ou boleto falso',
+    ofertaOuPremioFalso => 'Oferta ou prêmio falso',
+    ameacaOuExtorsao => 'Ameaça ou extorsão',
+    rouboDeDados => 'Roubo de dados',
+    outroGolpe => 'Outro golpe',
+    semIndicios => 'Sem indícios',
+  };
+
   static CategoriaAmeaca? doCodigo(Object? codigo) {
     for (final categoria in values) {
       if (categoria.codigo == codigo) return categoria;

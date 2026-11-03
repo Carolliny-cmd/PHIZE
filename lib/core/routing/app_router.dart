@@ -7,10 +7,12 @@ import '../../features/analise/data/reputacao_dominio_client_http.dart';
 import '../../features/analise/data/seletor_imagem_galeria.dart';
 import '../../features/analise/domain/analisador_link.dart';
 import '../../features/analise/domain/analisador_print.dart';
+import '../../features/analise/domain/analise_risco.dart';
 import '../../features/analise/domain/analise_texto_client.dart';
 import '../../features/analise/domain/captura_imagem.dart';
 import '../../features/analise/domain/consulta_idade_dominio.dart';
 import '../../features/analise/domain/consulta_reputacao_dominio.dart';
+import '../../features/analise/domain/historico_repository.dart';
 import '../../features/analise/domain/rdap_client.dart';
 import '../../features/analise/domain/reconhecedor_texto.dart';
 import '../../features/analise/domain/reputacao_dominio_client.dart';
@@ -20,6 +22,7 @@ import '../../features/analise/domain/seletor_imagem.dart';
 import '../../features/analise/presentation/pages/analisar_link_page.dart';
 import '../../features/analise/presentation/pages/analisar_print_page.dart';
 import '../../features/analise/presentation/pages/dashboard_page.dart';
+import '../../features/analise/presentation/pages/detalhe_historico_page.dart';
 import '../../features/analise/presentation/pages/historico_page.dart';
 import '../../features/analise/presentation/pages/resultado_analise_page.dart';
 import '../../features/auth/domain/auth_repository.dart';
@@ -38,6 +41,7 @@ class AppRouter {
     SeletorImagem? seletorImagem,
     ReconhecedorTexto? reconhecedorTexto,
     AnaliseTextoClient? analiseTextoClient,
+    HistoricoRepository? historicoRepository,
   }) {
     switch (settings.name) {
       case AppRoutes.login:
@@ -51,7 +55,15 @@ class AppRouter {
       case AppRoutes.dashboard:
         return MaterialPageRoute(builder: (_) => const DashboardPage());
       case AppRoutes.historico:
-        return MaterialPageRoute(builder: (_) => const HistoricoPage());
+        return MaterialPageRoute(
+          builder: (_) =>
+              HistoricoPage(historicoRepository: historicoRepository),
+        );
+      case AppRoutes.detalheHistorico:
+        return MaterialPageRoute(
+          builder: (_) =>
+              DetalheHistoricoPage(analise: settings.arguments as AnaliseRisco),
+        );
       case AppRoutes.analisarLink:
         return MaterialPageRoute(
           builder: (_) => AnalisarLinkPage(
@@ -62,6 +74,7 @@ class AppRouter {
                     ReputacaoDominioClientHttp.comFirebaseAuth(),
               ),
             ),
+            historicoRepository: historicoRepository,
           ),
         );
       case AppRoutes.analisarPrint:
@@ -75,6 +88,7 @@ class AppRouter {
             ),
             captura: CapturaImagem(seletorImagem ?? SeletorImagemGaleria()),
             authRepository: authRepository,
+            historicoRepository: historicoRepository,
           ),
         );
       case AppRoutes.resultado:

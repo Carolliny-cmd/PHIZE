@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Fase 7.2 — recuperação na base e prompt com RAG conectados à análise de print (61 testes na Function, 443 no app); validada com a API real e no emulador Android
+- **Última tarefa concluída:** Prompt 8.1 — histórico real (UC06), com gravação das análises de link e print, regras do Firestore conferidas e telas de lista e detalhe (61 testes na Function, 459 no app); validado no emulador Android com análise de link
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** Fase 8; em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** Prompt 8.2 (UC12); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -223,15 +223,15 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 
 ## PENDÊNCIAS TÉCNICAS
 
-- `firestore.rules` não cobre subcoleções de `users/{uid}`; o histórico (Fases 4 e 8) exigirá regra nova.
+- ~~`firestore.rules` não cobre subcoleções de `users/{uid}`~~ — **resolvida no Prompt 8.1**; publicar as regras novas no console junto com o deploy.
 - Restringir os campos graváveis em `users/{uid}` aos três previstos (melhoria de segurança).
 - Adicionar ao roadmap os passos de publicação das regras pelo console e teste no Playground.
 - Sincronizar os .docx acadêmicos com as alterações de RF07, arquitetura 3.3 e 6, UC03 e relatório 4.8.
 - A rotina de mascaramento local pode lançar `StateError` (falha na restauração do isolamento de URL/domínio). O fluxo do UC04 (Fase 6) deve tratar essa exceção interrompendo a análise, sem expor o texto ao usuário nem a log.
 - O cálculo do domínio registrável reconhece apenas `com`/`gov`/`org`/`net`/`edu` sob `.br`. Sufixos como `app.br`, `adv.br` e `co.uk` fazem a consulta RDAP no próprio sufixo, e a idade do domínio nunca é avaliada para eles. Degrada com segurança (verificação não concluída, nunca verde nem data falsa), mas a mensagem ao usuário é imprecisa. Solução futura: lista completa de sufixos públicos.
 - Dois testes de widget anteriores perderam asserções de rótulo e aviso ao eliminar o caminho fictício da tela de Resultado; a cobertura passou para `test/features/analise/presentation/analise_link_flow_test.dart`.
-- A tela de Histórico exibe rótulos de faixa sem o aviso permanente; avaliar na Fase 8 (UC06).
-- Restam dados fictícios fora do fluxo de análise: lista do Histórico e saudação do Dashboard.
+- ~~A tela de Histórico exibe rótulos de faixa sem o aviso permanente~~ — **resolvida no Prompt 8.1**.
+- Resta dado fictício fora do fluxo de análise: saudação do Dashboard.
 - Migrar do emulador para a Function publicada antes de qualquer teste em Android real ou entrega que não rode na máquina de desenvolvimento.
 - Restringir no console as chaves públicas do Firebase às APIs do Firebase, impedindo que sejam usadas para chamar o Safe Browsing direto e contornar a Function.
 - O contador de rate limiting é mantido em memória e zera a cada reinício da Function; migrar para armazenamento compartilhado antes do deploy com mais de uma instância.
@@ -770,6 +770,20 @@ Implemente UC06 (histórico com persistência seletiva),
 UC12 (exportação e exclusão de dados — RF12) e
 UC11/RF10 (recebimento por compartilhamento nativo).
 ```
+
+### Prompt 8.1 — Histórico (UC06) (concluído no código)
+
+- **Onde:** cada análise concluída vira um documento em `users/{uid}/analises/{id}`. A tela de Histórico lê essa coleção, e tocar em um registro abre o detalhe.
+- **Campos:** score, faixa, categoria, explicação, tipo de entrada e data. `firestore.rules` só aceita esta lista, e um registro não pode ser alterado depois de gravado.
+- **Faixa gravada (decisão da equipe, 2026-11-03):** a regra de verificação incompleta pode exibir em amarelo uma pontuação que seria verde, então a faixa não pode ser recalculada do score. RNF01, RNF07, arquitetura 5.4 e CLAUDE.md foram atualizados.
+- **Link (decisão da equipe, 2026-11-03):** sem categoria, com explicação montada no app a partir dos títulos fixos das verificações, sem o endereço analisado e sem chamar a IA.
+- **Falha na gravação:** a tela de Resultado abre normalmente e o usuário recebe um aviso de que a análise não foi guardada (CLAUDE.md, Seção 8).
+- **Validação:** `flutter test`, `flutter analyze` e 18 conferências das regras no emulador do Firestore, com campo extra, outro usuário e usuário sem login recusados. No emulador Android, duas análises do mesmo link deram score 0: a primeira, com a reputação não concluída, voltou do histórico em amarelo, e a segunda em verde, na ordem mais recente primeiro. O documento gravado não trazia o endereço. A gravação de print pelo app coberta só por testes automáticos.
+
+> **Pontos para a equipe:**
+> - A explicação do print vem do modelo, instruído a não repetir dados pessoais; o código não verifica isso, e o texto é gravado. A limitação já existia na decisão de persistir a explicação (RNF07), mas agora passa a valer na prática.
+> - O campo `data` usa o relógio do aparelho.
+> - Na primeira chamada depois de ligar os emuladores, a reputação ficou como não concluída; a mesma consulta funcionou em seguida, o que sugere tempo limite na partida a frio da Function. A causa não foi confirmada. Vale medir isso na Function publicada.
 
 ---
 

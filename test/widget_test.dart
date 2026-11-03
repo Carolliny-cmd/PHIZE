@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:phize/core/routing/app_router.dart';
 import 'package:phize/core/routing/app_routes.dart';
-import 'package:phize/features/analise/domain/rotulos_risco.dart';
 import 'package:phize/features/auth/data/login_attempt_tracker.dart';
 import 'package:phize/features/auth/domain/auth_exception.dart';
 import 'package:phize/main.dart';
@@ -180,19 +179,5 @@ void main() {
 
     expect(find.byKey(const Key('analisar_link_url')), findsOneWidget);
     expect(find.widgetWithText(FilledButton, 'Verificar link'), findsOneWidget);
-  });
-
-  testWidgets('Histórico mostra as três faixas', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        onGenerateRoute: AppRouter.onGenerateRoute,
-        initialRoute: AppRoutes.historico,
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text(RotulosRisco.altoRisco), findsOneWidget);
-    expect(find.text(RotulosRisco.medioRisco), findsOneWidget);
-    expect(find.text(RotulosRisco.baixoRisco), findsOneWidget);
   });
 }

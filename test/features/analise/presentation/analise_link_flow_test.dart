@@ -13,11 +13,15 @@ import 'package:phize/features/analise/domain/calculadora_score.dart';
 import 'package:phize/features/analise/domain/rdap_client.dart';
 import 'package:phize/features/analise/domain/reputacao_dominio_client.dart';
 import 'package:phize/features/analise/domain/resultado_analise_link.dart';
+import 'package:phize/features/analise/domain/resultado_analise_print.dart';
 import 'package:phize/features/analise/domain/rotulos_risco.dart';
 import 'package:phize/features/analise/domain/sinais_identificados.dart';
 import 'package:phize/features/analise/domain/sinal_link.dart';
 import 'package:phize/features/analise/domain/verificacao_link.dart';
 import 'package:phize/features/analise/presentation/pages/resultado_analise_page.dart';
+import 'package:phize/features/analise/presentation/registro_historico.dart';
+
+import '../../../support/fake_historico_repository.dart';
 
 /// Dublê de RDAP: nenhum teste deste arquivo acessa a rede. Registra cada
 /// domínio pedido e, por padrão, responde com o `ldhName` do próprio
@@ -111,6 +115,7 @@ Future<void> _abrirAnalisarLink(
   WidgetTester tester,
   RdapClient rdapClient, {
   ReputacaoDominioClient? reputacaoClient,
+  FakeHistoricoRepository? historico,
 }) async {
   final reputacao = reputacaoClient ?? _reputacaoNaoListado();
   await tester.pumpWidget(
@@ -119,6 +124,7 @@ Future<void> _abrirAnalisarLink(
         settings,
         rdapClient: rdapClient,
         reputacaoClient: reputacao,
+        historicoRepository: historico ?? FakeHistoricoRepository(),
       ),
       initialRoute: AppRoutes.analisarLink,
     ),
@@ -156,6 +162,65 @@ void _verificarInvariantesDoResultado() {
 const _fonteGoogle = 'Fonte: Google Safe Browsing, serviço do Google';
 
 void main() {
+  testWidgets('análise concluída é gravada no histórico sem o endereço, sem '
+      'categoria', (tester) async {
+    final historico = FakeHistoricoRepository();
+    await _abrirAnalisarLink(
+      tester,
+      _rdapDominioAntigo(),
+      historico: historico,
+    );
+
+    await tester.enterText(
+      find.byKey(const Key('analisar_link_url')),
+      'https://exemplo-loja.com.br/oferta',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Verificar link'));
+    await tester.pumpAndSettle();
+
+    final registro = historico.analises.single;
+    expect(registro.tipoEntrada, TipoEntrada.link);
+    expect(registro.categoria, isNull);
+    expect(registro.explicacao, isNot(contains('exemplo-loja')));
+  });
+
+  testWidgets('falha ao gravar no histórico avisa, sem esconder o resultado', (
+    tester,
+  ) async {
+    await _abrirAnalisarLink(
+      tester,
+      _rdapDominioAntigo(),
+      historico: FakeHistoricoRepository(falhaAoSalvar: true),
+    );
+
+    await tester.enterText(
+      find.byKey(const Key('analisar_link_url')),
+      'https://exemplo-loja.com.br',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Verificar link'));
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text(mensagemFalhaHistorico), findsOneWidget);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('resultado_aviso_permanente')), findsOneWidget);
+  });
+
+  testWidgets('entrada inválida não grava nada no histórico', (tester) async {
+    final historico = FakeHistoricoRepository();
+    await _abrirAnalisarLink(
+      tester,
+      _rdapDominioAntigo(),
+      historico: historico,
+    );
+
+    await tester.enterText(find.byKey(const Key('analisar_link_url')), 'abc');
+    await tester.tap(find.widgetWithText(FilledButton, 'Verificar link'));
+    await tester.pumpAndSettle();
+
+    expect(historico.analises, isEmpty);
+  });
+
   testWidgets('domínio legítimo, três verificações concluídas sem sinais: '
       'faixa VERDE, sem aviso de verificação incompleta', (tester) async {
     final rdap = _rdapDominioAntigo();

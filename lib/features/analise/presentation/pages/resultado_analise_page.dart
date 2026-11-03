@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/categoria_ameaca.dart';
 import '../../domain/resultado_analise_link.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../../domain/resultado_score.dart';
 import '../../domain/rotulos_risco.dart';
 import '../../domain/sinal_texto_print.dart';
 import '../../domain/verificacao_link.dart';
+import '../widgets/aviso_card.dart';
 import '../widgets/termometro_risco.dart';
 
 /// Tela de Resultado da análise de link (RF03, RF07, UC03 passo 8) e de
@@ -60,7 +60,7 @@ class ResultadoAnalisePage extends StatelessWidget {
               if (resultadoPrint != null)
                 ..._detalhesPrint(context, resultadoPrint),
               const SizedBox(height: 12),
-              const _Aviso(
+              const AvisoCard(
                 key: Key('resultado_aviso_permanente'),
                 texto: RotulosRisco.avisoPermanente,
               ),
@@ -92,7 +92,7 @@ class ResultadoAnalisePage extends StatelessWidget {
       const SizedBox(height: 8),
       ...resultado.verificacoes.map((v) => _VerificacaoTile(verificacao: v)),
       const SizedBox(height: 24),
-      const _Aviso(
+      const AvisoCard(
         key: Key('resultado_aviso_falibilidade'),
         texto: RotulosRisco.avisoFalibilidadeReputacao,
       ),
@@ -143,7 +143,7 @@ class ResultadoAnalisePage extends StatelessWidget {
       Text('Tipo de abordagem', style: titulo),
       const SizedBox(height: 4),
       Text(
-        _nomeCategoria(resultado.categoria),
+        resultado.categoria.nome,
         key: const Key('resultado_print_categoria'),
       ),
       const SizedBox(height: 16),
@@ -168,45 +168,6 @@ class ResultadoAnalisePage extends StatelessWidget {
       'Oferta boa demais para ser verdade',
     SinalTextoPrint.inducaoUrgencia => 'Pressão para agir com urgência',
   };
-
-  /// Nomes das categorias conforme `docs/categorias-ameaca.md` (coluna
-  /// "Nome").
-  static String _nomeCategoria(CategoriaAmeaca categoria) =>
-      switch (categoria) {
-        CategoriaAmeaca.falsoContato => 'Falso contato',
-        CategoriaAmeaca.falsaCentralOuInstituicao =>
-          'Falsa central ou instituição',
-        CategoriaAmeaca.cobrancaOuBoletoFalso => 'Cobrança ou boleto falso',
-        CategoriaAmeaca.ofertaOuPremioFalso => 'Oferta ou prêmio falso',
-        CategoriaAmeaca.ameacaOuExtorsao => 'Ameaça ou extorsão',
-        CategoriaAmeaca.rouboDeDados => 'Roubo de dados',
-        CategoriaAmeaca.outroGolpe => 'Outro golpe',
-        CategoriaAmeaca.semIndicios => 'Sem indícios',
-      };
-}
-
-class _Aviso extends StatelessWidget {
-  const _Aviso({super.key, required this.texto});
-
-  final String texto;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Icon(Icons.info_outline),
-            const SizedBox(width: 12),
-            Expanded(child: Text(texto)),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _AvisoVerificacaoIncompleta extends StatelessWidget {
