@@ -74,8 +74,8 @@ class AnalisadorPrint {
   /// Informado ao usuário enquanto [baseConhecimentoDisponivel] for `false`.
   static const String motivoSemBaseConhecimento =
       'A comparação com padrões de golpe já catalogados não foi realizada: '
-      'a base de conhecimento do Phize ainda não está disponível. Por isso, '
-      'mesmo sem sinais encontrados, o resultado não aparece na faixa verde.';
+      'a base de conhecimento do Phize ainda não está disponível. Sem essa '
+      'comparação, nenhum resultado é exibido na faixa verde.';
 
   /// Intervalos progressivos entre novas tentativas quando o provedor
   /// recusa por limite de uso (UC04). Esgotados, o usuário é orientado a

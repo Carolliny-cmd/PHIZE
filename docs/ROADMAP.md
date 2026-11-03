@@ -7,10 +7,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 
 ## ONDE PARAMOS
 
-- **Data:** 2026-10-19
-- **Última tarefa concluída:** Fase 6.3 — pipeline do UC04 conectado à interface, concluída quanto ao código, com as correções das duas auditorias (422 testes)
+- **Data:** 2026-11-03
+- **Última tarefa concluída:** Fase 6.3 — pipeline do UC04 conectado à interface e validado no emulador Android com os quatro prints fictícios (435 testes no app, 20 na Function)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
-- **Próximo passo:** validar o fluxo do print em dispositivo Android; em seguida, Fase 7
+- **Próximo passo:** Fase 7
 
 ---
 
@@ -205,6 +205,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | Validação da tabela v1.0 (docs/score-calibracao.md) pela equipe | Não bloqueante | RF07 |
 | Ativar o plano Blaze para deploy das Cloud Functions | Publicação e testes em dispositivo real | Fase 5 |
 | ~~Provedor de LLM com termos que vedem uso para treinamento (RNF07)~~ — **decidido: contratado** | ~~Fase 6.2~~ Resolvida | custo recorrente |
+| **Ativar faturamento no projeto da chave do Gemini** — a chave em uso está no nível gratuito, cujos termos permitem uso do conteúdo para treinamento (exceção temporária ao RNF07, registrada na Fase 6.3) | Qualquer uso com conversa real; fim da exceção | RNF07, custo recorrente |
 | ~~Ativar Cloud Vision e criar chave restrita~~ — **dispensado: OCR embarcado (decisão de 2026-10-07)** | ~~Fase 6.2~~ Resolvida | console |
 | Validação da troca do OCR para reconhecimento embarcado (ML Kit), decisão de 2026-10-07 | Não bloqueante | RNF06 |
 | Validação das categorias de ameaça v1.0 (docs/categorias-ameaca.md) | Não bloqueante | RNF07 / UC04 |
@@ -690,7 +691,15 @@ Escopo:
 > - A regra que impede a faixa verde sem base de conhecimento vive apenas no pipeline (`AnalisadorPrint`). Construtores futuros de `AnalisePrintConcluida`, como o histórico da Fase 8 e o compartilhamento do UC11, poderiam produzir score inconsistente sem que a tela detecte. Avaliar validação defensiva na camada de apresentação.
 > - Os clientes HTTP instanciados no `builder` das rotas de link e de print (`app_router.dart`) nunca são fechados.
 
-> **VALIDAÇÃO PENDENTE:** o fluxo completo (galeria, ML Kit e Function) só pode ser exercitado em dispositivo ou emulador Android; os testes de widget usam dublês do seletor, do reconhecedor e do cliente.
+> **VALIDAÇÃO CONCLUÍDA (2026-11-03):** o fluxo completo (galeria, ML Kit, mascaramento, Function, Gemini, motor de score e tela de resultado) foi exercitado no emulador Android, com Functions, Auth e Firestore emulados, usando os quatro prints de `tools/gerador-prints/`. Os scores e as faixas conferiram com `docs/score-calibracao.md`, inclusive o teto da soma e a faixa verde impedida sem a base de conhecimento; no cenário com CPF e telefone, a explicação não reproduziu nenhum dos dois. Ajustes feitos a partir da validação: o aviso de verificação incompleta deixou de dizer "mesmo sem sinais encontrados", que soava errado quando havia sinais; e a instrução do Gemini passou a exigir acentuação, porque uma das explicações veio sem acentos. Respostas 503 do nível gratuito do Gemini apareceram de forma intermitente como "serviço indisponível"; repetir a análise resolveu.
+>
+> **Para revisar na Fase 7:** no cenário da falsa central, o modelo marcou também `inducao_urgencia` a partir da ameaça de encerramento da conta, sinal que o `README.md` do gerador não lista. O motor somou corretamente; a decisão é se a instrução do modelo deve separar ameaça de urgência.
+
+> **EXCEÇÃO TEMPORÁRIA AO RNF07 (2026-10-27, decisão da equipe):** a validação da Fase 6.3 usa uma chave do Gemini no **nível gratuito**, cujos termos permitem ao Google usar o conteúdo enviado para melhorar os produtos, inclusive com revisão humana. Isso contraria o RNF07 (transmissão só por APIs que vedem uso para treinamento) e foi aceito conscientemente para destravar os testes. Condições: enviar **somente** os prints fictícios de `tools/gerador-prints/`, nunca conversa real nem dado pessoal real; a exceção termina quando o faturamento for ativado no projeto da chave, antes de qualquer demonstração com conteúdo real. O nível gratuito também é atendido por último em picos de demanda (respostas 503), o que aparece no app como "serviço indisponível".
+
+> **MODELO (2026-10-27):** o `gemini-2.5-flash` deixou de ser oferecido a chaves novas (404). O padrão da Function passou a `gemini-3.8-flash` (`functions/src/config.ts`); a variável `GEMINI_MODEL` no `.env.local` permite trocar sem alterar código. A validação de 2026-11-03 usou `gemini-3.5-flash-lite`, definido em `GEMINI_MODEL` no `.env.local`, e a resposta seguiu o esquema JSON da Function; o padrão `gemini-3.8-flash` não foi exercitado.
+
+> **FERRAMENTA (validação manual):** `tools/gerador-prints/` tem uma página HTML autocontida que desenha e exporta em PNG quatro conversas fictícias: falso parente com troca de número, falsa central bancária, conversa cotidiana sem sinais e mensagem com CPF e telefone inventados, para validar o mascaramento. O RNF07 veda enviar conversas reais ao provedor de LLM nesta fase. O `README.md` da pasta lista os sinais esperados de cada cenário e explica como colocar as imagens na galeria do emulador. Os pesos e as faixas continuam apenas em `docs/score-calibracao.md`.
 
 ---
 

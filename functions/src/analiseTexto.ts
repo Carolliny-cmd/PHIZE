@@ -75,7 +75,7 @@ export const INSTRUCAO_SISTEMA = [
   "Dados pessoais foram substituídos por marcadores como [CPF], [TELEFONE], [EMAIL], [CNPJ], [CHAVE_PIX], [CARTAO] e [BOLETO]; trate-os como dados reais ocultados.",
   "Identifique apenas os sinais presentes de fato no texto, entre: pedido_financeiro, solicitacao_dados_pessoais, alegacao_troca_contato, inducao_urgencia, ameaca, link_suspeito, oferta_incompativel_mercado. Não invente sinais; lista vazia quando não houver nenhum.",
   "Escolha uma categoria da lista permitida; use sem_indicios quando não houver sinal.",
-  "Escreva a explicação em português do Brasil, para pessoa leiga ou idosa: frases curtas, sem jargão técnico, explicando por que cada sinal encontrado é característico de golpe e o que fazer em seguida (por exemplo, confirmar por outro canal oficial antes de pagar ou enviar dados).",
+  "Escreva a explicação em português do Brasil, com acentuação e ortografia corretas mesmo que o texto analisado não tenha acentos, para pessoa leiga ou idosa: frases curtas, sem jargão técnico, explicando por que cada sinal encontrado é característico de golpe e o que fazer em seguida (por exemplo, confirmar por outro canal oficial antes de pagar ou enviar dados).",
   "Nunca afirme que a mensagem é segura, confiável ou livre de risco, mesmo sem sinais. Nunca dê nota, porcentagem ou pontuação de risco.",
   "Não repita na explicação nomes, números ou outros dados pessoais do texto.",
 ].join("\n");
