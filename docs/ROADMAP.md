@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Fase 7.2 — recuperação na base e prompt com RAG conectados à análise de print (61 testes na Function, 443 no app); validada com a API real, ainda não no emulador Android
+- **Última tarefa concluída:** Fase 7.2 — recuperação na base e prompt com RAG conectados à análise de print (61 testes na Function, 443 no app); validada com a API real e no emulador Android
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** validar a análise de print com RAG no emulador Android, com os quatro prints fictícios; em seguida, Fase 8. A base continua crescendo em paralelo
+- **Próximo passo:** Fase 8; em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -758,7 +758,7 @@ sem exibição parcial ao usuário.
 >
 > **VALIDAÇÃO COM A API (2026-11-03):** pelo mesmo caminho da Function, sem o app: os prints fictícios de golpe e quatro golpes da avaliação apontaram a ficha certa, com explicação que cita a modalidade e a orientação da ficha; três mensagens legítimas que recebem fichas próximas (racha de conta, aviso de compra no cartão, boleto de condomínio) não tiveram correspondência; os prints comuns não passaram do limiar. Duas explicações vieram sem parte dos acentos, apesar da instrução: limitação do `gemini-3.5-flash-lite`, a observar na troca de modelo ou no faturamento.
 >
-> **VALIDAÇÃO PENDENTE:** a análise com RAG ainda não foi exercitada no emulador Android.
+> **VALIDAÇÃO CONCLUÍDA NO EMULADOR (2026-11-03):** fluxo completo no emulador Android, com Functions, Auth e Firestore emulados e os quatro prints de `tools/gerador-prints/`. Os prints de golpe mostraram o sinal "Semelhança com golpe já catalogado" e a explicação citou a modalidade, com score e faixa conforme `docs/score-calibracao.md`, inclusive o teto da soma. Os dois prints sem golpe saíram na faixa verde, sem o aviso de verificação incompleta; no print com CPF e celular, a explicação não reproduziu nenhum dos dois, e veio de novo sem parte dos acentos. Essa validação não exercitou o caminho de falha da base (índice ausente ou embedding indisponível), coberto só pelos testes automatizados.
 
 ---
 
