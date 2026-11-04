@@ -16,6 +16,17 @@ import 'sinais_identificados.dart';
 import 'sinal_texto_print.dart';
 import 'texto_em_memoria.dart';
 
+/// Etapas informadas à tela durante a análise (RNF03). Nenhuma leva conteúdo.
+enum EtapaAnalisePrint {
+  lendoTexto('Lendo o texto do print'),
+  escondendoDados('Escondendo seus dados'),
+  analisando('Comparando com golpes conhecidos');
+
+  const EtapaAnalisePrint(this.titulo);
+
+  final String titulo;
+}
+
 /// Orquestra a análise de print do UC04 (Prompt 6.2), nesta ordem exata:
 ///
 /// 1. imagem em memória (`CapturaImagem`, Fase 6.1);
@@ -92,10 +103,16 @@ class AnalisadorPrint {
   /// `CapturaImagem.processar` assim que o OCR termina, antes do
   /// mascaramento. `FileSystemException` e qualquer outra falha da captura
   /// viram mensagem genérica: a da exceção traz o nome original do print.
-  Future<ResultadoAnalisePrint> analisarCaptura(CapturaImagem captura) async {
+  Future<ResultadoAnalisePrint> analisarCaptura(
+    CapturaImagem captura, {
+    void Function(EtapaAnalisePrint etapa)? aoAvancar,
+  }) async {
     final String? textoExtraido;
     try {
-      textoExtraido = await captura.processar(_reconhecerEDescartar);
+      textoExtraido = await captura.processar((imagem) {
+        aoAvancar?.call(EtapaAnalisePrint.lendoTexto);
+        return _reconhecerEDescartar(imagem);
+      });
     } on SelecaoImagemNaoSuportadaException {
       return const AnalisePrintInterrompida(
         MotivoInterrupcaoPrint.plataformaNaoSuportada,
@@ -109,20 +126,24 @@ class AnalisadorPrint {
     }
 
     if (textoExtraido == null) return const AnalisePrintCancelada();
-    return _analisarTextoExtraido(textoExtraido);
+    return _analisarTextoExtraido(textoExtraido, aoAvancar);
   }
 
   /// Executa o pipeline sobre uma imagem já em memória (ex.: recebida por
   /// compartilhamento nativo, UC11). A imagem é descartada logo após o
   /// OCR, com sucesso ou falha.
-  Future<ResultadoAnalisePrint> analisarImagem(ImagemEmMemoria imagem) async {
+  Future<ResultadoAnalisePrint> analisarImagem(
+    ImagemEmMemoria imagem, {
+    void Function(EtapaAnalisePrint etapa)? aoAvancar,
+  }) async {
     final String textoExtraido;
+    aoAvancar?.call(EtapaAnalisePrint.lendoTexto);
     try {
       textoExtraido = await _reconhecerEDescartar(imagem);
     } on _FalhaReconhecimento catch (falha) {
       return AnalisePrintInterrompida(falha.motivo);
     }
-    return _analisarTextoExtraido(textoExtraido);
+    return _analisarTextoExtraido(textoExtraido, aoAvancar);
   }
 
   /// OCR seguido do descarte imediato da imagem, em `finally`. Falhas do
@@ -145,6 +166,7 @@ class AnalisadorPrint {
 
   Future<ResultadoAnalisePrint> _analisarTextoExtraido(
     String textoExtraido,
+    void Function(EtapaAnalisePrint etapa)? aoAvancar,
   ) async {
     final bruto = _guardar(textoExtraido);
     TextoEmMemoria? mascarado;
@@ -155,6 +177,7 @@ class AnalisadorPrint {
         );
       }
 
+      aoAvancar?.call(EtapaAnalisePrint.escondendoDados);
       try {
         mascarado = _guardar(_mascarar(bruto.valor));
       } catch (_) {
@@ -173,6 +196,7 @@ class AnalisadorPrint {
         );
       }
 
+      aoAvancar?.call(EtapaAnalisePrint.analisando);
       final envio = await _enviarComNovaTentativa(mascarado.valor);
       // Concluída a resposta, o texto é removido da memória (RNF07, 3).
       mascarado.descartar();

@@ -15,6 +15,7 @@ import '../../domain/historico_repository.dart';
 import '../../domain/imagem_em_memoria.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../registro_historico.dart';
+import '../widgets/progresso_analise.dart';
 import 'consentimento_page.dart';
 
 /// Análise do conteúdo recebido por compartilhamento (RF10 / UC11): começa
@@ -74,6 +75,7 @@ class _AnaliseCompartilhadaPageState extends State<AnaliseCompartilhadaPage> {
   String? _mensagem;
   bool _pedirLogin = false;
   bool _carregando = false;
+  EtapaAnalisePrint? _etapa;
 
   @override
   void initState() {
@@ -126,10 +128,18 @@ class _AnaliseCompartilhadaPageState extends State<AnaliseCompartilhadaPage> {
       return;
     }
 
-    setState(() => _carregando = true);
+    setState(() {
+      _carregando = true;
+      _etapa = EtapaAnalisePrint.lendoTexto;
+    });
     ResultadoAnalisePrint resultado;
     try {
-      resultado = await widget.analisadorPrint.analisarImagem(imagem);
+      resultado = await widget.analisadorPrint.analisarImagem(
+        imagem,
+        aoAvancar: (etapa) {
+          if (mounted) setState(() => _etapa = etapa);
+        },
+      );
     } catch (_) {
       resultado = const AnalisePrintInterrompida(
         MotivoInterrupcaoPrint.indisponivel,
@@ -210,6 +220,7 @@ class _AnaliseCompartilhadaPageState extends State<AnaliseCompartilhadaPage> {
   Widget build(BuildContext context) {
     final escolha = _escolha;
     final mensagem = _mensagem;
+    final etapa = _etapa;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Analisar conteúdo')),
@@ -219,7 +230,12 @@ class _AnaliseCompartilhadaPageState extends State<AnaliseCompartilhadaPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (_carregando) ...[
+              if (_carregando && etapa != null)
+                ProgressoAnalise(
+                  key: const Key('compartilhado_carregando'),
+                  etapa: etapa,
+                )
+              else if (_carregando) ...[
                 const SizedBox(height: 24),
                 const Center(child: CircularProgressIndicator()),
                 const SizedBox(height: 12),

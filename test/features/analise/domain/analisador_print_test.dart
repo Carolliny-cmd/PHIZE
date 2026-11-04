@@ -192,6 +192,13 @@ class _Cenario {
 }
 
 void main() {
+  test('as etapas não carregam conteúdo da conversa', () {
+    for (final etapa in EtapaAnalisePrint.values) {
+      expect(etapa.titulo, isNot(contains('[')));
+    }
+    expect(EtapaAnalisePrint.values, hasLength(3));
+  });
+
   group('fluxo completo', () {
     test(
       'bem-sucedido: score, sinais, categoria, explicação, tipo e data',

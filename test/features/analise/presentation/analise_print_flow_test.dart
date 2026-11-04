@@ -31,6 +31,7 @@ import 'package:phize/features/analise/domain/sinal_texto_print.dart';
 import 'package:phize/features/analise/domain/verificacao_link.dart';
 import 'package:phize/features/analise/presentation/pages/analise_compartilhada_page.dart';
 import 'package:phize/features/analise/presentation/pages/resultado_analise_page.dart';
+import 'package:phize/features/analise/presentation/widgets/progresso_analise.dart';
 
 import '../../../support/fake_auth_repository.dart';
 import '../../../support/fake_consentimento_repository.dart';
@@ -234,6 +235,33 @@ ImagemEmMemoria _imagemCompartilhada() =>
     ImagemEmMemoria(Uint8List.fromList([5, 5, 5]));
 
 void main() {
+  testWidgets('a tela mostra a etapa real e avisa quando a análise demora', (
+    tester,
+  ) async {
+    final completer = Completer<Map<String, dynamic>>();
+    await _abrir(
+      tester,
+      seletor: _SeletorFalso(arquivo: _ArquivoFalso()),
+      cliente: _ClienteFalso(completer: completer),
+    );
+
+    await tester.tap(find.byKey(const Key('analisar_print_botao')));
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text(EtapaAnalisePrint.analisando.titulo), findsOneWidget);
+    expect(find.byKey(const Key('progresso_aviso_demora')), findsNothing);
+
+    await tester.pump(ProgressoAnalise.tempoParaAviso);
+    expect(find.byKey(const Key('progresso_aviso_demora')), findsOneWidget);
+
+    completer.complete(_concluida());
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('resultado_aviso_permanente')), findsOneWidget);
+  });
+
   testWidgets('frases destacadas aparecem no resultado e não vão ao histórico', (
     tester,
   ) async {

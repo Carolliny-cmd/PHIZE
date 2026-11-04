@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Prompt 9.3 — destaque das frases suspeitas (T19) e explicações mais curtas (66 testes na Function, 528 no app)
+- **Última tarefa concluída:** Prompt 9.4 — etapas reais durante a análise de print (T32, parcial; ver pontos para a equipe), com medição do Gemini (66 testes na Function, 530 no app)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** seguir a Fase 9, itens do MVP (T32, T02/T04); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** seguir a Fase 9, login com Google e Apple (T02/T04); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -250,7 +250,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - O mascaramento local não cobre todas as grafias dos dados listados; os formatos não cobertos estão registrados na limitação declarada do RNF07 (`docs/requisitos.md`).
 - O modelo é instruído a nunca afirmar que a mensagem é segura, mas o código não verifica a explicação devolvida.
 - ~~Os trechos destacados do RF04 não são devolvidos pelo pipeline do UC04~~ — **resolvida no Prompt 9.3**.
-- O streaming do RNF03 não foi implementado: a resposta do modelo chega inteira.
+- O streaming do RNF03 não foi implementado: a medição do Prompt 9.4 mostrou ganho de só 0,5 s. Reavaliar com o faturamento ativo.
 
 ---
 
@@ -874,6 +874,16 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 > - Se a equipe entender que a etapa 3 do RNF07 exige descarte antes da exibição, o texto do requisito precisa prever o destaque do RF04.
 > - O limite de tamanho da explicação é só instrução ao modelo; o código continua aceitando até 2.000 caracteres.
 > - A explicação às vezes vem sem acentos com `gemini-3.5-flash-lite`, apesar da instrução. Vale reavaliar ao ativar o faturamento e trocar o modelo.
+
+### Prompt 9.4 — Retorno durante a análise (T32) (parcial)
+
+- **Feito:** a tela mostra as três etapas reais do pipeline (ler o texto, esconder os dados, comparar com golpes conhecidos) e, depois de 10 segundos, avisa que a análise continua.
+- **Medição (2026-11-04):** com 6 mensagens fictícias e `gemini-3.5-flash-lite` no nível gratuito, a consulta à base levou de 0,5 a 1,7 s. O primeiro pedaço da resposta levou de 4,3 a 21 s, e o restante chegou cerca de 0,5 s depois. Reduzir o raciocínio do modelo não ajudou: `thinkingLevel: minimal` levou de 10 a 48 s, e `thinkingBudget: 0` foi recusado.
+- **Decisão técnica:** streaming não foi implementado, porque a espera acontece antes do primeiro pedaço. Ele adicionaria complexidade para ganhar meio segundo e entraria em conflito com o UC04, que veda exibição parcial de resposta inválida.
+
+> **Pontos para a equipe:**
+> - **O RNF03 continua não atendido ao pé da letra:** a primeira porção do resultado não aparece em até 5 segundos. A causa provável é a fila do nível gratuito, mas isso ainda não foi confirmado.
+> - Repetir a medição com o faturamento ativo. Se a demora cair, o requisito pode ser atendido sem streaming. Se continuar, revisar o RNF03.
 
 ---
 

@@ -12,6 +12,7 @@ import '../../domain/consentimento_repository.dart';
 import '../../domain/historico_repository.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../registro_historico.dart';
+import '../widgets/progresso_analise.dart';
 import 'consentimento_page.dart';
 
 /// Tela "Analisar print" (UC04, passo 1): o usuário escolhe o print na
@@ -57,6 +58,7 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
   late final ConsentimentoRepository _consentimento =
       widget.consentimentoRepository ?? ConsentimentoRepositoryLocal();
   bool _carregando = false;
+  EtapaAnalisePrint _etapa = EtapaAnalisePrint.lendoTexto;
   MotivoInterrupcaoPrint? _interrupcao;
 
   Future<void> _entrarDeNovo() async {
@@ -77,12 +79,18 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
     // Feedback de carregamento imediato após o acionamento (RNF03).
     setState(() {
       _carregando = true;
+      _etapa = EtapaAnalisePrint.lendoTexto;
       _interrupcao = null;
     });
 
     ResultadoAnalisePrint resultado;
     try {
-      resultado = await widget.analisadorPrint.analisarCaptura(widget.captura);
+      resultado = await widget.analisadorPrint.analisarCaptura(
+        widget.captura,
+        aoAvancar: (etapa) {
+          if (mounted) setState(() => _etapa = etapa);
+        },
+      );
     } catch (_) {
       // O pipeline não lança por contrato; esta é só a rede de segurança
       // que impede uma exceção (e a mensagem dela) de chegar à tela ou ao
@@ -159,12 +167,9 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
                 ),
               if (_carregando) ...[
                 const SizedBox(height: 24),
-                const Center(child: CircularProgressIndicator()),
-                const SizedBox(height: 12),
-                const Text(
-                  'Analisando o print…',
-                  key: Key('analisar_print_carregando'),
-                  textAlign: TextAlign.center,
+                ProgressoAnalise(
+                  key: const Key('analisar_print_carregando'),
+                  etapa: _etapa,
                 ),
               ],
             ],
