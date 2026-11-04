@@ -194,6 +194,7 @@ class AnalisadorPrint {
             verificacoesNaoConcluidas: [
               if (!baseConsultada) motivoBaseNaoConsultada,
             ],
+            trechos: resposta.trechos,
           ),
       };
     } catch (_) {

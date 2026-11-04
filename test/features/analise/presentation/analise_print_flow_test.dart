@@ -11,6 +11,7 @@ import 'package:phize/core/constants/firebase_auth_codigos.dart';
 import 'package:phize/core/routing/app_router.dart';
 import 'package:phize/core/routing/app_routes.dart';
 import 'package:phize/features/analise/data/analise_texto_client_http.dart';
+import 'package:phize/features/analise/data/historico_repository_firestore.dart';
 import 'package:phize/features/analise/domain/analisador_print.dart';
 import 'package:phize/features/analise/domain/analise_texto_client.dart';
 import 'package:phize/features/analise/domain/caixa_compartilhamento.dart';
@@ -233,6 +234,59 @@ ImagemEmMemoria _imagemCompartilhada() =>
     ImagemEmMemoria(Uint8List.fromList([5, 5, 5]));
 
 void main() {
+  testWidgets('frases destacadas aparecem no resultado e não vão ao histórico', (
+    tester,
+  ) async {
+    const trecho = 'Faz um Pix agora';
+    final historico = FakeHistoricoRepository();
+    await _abrir(
+      tester,
+      seletor: _SeletorFalso(arquivo: _ArquivoFalso()),
+      historico: historico,
+      cliente: _ClienteFalso(
+        respostas: [
+          {
+            'status': 'concluida',
+            'baseConsultada': true,
+            'analise': {
+              'sinais': ['pedido_financeiro'],
+              'categoria': 'falso_contato',
+              'explicacao': 'Golpistas pedem dinheiro com pressa.',
+              'trechos': [
+                {'sinal': 'pedido_financeiro', 'trecho': trecho},
+              ],
+            },
+          },
+        ],
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('analisar_print_botao')));
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('resultado_print_trecho')),
+      100,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('“$trecho”'), findsOneWidget);
+    expect(
+      find.byKey(const Key('resultado_print_aviso_trechos')),
+      findsOneWidget,
+    );
+
+    final gravado = analiseParaDocumento(historico.analises.single);
+    expect(gravado.keys.toSet(), {
+      'score',
+      'faixa',
+      'categoria',
+      'explicacao',
+      'tipoEntrada',
+      'data',
+    });
+    expect(gravado.values.join(' '), isNot(contains(trecho)));
+  });
+
   group('consentimento (T33)', () {
     testWidgets('sem aceite, a galeria não abre nem o texto é enviado', (
       tester,

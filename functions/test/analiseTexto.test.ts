@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import {
   analisarTextoGemini,
+  filtrarTrechos,
   interpretarRespostaGemini,
   montarConteudo,
   textoValido,
@@ -41,7 +42,7 @@ test("resposta válida: devolve sinais, categoria e explicação, sem score", as
   });
   assert.deepEqual(r, {
     status: "concluida",
-    analise: { ...ANALISE_VALIDA, padraoCorrespondente: null },
+    analise: { ...ANALISE_VALIDA, padraoCorrespondente: null, trechos: [] },
   });
   assert.equal("score" in (r as { analise: object }).analise, false);
 });
@@ -198,7 +199,7 @@ test("sem padrões, o conteúdo diz que nenhum ficou próximo", () => {
 
 test("correspondência com padrão enviado é aceita e devolve o id", () => {
   const r = interpretarRespostaGemini(respostaGemini(COM_CORRESPONDENCIA), IDS);
-  assert.deepEqual(r, { status: "concluida", analise: COM_CORRESPONDENCIA });
+  assert.deepEqual(r, { status: "concluida", analise: { ...COM_CORRESPONDENCIA, trechos: [] } });
 });
 
 test("padraoCorrespondente ausente equivale a nulo", () => {
@@ -242,4 +243,59 @@ test("analisarTextoGemini envia os padrões e valida contra eles", async () => {
   assert.equal(r.status, "concluida");
   assert.match(corpo!.contents[0].parts[0].text, /\[id: golpe-a\]/);
   assert.ok(corpo!.generationConfig.responseSchema.required.includes("padraoCorrespondente"));
+});
+
+const TEXTO = "Oi mae, troquei de numero. Faz um Pix de R$ 500 agora, por favor!";
+
+test("filtrarTrechos mantém o que está no texto, mesmo com espaços e maiúsculas diferentes", () => {
+  assert.deepEqual(
+    filtrarTrechos(
+      [{ sinal: "alegacao_troca_contato", trecho: "  TROQUEI de   numero. " }],
+      ["alegacao_troca_contato"],
+      TEXTO,
+    ),
+    [{ sinal: "alegacao_troca_contato", trecho: "TROQUEI de   numero." }],
+  );
+});
+
+test("filtrarTrechos descarta trecho inventado, de sinal não emitido ou repetido", () => {
+  const r = filtrarTrechos(
+    [
+      { sinal: "pedido_financeiro", trecho: "Mande o dinheiro" },
+      { sinal: "ameaca", trecho: "Faz um Pix" },
+      { sinal: "correspondencia_padrao_catalogado", trecho: "Faz um Pix" },
+      { sinal: "pedido_financeiro", trecho: "Faz um Pix" },
+      { sinal: "pedido_financeiro", trecho: "faz um pix" },
+      { sinal: "pedido_financeiro", trecho: "" },
+      "solto",
+      null,
+    ],
+    ["pedido_financeiro", "correspondencia_padrao_catalogado"],
+    TEXTO,
+  );
+  assert.deepEqual(r, [{ sinal: "pedido_financeiro", trecho: "Faz um Pix" }]);
+});
+
+test("filtrarTrechos limita tamanho e quantidade", () => {
+  const longo = "a".repeat(201);
+  assert.deepEqual(filtrarTrechos([{ sinal: "ameaca", trecho: longo }], ["ameaca"], longo), []);
+
+  const texto = "um dois tres quatro cinco seis sete";
+  const itens = texto.split(" ").map((trecho) => ({ sinal: "ameaca", trecho }));
+  assert.equal(filtrarTrechos(itens, ["ameaca"], texto).length, 5);
+});
+
+test("filtrarTrechos sem lista devolve vazio", () => {
+  assert.deepEqual(filtrarTrechos(undefined, ["ameaca"], TEXTO), []);
+  assert.deepEqual(filtrarTrechos("x", ["ameaca"], TEXTO), []);
+});
+
+test("trecho inválido não invalida a análise", () => {
+  const r = validarAnalise(
+    { ...ANALISE_VALIDA, trechos: [{ sinal: "pedido_financeiro", trecho: "inventado" }] },
+    [],
+    TEXTO,
+  );
+  assert.deepEqual(r?.trechos, []);
+  assert.equal(r?.explicacao, ANALISE_VALIDA.explicacao);
 });

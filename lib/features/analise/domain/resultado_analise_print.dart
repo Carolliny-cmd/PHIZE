@@ -1,21 +1,22 @@
 import 'categoria_ameaca.dart';
+import 'resposta_modelo.dart';
 import 'resultado_score.dart';
 import 'sinal_texto_print.dart';
 
 /// Tipo de entrada analisada, registrado no histórico (arquitetura, 5.4).
 enum TipoEntrada { link, imagem }
 
-/// Saída do pipeline do UC04 (`AnalisadorPrint`). Nunca contém o texto
-/// analisado nem a imagem: nenhum dos tipos abaixo tem campo para isso.
+/// Saída do pipeline do UC04 (`AnalisadorPrint`). Nunca contém a imagem nem o
+/// texto analisado inteiro; da conversa, só os trechos destacados de
+/// [AnalisePrintConcluida].
 sealed class ResultadoAnalisePrint {
   const ResultadoAnalisePrint();
 }
 
-/// Análise concluída. Os campos são exatamente os que a persistência
-/// seletiva admite (RNF07, etapa 4; arquitetura, 5.4): score, categoria,
-/// explicação, tipo de entrada e data — mais os sinais e as verificações
-/// não concluídas, que a tela de resultado lista e que não são conteúdo da
-/// conversa.
+/// Análise concluída. Score, categoria, explicação, tipo de entrada e data vão
+/// para o histórico (RNF07, etapa 4; arquitetura, 5.4). Sinais, verificações
+/// não concluídas e [trechos] ficam só na tela de resultado. Os trechos são a
+/// única parte com conteúdo da conversa, já mascarada, e nunca são gravados.
 final class AnalisePrintConcluida extends ResultadoAnalisePrint {
   const AnalisePrintConcluida({
     required this.score,
@@ -24,6 +25,7 @@ final class AnalisePrintConcluida extends ResultadoAnalisePrint {
     required this.explicacao,
     required this.data,
     this.verificacoesNaoConcluidas = const [],
+    this.trechos = const [],
   });
 
   /// Calculado por `CalculadoraScore` a partir de [sinais] (RF07).
@@ -37,6 +39,9 @@ final class AnalisePrintConcluida extends ResultadoAnalisePrint {
   /// técnica, para exibição ao usuário (CLAUDE.md, Seção 8). Não vazia
   /// sempre que `score.verificacaoIncompleta` for `true`.
   final List<String> verificacoesNaoConcluidas;
+
+  /// Frases que motivaram cada sinal, para o destaque do RF04.
+  final List<TrechoSuspeito> trechos;
 
   TipoEntrada get tipoEntrada => TipoEntrada.imagem;
 }

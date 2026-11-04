@@ -1,10 +1,19 @@
 import 'categoria_ameaca.dart';
 import 'sinal_texto_print.dart';
 
+/// Frase da mensagem que motivou um sinal (RF04; UC04, passo 9). Vem do texto
+/// já mascarado e fica só na tela de resultado: não é gravada no histórico.
+class TrechoSuspeito {
+  const TrechoSuspeito({required this.sinal, required this.texto});
+
+  final SinalTextoPrint sinal;
+  final String texto;
+}
+
 /// Análise devolvida pelo modelo de linguagem, já validada contra o contrato
 /// da Function `analiseTexto` (functions/src/analiseTexto.ts).
 ///
-/// Contém apenas sinais, categoria e explicação. Não há campo de score: o
+/// Contém sinais, categoria, explicação e trechos. Não há campo de score: o
 /// modelo identifica sinais, e a pontuação é calculada exclusivamente por
 /// `CalculadoraScore` (RF07). Um campo extra enviado pelo modelo (ex.:
 /// "score") é ignorado, nunca lido.
@@ -13,13 +22,16 @@ class RespostaModelo {
     required this.sinais,
     required this.categoria,
     required this.explicacao,
+    this.trechos = const [],
   });
 
   final Set<SinalTextoPrint> sinais;
   final CategoriaAmeaca categoria;
   final String explicacao;
+  final List<TrechoSuspeito> trechos;
 
   static const int tamanhoMaximoExplicacao = 2000;
+  static const int tamanhoMaximoTrecho = 200;
 
   /// Códigos trocados com a Function. A correspondência com padrão
   /// catalogado só chega quando a base foi consultada; a Function confere
@@ -68,6 +80,28 @@ class RespostaModelo {
       sinais: Set.unmodifiable(sinais),
       categoria: categoria,
       explicacao: explicacaoLimpa,
+      trechos: _lerTrechos(json['trechos'], sinais),
     );
+  }
+
+  /// A Function já confere cada trecho contra o texto. Aqui, um item fora do
+  /// formato é ignorado sozinho: sinais e score não dependem do destaque.
+  static List<TrechoSuspeito> _lerTrechos(
+    Object? json,
+    Set<SinalTextoPrint> sinais,
+  ) {
+    if (json is! List) return const [];
+    return List.unmodifiable([
+      for (final item in json)
+        if (item case {
+          'sinal': final Object codigo,
+          'trecho': final String texto,
+        })
+          if (codigosSinais[codigo] case final sinal?
+              when sinais.contains(sinal) &&
+                  texto.trim().isNotEmpty &&
+                  texto.length <= tamanhoMaximoTrecho)
+            TrechoSuspeito(sinal: sinal, texto: texto.trim()),
+    ]);
   }
 }

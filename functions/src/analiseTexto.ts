@@ -61,10 +61,18 @@ export const CATEGORIAS_PERMITIDAS = [
 export type SinalTexto = (typeof SINAIS_PERMITIDOS)[number];
 export type CategoriaAmeaca = (typeof CATEGORIAS_PERMITIDAS)[number];
 
+/** Frase da mensagem que motivou um sinal (RF04; UC04, passo 9). */
+export interface TrechoSuspeito {
+  sinal: SinalTexto;
+  trecho: string;
+}
+
 export interface AnaliseModelo {
   sinais: SinalTexto[];
   categoria: CategoriaAmeaca;
   explicacao: string;
+  /** Sempre copiados do texto recebido; nunca registrados em log. */
+  trechos: TrechoSuspeito[];
   /** Id do padrão catalogado que a mensagem segue, ou `null`. */
   padraoCorrespondente: string | null;
 }
@@ -74,6 +82,8 @@ export type ResultadoAnaliseTexto =
   | { status: "nao_concluida"; motivo: MotivoNaoConcluidaAnalise };
 
 const TAMANHO_MAXIMO_EXPLICACAO = 2_000;
+const TAMANHO_MAXIMO_TRECHO = 200;
+const QUANTIDADE_MAXIMA_TRECHOS = 5;
 
 export const INSTRUCAO_SISTEMA = [
   "Você analisa mensagens recebidas por brasileiros (WhatsApp, SMS, e-mail) para identificar sinais de golpe de engenharia social.",
@@ -84,7 +94,8 @@ export const INSTRUCAO_SISTEMA = [
   "Emita o sinal correspondencia_padrao_catalogado e preencha padraoCorrespondente com o id do padrão SOMENTE se a mensagem seguir de fato um dos padrões recebidos: mesmo pretexto e mesmo tipo de pedido. Semelhança só de assunto não basta. Mensagem legítima (aviso real de compra, cobrança combinada entre conhecidos, recado comum) não corresponde a padrão de golpe.",
   "Se nenhum padrão recebido corresponder, ou se não houver padrões, deixe padraoCorrespondente nulo e não emita esse sinal. Nunca use padrão que não esteja na lista recebida.",
   "Escolha uma categoria da lista permitida; use sem_indicios quando não houver sinal.",
-  "Escreva a explicação em português do Brasil, com acentuação e ortografia corretas mesmo que o texto analisado não tenha acentos, para pessoa leiga ou idosa: frases curtas, sem jargão técnico, explicando por que cada sinal encontrado é característico de golpe e o que fazer em seguida (por exemplo, confirmar por outro canal oficial antes de pagar ou enviar dados).",
+  "Escreva a explicação em português do Brasil, com acentuação e ortografia corretas mesmo que o texto analisado não tenha acentos, para pessoa leiga ou idosa: no máximo 3 frases curtas e 50 palavras, sem jargão técnico, dizendo por que a mensagem é suspeita e o que fazer em seguida (por exemplo, confirmar por outro canal oficial antes de pagar ou enviar dados). Sem sinais, uma frase basta.",
+  "Em trechos, liste até 5 frases curtas da mensagem que motivaram os sinais, cada uma com o sinal correspondente. Copie exatamente como está no texto, sem corrigir nem resumir, e nunca invente. Use só sinais que você emitiu, exceto correspondencia_padrao_catalogado. Prefira trechos sem nomes de pessoas. Sem sinais, deixe a lista vazia.",
   "Havendo correspondência, diga na explicação o nome do golpe (a modalidade do padrão) e baseie a orientação na orientação preventiva do padrão. Não mencione ids, a base de conhecimento nem a similaridade.",
   "Nunca afirme que a mensagem é segura, confiável ou livre de risco, mesmo sem sinais. Nunca dê nota, porcentagem ou pontuação de risco.",
   "Não repita na explicação nomes, números ou outros dados pessoais do texto.",
@@ -101,9 +112,20 @@ export const ESQUEMA_RESPOSTA = {
     padraoCorrespondente: { type: "STRING", nullable: true },
     categoria: { type: "STRING", enum: [...CATEGORIAS_PERMITIDAS] },
     explicacao: { type: "STRING" },
+    trechos: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          sinal: { type: "STRING", enum: [...SINAIS_PERMITIDOS] },
+          trecho: { type: "STRING" },
+        },
+        required: ["sinal", "trecho"],
+      },
+    },
   },
-  required: ["sinais", "padraoCorrespondente", "categoria", "explicacao"],
-  propertyOrdering: ["sinais", "padraoCorrespondente", "categoria", "explicacao"],
+  required: ["sinais", "padraoCorrespondente", "categoria", "explicacao", "trechos"],
+  propertyOrdering: ["sinais", "padraoCorrespondente", "categoria", "explicacao", "trechos"],
 };
 
 /**
@@ -207,7 +229,7 @@ export async function analisarTextoGemini(
     }
 
     const corpo: unknown = await resposta.json();
-    return interpretarRespostaGemini(corpo, padroes.map((p) => p.id));
+    return interpretarRespostaGemini(corpo, padroes.map((p) => p.id), texto);
   } catch {
     if (controle.signal.aborted) {
       return { status: "nao_concluida", motivo: "timeout" };
@@ -228,6 +250,7 @@ export async function analisarTextoGemini(
 export function interpretarRespostaGemini(
   corpo: unknown,
   idsPadroes: string[] = [],
+  textoAnalisado = "",
 ): ResultadoAnaliseTexto {
   const invalida: ResultadoAnaliseTexto = {
     status: "nao_concluida",
@@ -255,7 +278,7 @@ export function interpretarRespostaGemini(
     return invalida;
   }
 
-  const validada = validarAnalise(analise, idsPadroes);
+  const validada = validarAnalise(analise, idsPadroes, textoAnalisado);
   return validada
     ? { status: "concluida", analise: validada }
     : invalida;
@@ -270,11 +293,12 @@ export function interpretarRespostaGemini(
 export function validarAnalise(
   valor: unknown,
   idsPadroes: string[] = [],
+  textoAnalisado = "",
 ): AnaliseModelo | null {
   if (typeof valor !== "object" || valor === null || Array.isArray(valor)) {
     return null;
   }
-  const { sinais, categoria, explicacao, padraoCorrespondente } =
+  const { sinais, categoria, explicacao, padraoCorrespondente, trechos } =
     valor as Record<string, unknown>;
 
   if (
@@ -311,6 +335,53 @@ export function validarAnalise(
     sinais: [...new Set(sinais as SinalTexto[])],
     categoria: categoria as CategoriaAmeaca,
     explicacao: explicacao.trim(),
+    trechos: filtrarTrechos(trechos, sinais as SinalTexto[], textoAnalisado),
     padraoCorrespondente: padrao,
   };
+}
+
+const normalizarParaBusca = (texto: string): string =>
+  texto.replace(/\s+/g, " ").trim().toLowerCase();
+
+/**
+ * Mantém só os trechos que existem de fato no texto analisado e apontam um
+ * sinal emitido. O destaque é complemento: um trecho ruim é descartado sozinho
+ * e não invalida a análise, porque os sinais e o score não dependem dele.
+ */
+export function filtrarTrechos(
+  valor: unknown,
+  sinais: SinalTexto[],
+  textoAnalisado: string,
+): TrechoSuspeito[] {
+  if (!Array.isArray(valor)) return [];
+  const texto = normalizarParaBusca(textoAnalisado);
+  const vistos = new Set<string>();
+  const validos: TrechoSuspeito[] = [];
+
+  for (const item of valor) {
+    if (typeof item !== "object" || item === null) continue;
+    const { sinal, trecho } = item as Record<string, unknown>;
+    if (
+      typeof sinal !== "string" ||
+      typeof trecho !== "string" ||
+      sinal === SINAL_CORRESPONDENCIA ||
+      !(sinais as string[]).includes(sinal)
+    ) {
+      continue;
+    }
+    const limpo = trecho.trim();
+    const busca = normalizarParaBusca(limpo);
+    if (
+      busca.length === 0 ||
+      limpo.length > TAMANHO_MAXIMO_TRECHO ||
+      !texto.includes(busca) ||
+      vistos.has(busca)
+    ) {
+      continue;
+    }
+    vistos.add(busca);
+    validos.push({ sinal: sinal as SinalTexto, trecho: limpo });
+    if (validos.length === QUANTIDADE_MAXIMA_TRECHOS) break;
+  }
+  return validos;
 }

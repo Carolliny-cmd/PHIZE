@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Prompt 9.2 — tela de consentimento (T33), antes da análise de print (61 testes na Function, 524 no app)
+- **Última tarefa concluída:** Prompt 9.3 — destaque das frases suspeitas (T19) e explicações mais curtas (66 testes na Function, 528 no app)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** seguir a Fase 9, itens do MVP (T19, T32, T02/T04); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** seguir a Fase 9, itens do MVP (T32, T02/T04); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -249,7 +249,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - Validar a chamada ao Gemini real (Function `analiseTexto`) com a chave configurada em `functions/.env.local`.
 - O mascaramento local não cobre todas as grafias dos dados listados; os formatos não cobertos estão registrados na limitação declarada do RNF07 (`docs/requisitos.md`).
 - O modelo é instruído a nunca afirmar que a mensagem é segura, mas o código não verifica a explicação devolvida.
-- Os trechos destacados do RF04 não são devolvidos pelo pipeline do UC04; decidir no passo da tela, considerando que carregam conteúdo da conversa.
+- ~~Os trechos destacados do RF04 não são devolvidos pelo pipeline do UC04~~ — **resolvida no Prompt 9.3**.
 - O streaming do RNF03 não foi implementado: a resposta do modelo chega inteira.
 
 ---
@@ -860,6 +860,20 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 > - O texto não passou por revisão jurídica.
 > - O aceite fica só no aparelho: não serve como prova de consentimento nem entra na exportação (RF12). Se a equipe precisar de registro, ele deve ir para `users/{uid}`.
 > - O aviso não promete que o texto não é usado para treinamento, porque isso só será verdade com o faturamento do Gemini ativo (exceção temporária ao RNF07). Depois disso, vale incluir essa garantia e aumentar a versão.
+
+### Prompt 9.3 — Destaque das frases suspeitas (T19) (concluído)
+
+- **Trechos:** o modelo devolve até 5 frases, cada uma ligada a um sinal. A Function confere se cada frase existe no texto mascarado e se o sinal foi emitido; o que não passa é descartado sozinho, sem invalidar a análise. Sinais e score não dependem dos trechos.
+- **Tela:** cada sinal mostra suas frases na tela de resultado, com o aviso de que elas não ficam no histórico.
+- **Privacidade:** os trechos saem do texto já mascarado, ficam em memória só enquanto o resultado está aberto, e não existem no registro do histórico, nas regras do Firestore nem em log. A sequência do UC04 exibe o destaque (passo 9) antes do descarte (passo 10).
+- **Explicação:** o prompt pede no máximo 3 frases e 50 palavras. Em 6 mensagens fictícias com a API real, a maior teve 37 palavras.
+- **Validação:** análise de print fictício no emulador Android, com frases destacadas e registro sem conteúdo da conversa.
+
+> **Pontos para a equipe:**
+> - Os trechos não têm nomes mascarados, como o restante do texto (RNF07, limitação declarada). Eles voltam só para o aparelho de quem enviou o print.
+> - Se a equipe entender que a etapa 3 do RNF07 exige descarte antes da exibição, o texto do requisito precisa prever o destaque do RF04.
+> - O limite de tamanho da explicação é só instrução ao modelo; o código continua aceitando até 2.000 caracteres.
+> - A explicação às vezes vem sem acentos com `gemini-3.5-flash-lite`, apesar da instrução. Vale reavaliar ao ativar o faturamento e trocar o modelo.
 
 ---
 

@@ -28,8 +28,8 @@ class ResultadoAnalisePage extends StatelessWidget {
   }) : _link = resultado,
        _print = null;
 
-  /// O resultado de print não contém imagem nem texto analisado
-  /// ([AnalisePrintConcluida]): nada da conversa chega a esta tela.
+  /// O resultado de print não contém a imagem nem o texto inteiro: da conversa,
+  /// só chegam aqui os trechos destacados, já mascarados.
   const ResultadoAnalisePage.print({
     super.key,
     required AnalisePrintConcluida resultado,
@@ -137,11 +137,21 @@ class ResultadoAnalisePage extends StatelessWidget {
       else
         for (final sinal in SinalTextoPrint.values)
           if (resultado.sinais.contains(sinal))
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.flag, color: Colors.red),
-              title: Text(_tituloSinal(sinal)),
+            _SinalTile(
+              titulo: _tituloSinal(sinal),
+              trechos: [
+                for (final trecho in resultado.trechos)
+                  if (trecho.sinal == sinal) trecho.texto,
+              ],
             ),
+      if (resultado.trechos.isNotEmpty) ...[
+        const SizedBox(height: 4),
+        Text(
+          avisoTrechos,
+          key: const Key('resultado_print_aviso_trechos'),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ],
       const SizedBox(height: 16),
       Text('Tipo de abordagem', style: titulo),
       const SizedBox(height: 4),
@@ -155,6 +165,10 @@ class ResultadoAnalisePage extends StatelessWidget {
       Text(resultado.explicacao, key: const Key('resultado_print_explicacao')),
     ];
   }
+
+  static const String avisoTrechos =
+      'As frases destacadas aparecem só nesta tela e não ficam no seu '
+      'histórico.';
 
   /// Nomes em linguagem não técnica dos sinais do grupo Texto/Print (RF07,
   /// RNF04).
@@ -171,6 +185,48 @@ class ResultadoAnalisePage extends StatelessWidget {
       'Oferta boa demais para ser verdade',
     SinalTextoPrint.inducaoUrgencia => 'Pressão para agir com urgência',
   };
+}
+
+class _SinalTile extends StatelessWidget {
+  const _SinalTile({required this.titulo, required this.trechos});
+
+  final String titulo;
+  final List<String> trechos;
+
+  @override
+  Widget build(BuildContext context) {
+    final corFaixa = Theme.of(context).colorScheme.error;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.flag, color: corFaixa),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(titulo, style: Theme.of(context).textTheme.bodyLarge),
+                for (final trecho in trechos)
+                  Container(
+                    key: const Key('resultado_print_trecho'),
+                    margin: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.errorContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text('“$trecho”'),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _AvisoVerificacaoIncompleta extends StatelessWidget {
