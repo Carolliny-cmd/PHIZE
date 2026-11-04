@@ -5,6 +5,8 @@ class FakeContaRepository implements ContaRepository {
   FakeContaRepository({this.pendente = false});
 
   bool pendente;
+  @override
+  bool exigeSenha = true;
   Object? erroExclusao;
   bool falhaPerfil = false;
   String? senhaRecebida;
@@ -21,7 +23,7 @@ class FakeContaRepository implements ContaRepository {
   }
 
   @override
-  Future<void> excluirConta({required String senha}) async {
+  Future<void> excluirConta({String? senha}) async {
     senhaRecebida = senha;
     exclusoes++;
     final erro = erroExclusao;

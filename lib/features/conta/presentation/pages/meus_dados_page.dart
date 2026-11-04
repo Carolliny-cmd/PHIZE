@@ -85,7 +85,7 @@ class _MeusDadosPageState extends State<MeusDadosPage> {
   Future<void> _excluir() async {
     final senha = await showDialog<String>(
       context: context,
-      builder: (_) => const ExcluirContaDialog(),
+      builder: (_) => ExcluirContaDialog(exigeSenha: _conta.exigeSenha),
     );
     if (senha == null || !mounted) return;
 
@@ -96,7 +96,7 @@ class _MeusDadosPageState extends State<MeusDadosPage> {
     final navegador = Navigator.of(context);
     final mensageiro = ScaffoldMessenger.of(context);
     try {
-      await _conta.excluirConta(senha: senha);
+      await _conta.excluirConta(senha: senha.isEmpty ? null : senha);
       mensageiro.showSnackBar(
         const SnackBar(content: Text('Sua conta foi excluída.')),
       );

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
@@ -74,7 +75,9 @@ class _LoginPageState extends State<LoginPage> {
     if (_bloqueado) return;
 
     final erroEmail = validarEmail(_emailController.text);
-    final erroSenha = _senhaController.text.isEmpty ? 'Informe sua senha.' : null;
+    final erroSenha = _senhaController.text.isEmpty
+        ? 'Informe sua senha.'
+        : null;
 
     setState(() {
       _erroEmail = erroEmail;
@@ -91,15 +94,7 @@ class _LoginPageState extends State<LoginPage> {
         senha: _senhaController.text,
       );
       await _tentativas.resetar();
-      final pendente = await _exclusaoPendente();
-      if (!mounted) return;
-      final navegador = Navigator.of(context);
-      navegador.pushReplacementNamed(
-        pendente ? AppRoutes.exclusaoPendente : AppRoutes.dashboard,
-      );
-      if (!pendente && (widget.caixaCompartilhamento?.temPendente ?? false)) {
-        navegador.pushNamed(AppRoutes.analiseCompartilhada);
-      }
+      await _seguirAposLogin();
     } on AuthException catch (e) {
       await _tentativas.registrarFalha();
       final bloqueado = await _tentativas.bloqueado();
@@ -110,6 +105,37 @@ class _LoginPageState extends State<LoginPage> {
         _carregando = false;
       });
     }
+  }
+
+  Future<void> _seguirAposLogin() async {
+    final pendente = await _exclusaoPendente();
+    if (!mounted) return;
+    final navegador = Navigator.of(context);
+    navegador.pushReplacementNamed(
+      pendente ? AppRoutes.exclusaoPendente : AppRoutes.dashboard,
+    );
+    if (!pendente && (widget.caixaCompartilhamento?.temPendente ?? false)) {
+      navegador.pushNamed(AppRoutes.analiseCompartilhada);
+    }
+  }
+
+  /// Quem usa o Google não digita senha: esta entrada não conta nas
+  /// tentativas de login (RF02).
+  Future<void> _entrarComGoogle() async {
+    setState(() {
+      _erroGeral = null;
+      _carregando = true;
+    });
+    try {
+      final entrou = await _authRepository.entrarComGoogle();
+      if (entrou) {
+        await _seguirAposLogin();
+        return;
+      }
+    } on AuthException catch (e) {
+      if (mounted) setState(() => _erroGeral = e.mensagem);
+    }
+    if (mounted) setState(() => _carregando = false);
   }
 
   /// A marca fica no aparelho; uma falha ao lê-la não impede o login.
@@ -160,7 +186,9 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.only(bottom: 16),
                   child: Text(
                     _mensagemBloqueio,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                 ),
               if (_erroGeral != null && !_bloqueado)
@@ -168,20 +196,28 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.only(bottom: 16),
                   child: Text(
                     _erroGeral!,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                 ),
               TextField(
                 key: const Key('login_email'),
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'E-mail', errorText: _erroEmail),
+                decoration: InputDecoration(
+                  labelText: 'E-mail',
+                  errorText: _erroEmail,
+                ),
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
               TextField(
                 key: const Key('login_senha'),
                 controller: _senhaController,
-                decoration: InputDecoration(labelText: 'Senha', errorText: _erroSenha),
+                decoration: InputDecoration(
+                  labelText: 'Senha',
+                  errorText: _erroSenha,
+                ),
                 obscureText: true,
               ),
               Align(
@@ -193,6 +229,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 8),
               FilledButton(
+                key: const Key('login_entrar'),
                 onPressed: (_carregando || _bloqueado) ? null : _entrar,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -206,8 +243,18 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 12),
+              if (!kIsWeb) ...[
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  key: const Key('login_google'),
+                  onPressed: _carregando ? null : _entrarComGoogle,
+                  icon: const Icon(Icons.account_circle_outlined),
+                  label: const Text('Continuar com Google'),
+                ),
+              ],
               TextButton(
-                onPressed: () => Navigator.of(context).pushNamed(AppRoutes.cadastro),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.cadastro),
                 child: const Text('Criar conta'),
               ),
             ],

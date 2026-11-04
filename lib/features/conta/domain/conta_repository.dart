@@ -3,7 +3,10 @@ abstract class ContaRepository {
   /// Perfil gravado no cadastro, para a exportação. Lança em caso de falha.
   Future<PerfilConta> carregarPerfil();
 
-  /// Confirma a senha e remove todos os documentos do usuário no Firestore
+  /// `false` para quem entra só com o Google e confirma a exclusão por ele.
+  bool get exigeSenha;
+
+  /// Confirma a identidade, pela [senha] ou pelo Google, e remove todos os documentos do usuário no Firestore
   /// e, por último, a credencial no Firebase Authentication.
   ///
   /// Pode ser chamado de novo depois de uma falha: o que já foi removido não
@@ -12,7 +15,7 @@ abstract class ContaRepository {
   /// Lança [ExclusaoIncompletaException] se a remoção começou e não terminou.
   /// Qualquer outra falha, como `AuthException` para senha errada, significa
   /// que nada foi removido.
-  Future<void> excluirConta({required String senha});
+  Future<void> excluirConta({String? senha});
 
   /// `true` quando o usuário autenticado tem exclusão iniciada e não
   /// concluída neste aparelho (UC12, "Falha parcial na exclusão").

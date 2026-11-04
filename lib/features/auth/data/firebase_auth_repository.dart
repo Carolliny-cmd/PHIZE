@@ -4,12 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../domain/auth_exception.dart';
 import '../domain/auth_repository.dart';
 import 'auth_error_mapper.dart';
+import 'credencial_google.dart';
 import 'inicializacao_perfil.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
-  FirebaseAuthRepository({FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
-    : _auth = firebaseAuth ?? FirebaseAuth.instance,
-      _firestore = firestore ?? FirebaseFirestore.instance;
+  FirebaseAuthRepository({
+    FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firestore,
+  }) : _auth = firebaseAuth ?? FirebaseAuth.instance,
+       _firestore = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
@@ -44,6 +47,31 @@ class FirebaseAuthRepository implements AuthRepository {
   Future<void> entrar({required String email, required String senha}) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: senha);
+    } on FirebaseAuthException catch (e) {
+      throw AuthException(mapearErroAutenticacao(e));
+    }
+  }
+
+  @override
+  Future<bool> entrarComGoogle() async {
+    try {
+      final credencialGoogle = await obterCredencialGoogle();
+      if (credencialGoogle == null) return false;
+
+      final credencial = await _auth.signInWithCredential(credencialGoogle);
+      final usuario = credencial.user!;
+      if (credencial.additionalUserInfo?.isNewUser ?? false) {
+        await inicializarPerfilOuDesfazer(
+          gravarPerfil: () =>
+              _firestore.collection('users').doc(usuario.uid).set({
+                'uid': usuario.uid,
+                'email': usuario.email,
+                'createdAt': FieldValue.serverTimestamp(),
+              }),
+          desfazerConta: usuario.delete,
+        );
+      }
+      return true;
     } on FirebaseAuthException catch (e) {
       throw AuthException(mapearErroAutenticacao(e));
     }

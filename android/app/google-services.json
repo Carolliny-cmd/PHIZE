@@ -12,7 +12,20 @@
           "package_name": "com.phize.phize"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "371034844067-iilvb1b00s5me6nq7pggledaribsop2l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phize.phize",
+            "certificate_hash": "7bec84e34dc0d41b9624f252b2c16af6600d5112"
+          }
+        },
+        {
+          "client_id": "371034844067-i9kvtlofjku87fv216aml0212ulao9uq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCtJNTiev7tyrOQ_Q46deGrTsO5kg1V52M"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371034844067-i9kvtlofjku87fv216aml0212ulao9uq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

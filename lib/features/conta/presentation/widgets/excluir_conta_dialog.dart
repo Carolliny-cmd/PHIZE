@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 /// Aviso de irreversibilidade e confirmação explícita da exclusão (RF12;
-/// UC12, passo 4). Devolve a senha digitada, ou `null` se cancelado.
+/// UC12, passo 4). Devolve a senha digitada, texto vazio para quem confirma
+/// pelo Google, ou `null` se cancelado.
 class ExcluirContaDialog extends StatefulWidget {
-  const ExcluirContaDialog({super.key});
+  const ExcluirContaDialog({super.key, this.exigeSenha = true});
+
+  final bool exigeSenha;
 
   @override
   State<ExcluirContaDialog> createState() => _ExcluirContaDialogState();
@@ -21,7 +24,7 @@ class _ExcluirContaDialogState extends State<ExcluirContaDialog> {
 
   void _confirmar() {
     final senha = _senhaController.text;
-    if (senha.isEmpty) {
+    if (widget.exigeSenha && senha.isEmpty) {
       setState(() => _erro = 'Informe sua senha.');
       return;
     }
@@ -42,16 +45,22 @@ class _ExcluirContaDialogState extends State<ExcluirContaDialog> {
               'histórico de análises serão apagados, e não será possível '
               'recuperá-los.',
             ),
-            const SizedBox(height: 16),
-            TextField(
-              key: const Key('excluir_conta_senha'),
-              controller: _senhaController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Digite sua senha para confirmar',
-                errorText: _erro,
+            if (!widget.exigeSenha) ...[
+              const SizedBox(height: 12),
+              const Text('Em seguida, confirme com sua conta Google.'),
+            ],
+            if (widget.exigeSenha) ...[
+              const SizedBox(height: 16),
+              TextField(
+                key: const Key('excluir_conta_senha'),
+                controller: _senhaController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Digite sua senha para confirmar',
+                  errorText: _erro,
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

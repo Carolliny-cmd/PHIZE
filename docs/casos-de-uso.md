@@ -41,7 +41,7 @@ No contexto deste projeto, essas descrições são fundamentais para alinhar o d
 | **Ator Principal** | Usuário não autenticado. |
 | **Pré-condições** | O aplicativo deve estar instalado no dispositivo móvel e possuir conexão ativa com a internet. |
 | **Fluxo Principal** | 1. O usuário acessa a tela inicial e seleciona “Criar Conta”. 2. Preenche os campos obrigatórios e aceita os Termos de Uso/Privacidade. 3. Clica em “Cadastrar”. 4. O sistema valida localmente o e-mail e a força da senha. 5. O app envia os dados criptografados para o Firebase Authentication. 6. O Firebase cria a credencial e retorna o token. 7. O sistema inicializa o documento do usuário no Cloud Firestore. 8. Redirecionamento para a tela principal (Dashboard). |
-| **Fluxos Alternativos / Exceções** | E-mail já cadastrado: o sistema exibe aviso sugerindo recuperação de senha ou login. Senha fora do padrão: validação local bloqueia e orienta sobre requisitos mínimos. |
+| **Fluxos Alternativos / Exceções** | E-mail já cadastrado: o sistema exibe aviso sugerindo recuperação de senha ou login. Senha fora do padrão: validação local bloqueia e orienta sobre requisitos mínimos. Conta Google: na tela de login, “Continuar com Google” cria a conta no primeiro acesso, inicializa o documento do usuário e dispensa o e-mail de verificação (RF01). |
 | **Pós-condições** | Usuário devidamente cadastrado, autenticado e com banco de dados inicializado. |
 
 ### **UC02: Realizar Login**
@@ -51,7 +51,7 @@ No contexto deste projeto, essas descrições são fundamentais para alinhar o d
 | **Ator Principal** | Usuário cadastrado. |
 | **Pré-condições** | Cadastro prévio válido e conexão ativa com a internet. |
 | **Fluxo Principal** | 1. O usuário acessa o aplicativo e seleciona “Entrar”. 2. Insere credenciais (e-mail e senha). 3. O sistema requisita a validação ao Firebase Authentication. 4. O Firebase verifica e retorna o token de sessão. 5. O sistema carrega os dados do Cloud Firestore e libera o acesso ao app. |
-| **Fluxos Alternativos / Exceções** | Credenciais inválidas: mensagem de erro e opção “Esqueci minha senha”. Falha de conexão: aviso de impossibilidade de comunicação com o servidor. |
+| **Fluxos Alternativos / Exceções** | Credenciais inválidas: mensagem de erro e opção “Esqueci minha senha”. Falha de conexão: aviso de impossibilidade de comunicação com o servidor. Conta Google: “Continuar com Google” autentica sem senha, e a desistência na escolha da conta mantém a tela de login. |
 | **Pós-condições** | Usuário autenticado e apto a utilizar os módulos do sistema. |
 
 ### **UC03: Analisar Link Suspeito (URL Checker)**
@@ -150,6 +150,6 @@ No contexto deste projeto, essas descrições são fundamentais para alinhar o d
 | --- | --- |
 | **Ator Principal** | Usuário logado. |
 | **Pré-condições** | Conta ativa com registros vinculados. |
-| **Fluxo Principal** | 1. O usuário acessa a área de conta e seleciona “Meus dados”. 2. Escolhe entre exportar os dados vinculados à conta ou excluir a conta definitivamente. 3. Na exportação, o sistema compila os registros de histórico e perfil em arquivo legível e o disponibiliza ao usuário. 4. Na exclusão, o sistema exibe aviso de irreversibilidade e solicita confirmação explícita. 5. Confirmada a exclusão, todos os documentos vinculados ao identificador do usuário são removidos do Cloud Firestore e a credencial é removida do Firebase Authentication. |
+| **Fluxo Principal** | 1. O usuário acessa a área de conta e seleciona “Meus dados”. 2. Escolhe entre exportar os dados vinculados à conta ou excluir a conta definitivamente. 3. Na exportação, o sistema compila os registros de histórico e perfil em arquivo legível e o disponibiliza ao usuário. 4. Na exclusão, o sistema exibe aviso de irreversibilidade e solicita confirmação explícita, por senha ou, em contas sem senha, pela conta Google. 5. Confirmada a exclusão, todos os documentos vinculados ao identificador do usuário são removidos do Cloud Firestore e a credencial é removida do Firebase Authentication. |
 | **Fluxos Alternativos / Exceções** | Cancelamento: ação abortada na etapa de confirmação. Falha parcial na exclusão: o sistema registra a pendência e reprocessa a remoção, mantendo a conta bloqueada até a conclusão. |
 | **Pós-condições** | Direitos de acesso e eliminação atendidos conforme o Art. 18 da Lei nº 13.709/2018. Hashes de ameaças validadas permanecem dissociadas na base comunitária, por não constituírem dado pessoal. |

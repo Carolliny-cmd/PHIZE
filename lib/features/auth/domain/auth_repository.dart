@@ -6,6 +6,10 @@ abstract class AuthRepository {
 
   Future<void> entrar({required String email, required String senha});
 
+  /// Entra com a conta Google, criando a conta no primeiro acesso (RF01,
+  /// RF02). Devolve `false` se a pessoa desistir na escolha da conta.
+  Future<bool> entrarComGoogle();
+
   Future<void> enviarEmailRedefinicaoSenha(String email);
 
   /// Encerra a sessão atual (ex.: quando a camada intermediária deixa de

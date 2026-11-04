@@ -211,6 +211,84 @@ void main() {
     expect(find.byTooltip('Back'), findsNothing);
   });
 
+  testWidgets('conta do Google confirma a exclusão sem senha', (tester) async {
+    final conta = FakeContaRepository()..exigeSenha = false;
+    await _abrir(tester, conta: conta);
+
+    await _abrirDialogo(tester);
+    expect(find.byKey(const Key('excluir_conta_senha')), findsNothing);
+    await tester.tap(find.byKey(const Key('excluir_conta_confirmar')));
+    await tester.pumpAndSettle();
+
+    expect(conta.exclusoes, 1);
+    expect(conta.senhaRecebida, isNull);
+    expect(find.byKey(const Key('login_email')), findsOneWidget);
+  });
+
+  testWidgets('entrar com Google abre o Painel', (tester) async {
+    final auth = FakeAuthRepository();
+    await _abrir(
+      tester,
+      conta: FakeContaRepository(),
+      auth: auth,
+      rota: AppRoutes.login,
+    );
+
+    await tester.tap(find.byKey(const Key('login_google')));
+    await tester.pumpAndSettle();
+
+    expect(auth.entradasGoogle, 1);
+    expect(find.text('Recebeu algo estranho?'), findsOneWidget);
+  });
+
+  testWidgets('desistir do Google permanece no login, sem erro', (tester) async {
+    final auth = FakeAuthRepository()..resultadoGoogle = null;
+    await _abrir(
+      tester,
+      conta: FakeContaRepository(),
+      auth: auth,
+      rota: AppRoutes.login,
+    );
+
+    await tester.tap(find.byKey(const Key('login_google')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('login_email')), findsOneWidget);
+    final botao = tester.widget<ButtonStyleButton>(
+      find.byKey(const Key('login_google')),
+    );
+    expect(botao.onPressed, isNotNull);
+  });
+
+  testWidgets('falha do Google mostra a mensagem', (tester) async {
+    final auth = FakeAuthRepository()
+      ..erroGoogle = const AuthException('Falha simulada.');
+    await _abrir(
+      tester,
+      conta: FakeContaRepository(),
+      auth: auth,
+      rota: AppRoutes.login,
+    );
+
+    await tester.tap(find.byKey(const Key('login_google')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Falha simulada.'), findsOneWidget);
+  });
+
+  testWidgets('login com Google respeita a exclusão pendente', (tester) async {
+    await _abrir(
+      tester,
+      conta: FakeContaRepository(pendente: true),
+      rota: AppRoutes.login,
+    );
+
+    await tester.tap(find.byKey(const Key('login_google')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('exclusao_pendente_concluir')), findsOneWidget);
+  });
+
   testWidgets('senha incorreta mostra o erro e fica na tela', (tester) async {
     final conta = FakeContaRepository()
       ..erroExclusao = const AuthException('Senha incorreta.');

@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Prompt 9.4 — etapas reais durante a análise de print (T32, parcial; ver pontos para a equipe), com medição do Gemini (66 testes na Function, 530 no app)
+- **Última tarefa concluída:** Prompt 9.5 — login com Google (T02/T04), validado no emulador Android com conta real; Apple pendente (66 testes na Function, 535 no app)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** seguir a Fase 9, login com Google e Apple (T02/T04); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** validação da base (Fase 9, item 3); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -884,6 +884,18 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 > **Pontos para a equipe:**
 > - **O RNF03 continua não atendido ao pé da letra:** a primeira porção do resultado não aparece em até 5 segundos. A causa provável é a fila do nível gratuito, mas isso ainda não foi confirmado.
 > - Repetir a medição com o faturamento ativo. Se a demora cair, o requisito pode ser atendido sem streaming. Se continuar, revisar o RNF03.
+
+### Prompt 9.5 — Login com Google (T02/T04) (concluído; Apple pendente)
+
+- **Feito:** botão "Continuar com Google" na tela de login, que cria a conta e o documento `users/{uid}` no primeiro acesso. Essa entrada não conta nas tentativas de login do RF02.
+- **Exclusão de conta:** quem não tem senha confirma pelo Google, na exclusão e na tela de bloqueio.
+- **Configuração feita em 2026-11-04:** provedor Google ativado em Firebase Authentication, SHA-1 de depuração cadastrado no app Android e `android/app/google-services.json` atualizado.
+- **Validação no emulador Android, com conta Google real e Auth emulado:** login, criação do perfil sem senha, confirmação da exclusão pelo Google e remoção da conta e do perfil. Sair, desistir na escolha de conta e a tela de bloqueio dessas contas têm só testes automáticos.
+
+> **Pontos para a equipe:**
+> - **Apple não implementado:** exige conta de desenvolvedor Apple, projeto iOS e um Mac. Vale lembrar que a App Store costuma exigir login da Apple em app com login social.
+> - O botão usa um ícone genérico; as diretrizes do Google pedem o logo oficial antes da publicação.
+> - O SHA-1 de produção precisará ser cadastrado ao criar a chave de assinatura definitiva.
 
 ---
 

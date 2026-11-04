@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../analise/data/consentimento_repository_local.dart';
 import '../../auth/data/auth_error_mapper.dart';
+import '../../auth/data/credencial_google.dart';
 import '../../auth/domain/auth_exception.dart';
 import '../domain/conta_repository.dart';
 import '../domain/exclusao_conta.dart';
@@ -54,7 +55,12 @@ class ContaRepositoryFirebase implements ContaRepository {
   }
 
   @override
-  Future<void> excluirConta({required String senha}) async {
+  bool get exigeSenha => _usuario.providerData.any(
+    (provedor) => provedor.providerId == EmailAuthProvider.PROVIDER_ID,
+  );
+
+  @override
+  Future<void> excluirConta({String? senha}) async {
     final usuario = _usuario;
     final uid = usuario.uid;
 
@@ -63,7 +69,9 @@ class ContaRepositoryFirebase implements ContaRepository {
     // falha sozinha sem rede, e desistir de esperar não a cancela, o que
     // mandaria ao bloqueio uma conta que já deixou de existir.
     await executarExclusaoConta(
-      confirmarSenha: () => _confirmarSenha(usuario, senha),
+      confirmarSenha: () => senha == null
+          ? _confirmarPeloGoogle(usuario)
+          : _confirmarSenha(usuario, senha),
       lerDocumentos: () => _lerAnalises(uid).timeout(limiteEtapaExclusao),
       registrarPendencia: () => _pendencia.registrar(uid),
       removerDocumentos: (analises) =>
@@ -83,6 +91,18 @@ class ContaRepositoryFirebase implements ContaRepository {
   Future<bool> exclusaoPendente() async {
     final uid = _auth.currentUser?.uid;
     return uid != null && await _pendencia.existePara(uid);
+  }
+
+  Future<void> _confirmarPeloGoogle(User usuario) async {
+    try {
+      final credencial = await obterCredencialGoogle();
+      if (credencial == null) {
+        throw const AuthException('Confirmação cancelada. Nada foi apagado.');
+      }
+      await usuario.reauthenticateWithCredential(credencial);
+    } on FirebaseAuthException catch (e) {
+      throw AuthException(mapearErroAutenticacao(e));
+    }
   }
 
   Future<void> _confirmarSenha(User usuario, String senha) async {

@@ -41,7 +41,7 @@ class _ExclusaoPendentePageState extends State<ExclusaoPendentePage> {
 
   Future<void> _concluir() async {
     final senha = _senhaController.text;
-    if (senha.isEmpty) {
+    if (_conta.exigeSenha && senha.isEmpty) {
       setState(() => _erro = 'Informe sua senha.');
       return;
     }
@@ -53,7 +53,7 @@ class _ExclusaoPendentePageState extends State<ExclusaoPendentePage> {
     final navegador = Navigator.of(context);
     final mensageiro = ScaffoldMessenger.of(context);
     try {
-      await _conta.excluirConta(senha: senha);
+      await _conta.excluirConta(senha: _conta.exigeSenha ? senha : null);
       mensageiro.showSnackBar(
         const SnackBar(content: Text('Sua conta foi excluída.')),
       );
@@ -110,14 +110,15 @@ class _ExclusaoPendentePageState extends State<ExclusaoPendentePage> {
                   'terminar.',
                 ),
                 const SizedBox(height: 16),
-                TextField(
-                  key: const Key('exclusao_pendente_senha'),
-                  controller: _senhaController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Digite sua senha para continuar',
+                if (_conta.exigeSenha)
+                  TextField(
+                    key: const Key('exclusao_pendente_senha'),
+                    controller: _senhaController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Digite sua senha para continuar',
+                    ),
                   ),
-                ),
                 const SizedBox(height: 16),
                 FilledButton(
                   key: const Key('exclusao_pendente_concluir'),

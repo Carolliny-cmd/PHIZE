@@ -13,6 +13,11 @@ class FakeAuthRepository implements AuthRepository {
   String? emailRedefinicaoSolicitado;
   bool saiu = false;
 
+  /// `null` simula a desistência na escolha da conta Google.
+  bool? resultadoGoogle = true;
+  AuthException? erroGoogle;
+  int entradasGoogle = 0;
+
   @override
   Future<void> cadastrar({required String email, required String senha}) async {
     if (erroCadastro != null) throw erroCadastro!;
@@ -23,6 +28,13 @@ class FakeAuthRepository implements AuthRepository {
   Future<void> entrar({required String email, required String senha}) async {
     if (erroLogin != null) throw erroLogin!;
     emailLogado = email;
+  }
+
+  @override
+  Future<bool> entrarComGoogle() async {
+    entradasGoogle++;
+    if (erroGoogle != null) throw erroGoogle!;
+    return resultadoGoogle ?? false;
   }
 
   @override

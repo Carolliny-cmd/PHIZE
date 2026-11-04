@@ -12,6 +12,8 @@ String mapearErroAutenticacao(FirebaseAuthException excecao) {
     case 'wrong-password':
     case 'invalid-credential':
       return 'E-mail ou senha incorretos.';
+    case 'account-exists-with-different-credential':
+      return 'Este e-mail já tem uma conta. Entre com seu e-mail e senha.';
     case 'too-many-requests':
       return 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
     case 'network-request-failed':
