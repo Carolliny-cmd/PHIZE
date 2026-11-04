@@ -13,6 +13,8 @@ A curadoria é humana: nenhum conteúdo entra na base de forma automática. A IA
 | `rascunhos/<id>.json` | Fichas ainda não revisadas, com `curadoria` em branco. Não são indexadas. |
 | `indice.json` | Índice gerado pelo script. Não editar à mão. |
 | `avaliacao/mensagens.json` | Mensagens inventadas, rotuladas, para medir a recuperação (`npm run avaliar-recuperacao`; ver `docs/calibracao-recuperacao.md`). |
+| `avaliacao/independente.json` | Mensagens escritas por pessoas de fora, usadas na comparação com e sem a base (`npm run avaliar-analise`). Mesmo formato de `mensagens.json`, com `id` e `esperado` nulo quando nenhuma ficha cobre o golpe. Ainda não existe. |
+| `avaliacao/relatorios/` | Resultados de `avaliar-analise`: identificadores e sinais, nunca o texto das mensagens. |
 
 O índice fica dentro de `functions/` porque a consulta (Prompt 7.2) precisa gerar o embedding do texto com a chave do Gemini, que só existe na camada intermediária. Ele é publicado junto com a Function, que o lê ao iniciar: uma ficha nova só vale na análise depois que as Functions forem publicadas de novo (ou o emulador reiniciado).
 

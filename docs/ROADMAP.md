@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Prompt 9.5 — login com Google (T02/T04), validado no emulador Android com conta real; Apple pendente (66 testes na Function, 535 no app)
+- **Última tarefa concluída:** Prompt 9.6 — script de comparação com e sem a base e documento de coleta (75 testes na Function, 535 no app)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** validação da base (Fase 9, item 3); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** coletar as mensagens independentes e rodar a comparação (Fase 9, item 3); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -896,6 +896,14 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 > - **Apple não implementado:** exige conta de desenvolvedor Apple, projeto iOS e um Mac. Vale lembrar que a App Store costuma exigir login da Apple em app com login social.
 > - O botão usa um ícone genérico; as diretrizes do Google pedem o logo oficial antes da publicação.
 > - O SHA-1 de produção precisará ser cadastrado ao criar a chave de assinatura definitiva.
+
+### Prompt 9.6 — Comparação com e sem a base (preparada, falta a coleta)
+
+- **Script:** `npm run avaliar-analise -- --arquivo independente.json --repeticoes 3`. Roda cada mensagem com e sem a base e mede golpes detectados, falsos alarmes, correspondência com a ficha certa e variação dos sinais. O relatório guarda identificadores e sinais, nunca o texto.
+- **Detecção:** ter ao menos um sinal, o que já tira a mensagem da faixa verde. Assim o script não duplica os pesos do score.
+- **Trava:** o script recusa mensagem com CPF, telefone ou e-mail sem marcador, antes de enviar qualquer coisa.
+- **Coleta:** [documento para as pessoas preencherem](https://claude.ai/artifact/5Ra1FxgdbR7x5Me7E3yLif), com meta de 20 golpes e 20 mensagens legítimas difíceis. Ao terminar, as mensagens vão para `functions/base-conhecimento/avaliacao/independente.json`.
+- **Piloto, só para testar o script:** 5 golpes e 5 mensagens comuns escritas pela IA, 2 repetições. Com a base: 5 de 5 golpes, nenhum falso alarme, 5 correspondências certas. Sem a base: 5 de 5 golpes, 1 falso alarme. Amostra pequena e não independente: não prova o diferencial.
 
 ---
 
