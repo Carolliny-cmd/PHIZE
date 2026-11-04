@@ -55,7 +55,7 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Entrar'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Phize'), findsOneWidget);
+    expect(find.text('Recebeu algo estranho?'), findsOneWidget);
   });
 
   testWidgets('Login com credenciais inválidas mostra mensagem genérica e não navega', (tester) async {
@@ -70,7 +70,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('E-mail ou senha incorretos.'), findsOneWidget);
-    expect(find.text('Phize'), findsNothing);
+    expect(find.text('Recebeu algo estranho?'), findsNothing);
   });
 
   testWidgets('Esqueci minha senha mostra mensagem genérica', (tester) async {
@@ -143,7 +143,7 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Criar conta'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Phize'), findsOneWidget);
+    expect(find.text('Recebeu algo estranho?'), findsOneWidget);
     expect(repo.emailCadastrado, 'nova@exemplo.com');
   });
 
@@ -175,7 +175,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Phize'), findsOneWidget);
+    expect(find.text('Recebeu algo estranho?'), findsOneWidget);
 
     final analisarPrint = tester.widget<FilledButton>(
       find.widgetWithText(FilledButton, 'Analisar print'),

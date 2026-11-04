@@ -12,9 +12,23 @@ extension FaixaRiscoRotulo on FaixaRisco {
         FaixaRisco.alto => RotulosRisco.altoRisco,
       };
 
+  String get oQueFazer => switch (this) {
+        FaixaRisco.baixo => RotulosRisco.oQueFazerBaixoRisco,
+        FaixaRisco.medio => RotulosRisco.oQueFazerMedioRisco,
+        FaixaRisco.alto => RotulosRisco.oQueFazerAltoRisco,
+      };
+
+  /// Cor do medidor.
   Color get cor => switch (this) {
-        FaixaRisco.baixo => Colors.green,
-        FaixaRisco.medio => Colors.amber.shade800,
-        FaixaRisco.alto => Colors.red,
+        FaixaRisco.baixo => const Color(0xFF16A34A),
+        FaixaRisco.medio => const Color(0xFFF5A400),
+        FaixaRisco.alto => const Color(0xFFD92D20),
+      };
+
+  /// Variação com contraste suficiente para texto sobre fundo branco.
+  Color get corTexto => switch (this) {
+        FaixaRisco.baixo => const Color(0xFF15803D),
+        FaixaRisco.medio => const Color(0xFF8A5A00),
+        FaixaRisco.alto => const Color(0xFFC4261B),
       };
 }

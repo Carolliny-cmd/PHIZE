@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
+import '../../../../shared/widgets/phize_bottom_nav.dart';
 import '../../data/historico_repository_firestore.dart';
 import '../../domain/analise_risco.dart';
 import '../../domain/faixa_risco.dart';
@@ -8,7 +9,6 @@ import '../../domain/historico_repository.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../../domain/rotulos_risco.dart';
 import '../widgets/aviso_card.dart';
-import '../widgets/phize_bottom_nav.dart';
 
 String formatarDataHistorico(DateTime data) {
   return '${data.day.toString().padLeft(2, '0')}/'
@@ -89,10 +89,14 @@ class _ListaAnalises extends StatelessWidget {
         return Card(
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: analise.faixa.cor,
+              backgroundColor: analise.faixa.corTexto,
               child: Text(
                 '${analise.score}',
-                style: const TextStyle(color: Colors.white, fontSize: 12),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             title: Text(analise.faixa.rotulo),

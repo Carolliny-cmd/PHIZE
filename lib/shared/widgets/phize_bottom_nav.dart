@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/routing/app_routes.dart';
+import '../../core/routing/app_routes.dart';
 
-/// Navegação inferior compartilhada entre Painel e Histórico — as duas
-/// únicas telas da feature analise que precisam dela.
+/// Navegação principal do aplicativo: Início, Histórico e Conta.
 class PhizeBottomNav extends StatelessWidget {
   const PhizeBottomNav({super.key, required this.currentIndex});
 
@@ -15,8 +14,12 @@ class PhizeBottomNav extends StatelessWidget {
       selectedIndex: currentIndex,
       onDestinationSelected: (index) {
         if (index == currentIndex) return;
-        final route = index == 0 ? AppRoutes.dashboard : AppRoutes.historico;
-        Navigator.of(context).pushReplacementNamed(route);
+        const rotas = [
+          AppRoutes.dashboard,
+          AppRoutes.historico,
+          AppRoutes.meusDados,
+        ];
+        Navigator.of(context).pushReplacementNamed(rotas[index]);
       },
       destinations: const [
         NavigationDestination(
@@ -28,6 +31,11 @@ class PhizeBottomNav extends StatelessWidget {
           icon: Icon(Icons.history_outlined),
           selectedIcon: Icon(Icons.history),
           label: 'Histórico',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.person_outline),
+          selectedIcon: Icon(Icons.person),
+          label: 'Conta',
         ),
       ],
     );

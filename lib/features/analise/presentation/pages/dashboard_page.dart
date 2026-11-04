@@ -2,64 +2,76 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
-import '../widgets/phize_bottom_nav.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/marca_phize.dart';
+import '../../../../shared/widgets/phize_bottom_nav.dart';
 
-/// Painel inicial: ponto de entrada para analisar link ou print (RF03/RF04).
+/// Tela inicial: uma pergunta e duas ações, analisar print ou link (RF03,
+/// RF04). O print vem primeiro por ser o caso mais comum.
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final tema = Theme.of(context).textTheme;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Phize'),
-        actions: [
-          IconButton(
-            key: const Key('dashboard_meus_dados'),
-            tooltip: 'Meus dados',
-            icon: const Icon(Icons.person_outline),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(AppRoutes.meusDados),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
+      appBar: AppBar(title: const MarcaPhize()),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Olá!', style: Theme.of(context).textTheme.headlineSmall),
-            const SizedBox(height: 4),
-            const Text('O que você recebeu e quer verificar?'),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              key: const Key('dashboard_analisar_link'),
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(AppRoutes.analisarLink),
-              icon: const Icon(Icons.link),
-              label: const Text('Analisar link'),
+            Text('Recebeu algo estranho?', style: tema.headlineMedium),
+            const SizedBox(height: 8),
+            Text(
+              'Veja se é golpe antes de responder.',
+              style: tema.bodyLarge?.copyWith(
+                color: CoresPhize.textoSecundario,
+              ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 32),
             // Na web não há seleção de imagem com Zero-Persistence nem OCR
             // embarcado (SeletorImagemGaleria, ReconhecedorTextoMlKit).
             FilledButton.icon(
               key: const Key('dashboard_analisar_print'),
+              style: FilledButton.styleFrom(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+              ),
               onPressed: kIsWeb
                   ? null
-                  : () =>
-                        Navigator.of(context)
-                            .pushNamed(AppRoutes.analisarPrint),
+                  : () => Navigator.of(
+                      context,
+                    ).pushNamed(AppRoutes.analisarPrint),
               icon: const Icon(Icons.image_outlined),
               label: const Text('Analisar print'),
             ),
             if (kIsWeb)
               const Padding(
-                padding: EdgeInsets.only(top: 4, left: 4),
+                padding: EdgeInsets.only(top: 6, left: 4),
                 child: Text(
                   'Disponível apenas em dispositivos móveis (Android/iOS).',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: CoresPhize.textoSecundario,
+                  ),
                 ),
               ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              key: const Key('dashboard_analisar_link'),
+              style: FilledButton.styleFrom(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                backgroundColor: CoresPhize.azulClaro,
+                foregroundColor: CoresPhize.azulEscuro,
+              ),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.analisarLink),
+              icon: const Icon(Icons.link),
+              label: const Text('Analisar link'),
+            ),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
+import '../../../../shared/widgets/marca_phize.dart';
 import '../../../analise/domain/caixa_compartilhamento.dart';
 import '../../../conta/data/conta_repository_firebase.dart';
 import '../../../conta/domain/conta_repository.dart';
@@ -138,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const FlutterLogo(size: 64),
+              const Center(child: MarcaPhize(tamanho: 40)),
               const SizedBox(height: 32),
               if (widget.caixaCompartilhamento case final caixa?)
                 ListenableBuilder(

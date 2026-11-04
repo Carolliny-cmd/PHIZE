@@ -62,7 +62,7 @@ void main() {
       rota: AppRoutes.dashboard,
     );
 
-    await tester.tap(find.byKey(const Key('dashboard_meus_dados')));
+    await tester.tap(find.text('Conta'));
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('meus_dados_exportar')), findsOneWidget);
@@ -245,7 +245,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('exclusao_pendente_concluir')), findsOneWidget);
-    expect(find.byKey(const Key('dashboard_meus_dados')), findsNothing);
+    expect(find.text('Conta'), findsNothing);
   });
 
   group('conteúdo compartilhado sem sessão (RF10)', () {

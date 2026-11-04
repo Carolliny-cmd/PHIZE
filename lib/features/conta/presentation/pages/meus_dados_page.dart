@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
+import '../../../../shared/widgets/phize_bottom_nav.dart';
 import '../../../analise/data/historico_repository_firestore.dart';
 import '../../../analise/domain/historico_repository.dart';
 import '../../../auth/data/firebase_auth_repository.dart';
@@ -141,6 +142,7 @@ class _MeusDadosPageState extends State<MeusDadosPage> {
           // A exclusão em andamento decide sozinha para onde a tela vai.
           automaticallyImplyLeading: !_processando,
         ),
+        bottomNavigationBar: const PhizeBottomNav(currentIndex: 2),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),

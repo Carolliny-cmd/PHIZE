@@ -12,6 +12,15 @@ class RotulosRisco {
   static const String medioRisco = 'Atenção: sinais suspeitos';
   static const String altoRisco = 'Alto risco de golpe';
 
+  /// Orientação imediata por faixa (seção "O que fazer agora" do resultado).
+  static const String oQueFazerBaixoRisco =
+      'Mesmo assim, desconfie de pedidos de dinheiro, senhas ou códigos.';
+  static const String oQueFazerMedioRisco =
+      'Não pague nem envie dados ainda. Confirme antes por um canal oficial.';
+  static const String oQueFazerAltoRisco =
+      'Não envie dinheiro nem dados. Confirme por um canal oficial ou com a '
+      'pessoa, por outro meio.';
+
   static const String avisoPermanente =
       'Esta análise é uma ferramenta de apoio à decisão e não substitui a '
       'verificação direta junto à instituição envolvida.';

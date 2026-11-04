@@ -29,10 +29,8 @@ AnaliseRisco _analise({
 Future<void> _abrir(WidgetTester tester, FakeHistoricoRepository repo) async {
   await tester.pumpWidget(
     MaterialApp(
-      onGenerateRoute: (settings) => AppRouter.onGenerateRoute(
-        settings,
-        historicoRepository: repo,
-      ),
+      onGenerateRoute: (settings) =>
+          AppRouter.onGenerateRoute(settings, historicoRepository: repo),
       initialRoute: AppRoutes.historico,
     ),
   );
@@ -90,6 +88,27 @@ void main() {
     expect(find.text(RotulosRisco.avisoFalibilidadeReputacao), findsNothing);
   });
 
+  test('a orientação por faixa nunca afirma ausência de risco', () {
+    for (final faixa in FaixaRisco.values) {
+      expect(faixa.oQueFazer.toLowerCase(), isNot(contains('seguro')));
+      expect(faixa.oQueFazer.toLowerCase(), isNot(contains('sem risco')));
+    }
+  });
+
+  testWidgets('detalhe mostra o que fazer conforme a faixa gravada', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DetalheHistoricoPage(
+          analise: _analise(score: 0, faixa: FaixaRisco.medio),
+        ),
+      ),
+    );
+
+    expect(find.text(RotulosRisco.oQueFazerMedioRisco), findsOneWidget);
+  });
+
   testWidgets('detalhe de link: sem categoria e com o aviso do Safe Browsing', (
     tester,
   ) async {
@@ -112,7 +131,7 @@ void main() {
     expect(find.textContaining('ainda não fez nenhuma'), findsOneWidget);
     await tester.tap(find.text('Fazer minha primeira análise'));
     await tester.pumpAndSettle();
-    expect(find.text('Phize'), findsOneWidget);
+    expect(find.text('Recebeu algo estranho?'), findsOneWidget);
   });
 
   testWidgets('falha ao carregar oferece nova tentativa', (tester) async {

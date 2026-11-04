@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Prompt 8.3 — compartilhamento nativo no Android (UC11/RF10), validado no emulador com compartilhamento real pelo Google Fotos (61 testes na Function, 510 no app); com isso, as três tarefas da Fase 8 estão feitas
+- **Última tarefa concluída:** Prompt 9.1 — design Leve aplicado às telas (61 testes na Function, 512 no app); a Fase 8 está concluída no Android
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** decidir o plano pós-Fase 8 (itens do MVP fora das fases: T02/T04, T19, T32, T33; validação da base e do diferencial); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** seguir a Fase 9, itens do MVP (T33, T19, T32, T02/T04); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -198,7 +198,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | ~~Limite de domínio recém-criado~~ — **decidido: v1.0, ver docs/score-calibracao.md** | ~~Fase 2~~ Resolvida | RF07 |
 | ~~Regra de verificação incompleta~~ — **decidido: v1.0, ver docs/score-calibracao.md** | ~~Fase 2~~ Resolvida | RF07 |
 | ~~Volume mínimo de texto do OCR~~ — **decidido: v1.1, ver docs/limite-texto-ocr.md** | ~~Fase 6~~ Resolvida | UC04 |
-| Limiar de denúncias para ocultar reporte | Fase 9 | RF11 |
+| Limiar de denúncias para ocultar reporte | Fase 10 | RF11 |
 | ~~Estrutura de pastas: por camada ou por feature~~ — **decidido: por feature** | ~~Fase 1~~ Resolvida | CLAUDE.md §6, commit `f17bb5c` |
 | Bloquear acesso de usuário com e-mail não verificado? | Fase 1 (pode ser revista depois) | RF01 / UC01 |
 | Tempo de expiração do bloqueio de login (provisório: 15 min) | Revisão | RF02 |
@@ -825,7 +825,31 @@ UC11/RF10 (recebimento por compartilhamento nativo).
 
 ---
 
-## FASE 9 — EXPANSÃO (PÓS-MVP)
+## FASE 9 — DESIGN, FECHAMENTO E VALIDAÇÃO DO MVP
+
+Plano definido em 2026-11-04. O design vem antes dos itens restantes para que eles já nasçam no visual novo.
+
+1. **Design:** direção Leve (Prompt 9.1); falta o logo definitivo.
+2. **Itens do MVP fora das fases anteriores:** tela de consentimento (T33), destaque das frases suspeitas (T19), resposta progressiva (T32), login com Google e Apple (T02/T04).
+3. **Validação da base:** mensagens de teste escritas por outras pessoas, comparação da análise com e sem a base, variação do score entre execuções. Pode correr em paralelo aos itens acima.
+4. **Ambiente real:** faturamento do Gemini, plano Blaze, publicação das Functions e das regras do Firestore, teste com WhatsApp em aparelho real.
+5. **Testes com pessoas:** idosos e pessoas com menos familiaridade digital, com consentimento dos participantes.
+
+### Prompt 9.1 — Design Leve (concluído no código)
+
+- **Tema:** `lib/core/theme/app_theme.dart` concentra cores, tipografia e componentes. Fonte Plus Jakarta Sans embutida no app, com licença em `assets/fonts/OFL.txt`.
+- **Termômetro:** medidor em arco de 0 a 100, que atende melhor ao RF07 que o círculo anterior.
+- **O que fazer agora:** orientação fixa por faixa em `RotulosRisco`, sem passar pelo modelo.
+- **Navegação:** abas Início, Histórico e Conta. A aba Conta abre Meus dados, e `PhizeBottomNav` passou para `lib/shared/`, por ser usada por duas features.
+- **Cores do semáforo:** o medidor usa a cor forte, e o texto usa uma variação mais escura, para ter contraste sobre o branco.
+- **Ícone:** provisório, com a letra "p", até a criação do logo. Só o Android foi atualizado.
+- **Decisão de tela:** explicação, verificações e fontes continuam abertas na tela de resultado, abaixo da orientação, em vez de recolhidas em "Ver mais". O RF07 pede exibição junto com a resposta da IA, e o UC03 e os termos do Safe Browsing pedem as fontes e o aviso visíveis.
+
+> **Pontos para a equipe:** a orientação fixa é genérica por faixa; uma versão por categoria exigiria textos revisados. Tela de resultado, histórico e detalhe ainda precisam de conferência visual em tela real.
+
+---
+
+## FASE 10 — EXPANSÃO (PÓS-MVP)
 
 Comunidade (UC05, UC07–UC10) e moderação (RF11).
 Só depois do MVP validado, como o documento de Requisitos posiciona.

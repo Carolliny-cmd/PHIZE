@@ -7,6 +7,7 @@ import '../../domain/rotulos_risco.dart';
 import '../../domain/sinal_texto_print.dart';
 import '../../domain/verificacao_link.dart';
 import '../widgets/aviso_card.dart';
+import '../widgets/o_que_fazer_card.dart';
 import '../widgets/termometro_risco.dart';
 
 /// Tela de Resultado da análise de link (RF03, RF07, UC03 passo 8) e de
@@ -55,6 +56,8 @@ class ResultadoAnalisePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TermometroRisco(score: score.pontuacao, faixa: score.faixa),
+              const SizedBox(height: 20),
+              OQueFazerCard(faixa: score.faixa),
               if (resultadoLink != null)
                 ..._detalhesLink(context, resultadoLink),
               if (resultadoPrint != null)

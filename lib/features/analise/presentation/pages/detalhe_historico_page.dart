@@ -4,6 +4,7 @@ import '../../domain/analise_risco.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../../domain/rotulos_risco.dart';
 import '../widgets/aviso_card.dart';
+import '../widgets/o_que_fazer_card.dart';
 import '../widgets/termometro_risco.dart';
 import 'historico_page.dart';
 
@@ -38,6 +39,8 @@ class DetalheHistoricoPage extends StatelessWidget {
                 '${formatarDataHistorico(analise.data)}',
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 20),
+              OQueFazerCard(faixa: analise.faixa),
               if (categoria != null) ...[
                 const SizedBox(height: 24),
                 Text('Tipo de abordagem', style: titulo),

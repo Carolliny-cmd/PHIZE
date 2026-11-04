@@ -326,7 +326,7 @@ void main() {
       );
       await tester.tap(find.byKey(const Key('compartilhado_inicio')));
       await tester.pumpAndSettle();
-      expect(find.text('Phize'), findsOneWidget);
+      expect(find.text('Recebeu algo estranho?'), findsOneWidget);
     });
 
     testWidgets('tipo não suportado avisa', (tester) async {
