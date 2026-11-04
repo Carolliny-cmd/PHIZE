@@ -11,6 +11,7 @@ import '../../features/analise/domain/analise_risco.dart';
 import '../../features/analise/domain/analise_texto_client.dart';
 import '../../features/analise/domain/caixa_compartilhamento.dart';
 import '../../features/analise/domain/captura_imagem.dart';
+import '../../features/analise/domain/consentimento_repository.dart';
 import '../../features/analise/domain/consulta_idade_dominio.dart';
 import '../../features/analise/domain/consulta_reputacao_dominio.dart';
 import '../../features/analise/domain/historico_repository.dart';
@@ -51,6 +52,7 @@ class AppRouter {
     ContaRepository? contaRepository,
     CompartilhadorArquivo? compartilhador,
     CaixaCompartilhamento? caixaCompartilhamento,
+    ConsentimentoRepository? consentimentoRepository,
   }) {
     final caixa = caixaCompartilhamento ?? CaixaCompartilhamento.instancia;
 
@@ -108,6 +110,7 @@ class AppRouter {
             captura: CapturaImagem(seletorImagem ?? SeletorImagemGaleria()),
             authRepository: authRepository,
             historicoRepository: historicoRepository,
+            consentimentoRepository: consentimentoRepository,
           ),
         );
       case AppRoutes.analiseCompartilhada:
@@ -118,6 +121,7 @@ class AppRouter {
             analisadorLink: criarAnalisadorLink(),
             historicoRepository: historicoRepository,
             authRepository: authRepository,
+            consentimentoRepository: consentimentoRepository,
           ),
         );
       case AppRoutes.meusDados:
@@ -127,6 +131,7 @@ class AppRouter {
             historicoRepository: historicoRepository,
             compartilhador: compartilhador,
             authRepository: authRepository,
+            consentimentoRepository: consentimentoRepository,
           ),
         );
       case AppRoutes.exclusaoPendente:

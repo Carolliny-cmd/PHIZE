@@ -32,6 +32,7 @@ import 'package:phize/features/analise/presentation/pages/analise_compartilhada_
 import 'package:phize/features/analise/presentation/pages/resultado_analise_page.dart';
 
 import '../../../support/fake_auth_repository.dart';
+import '../../../support/fake_consentimento_repository.dart';
 import '../../../support/fake_historico_repository.dart';
 
 /// Texto de golpe que passa nas duas verificações de volume mínimo.
@@ -145,6 +146,7 @@ Future<void> _abrir(
   ReconhecedorTexto? reconhecedor,
   AnaliseTextoClient? cliente,
   FakeHistoricoRepository? historico,
+  FakeConsentimentoRepository? consentimento,
   String rotaInicial = AppRoutes.analisarPrint,
 }) async {
   await tester.pumpWidget(
@@ -155,6 +157,8 @@ Future<void> _abrir(
         reconhecedorTexto: reconhecedor ?? _ReconhecedorFalso(),
         analiseTextoClient: cliente ?? _ClienteFalso(),
         historicoRepository: historico ?? FakeHistoricoRepository(),
+        consentimentoRepository:
+            consentimento ?? FakeConsentimentoRepository(),
       ),
       initialRoute: rotaInicial,
     ),
@@ -204,6 +208,7 @@ Future<void> _abrirCompartilhado(
   AnaliseTextoClient? cliente,
   ReconhecedorTexto? reconhecedor,
   FakeHistoricoRepository? historico,
+  FakeConsentimentoRepository? consentimento,
 }) async {
   final caixa = CaixaCompartilhamento()..guardar(conteudo);
   await tester.pumpWidget(
@@ -215,6 +220,8 @@ Future<void> _abrirCompartilhado(
         historicoRepository: historico ?? FakeHistoricoRepository(),
         authRepository: FakeAuthRepository(),
         caixaCompartilhamento: caixa,
+        consentimentoRepository:
+            consentimento ?? FakeConsentimentoRepository(),
       ),
       initialRoute: AppRoutes.analiseCompartilhada,
     ),
@@ -226,6 +233,77 @@ ImagemEmMemoria _imagemCompartilhada() =>
     ImagemEmMemoria(Uint8List.fromList([5, 5, 5]));
 
 void main() {
+  group('consentimento (T33)', () {
+    testWidgets('sem aceite, a galeria não abre nem o texto é enviado', (
+      tester,
+    ) async {
+      final seletor = _SeletorFalso(arquivo: _ArquivoFalso());
+      final cliente = _ClienteFalso();
+      await _abrir(
+        tester,
+        seletor: seletor,
+        cliente: cliente,
+        consentimento: FakeConsentimentoRepository(aceitou: false),
+      );
+
+      await tester.tap(find.byKey(const Key('analisar_print_botao')));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(
+        find.byKey(const Key('consentimento_recusar')),
+      );
+      await tester.tap(find.byKey(const Key('consentimento_recusar')));
+      await tester.pumpAndSettle();
+
+      expect(seletor.selecoes, 0);
+      expect(cliente.chamadas, 0);
+    });
+
+    testWidgets('ao aceitar, a análise continua', (tester) async {
+      final seletor = _SeletorFalso(arquivo: _ArquivoFalso());
+      await _abrir(
+        tester,
+        seletor: seletor,
+        consentimento: FakeConsentimentoRepository(aceitou: false),
+      );
+
+      await tester.tap(find.byKey(const Key('analisar_print_botao')));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(
+        find.byKey(const Key('consentimento_aceitar')),
+      );
+      await tester.tap(find.byKey(const Key('consentimento_aceitar')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('resultado_aviso_permanente')), findsOneWidget);
+    });
+
+    testWidgets('imagem compartilhada sem aceite é descartada sem envio', (
+      tester,
+    ) async {
+      final imagem = _imagemCompartilhada();
+      final cliente = _ClienteFalso();
+      await _abrirCompartilhado(
+        tester,
+        conteudo: ImagemCompartilhada(imagem),
+        cliente: cliente,
+        consentimento: FakeConsentimentoRepository(aceitou: false),
+      );
+
+      await tester.ensureVisible(
+        find.byKey(const Key('consentimento_recusar')),
+      );
+      await tester.tap(find.byKey(const Key('consentimento_recusar')));
+      await tester.pumpAndSettle();
+
+      expect(imagem.descartada, isTrue);
+      expect(cliente.chamadas, 0);
+      expect(
+        find.text(AnaliseCompartilhadaPage.mensagemSemConsentimento),
+        findsOneWidget,
+      );
+    });
+  });
+
   group('compartilhamento nativo (UC11)', () {
     testWidgets('imagem vai direto ao resultado, sem a galeria, é descartada '
         'e entra no histórico', (tester) async {
@@ -866,6 +944,7 @@ void main() {
               respostas: [const AnaliseTextoNaoAutenticadoException()],
             ),
             historicoRepository: FakeHistoricoRepository(),
+            consentimentoRepository: FakeConsentimentoRepository(),
           ),
           initialRoute: AppRoutes.analisarPrint,
         ),
@@ -933,6 +1012,7 @@ void main() {
               seletorImagem: _SeletorFalso(arquivo: _ArquivoFalso()),
               reconhecedorTexto: _ReconhecedorFalso(),
               analiseTextoClient: cliente,
+              consentimentoRepository: FakeConsentimentoRepository(),
             ),
             initialRoute: AppRoutes.analisarPrint,
           ),

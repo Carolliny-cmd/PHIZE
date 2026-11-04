@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../analise/data/consentimento_repository_local.dart';
 import '../../auth/data/auth_error_mapper.dart';
 import '../../auth/domain/auth_exception.dart';
 import '../domain/conta_repository.dart';
@@ -71,6 +72,11 @@ class ContaRepositoryFirebase implements ContaRepository {
       concluir: _pendencia.limpar,
     );
     await CompartilhadorArquivoNativo.removerCopiaLocal();
+    try {
+      await ConsentimentoRepositoryLocal.removerDe(uid);
+    } catch (_) {
+      // A conta já não existe; a marca não identifica ninguém.
+    }
   }
 
   @override

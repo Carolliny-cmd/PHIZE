@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
 import '../../../../shared/widgets/phize_bottom_nav.dart';
+import '../../../analise/data/consentimento_repository_local.dart';
 import '../../../analise/data/historico_repository_firestore.dart';
+import '../../../analise/domain/consentimento_repository.dart';
 import '../../../analise/domain/historico_repository.dart';
+import '../../../analise/presentation/pages/consentimento_page.dart';
 import '../../../auth/data/firebase_auth_repository.dart';
 import '../../../auth/domain/auth_exception.dart';
 import '../../../auth/domain/auth_repository.dart';
@@ -22,12 +25,14 @@ class MeusDadosPage extends StatefulWidget {
     this.historicoRepository,
     this.compartilhador,
     this.authRepository,
+    this.consentimentoRepository,
   });
 
   final ContaRepository? contaRepository;
   final HistoricoRepository? historicoRepository;
   final CompartilhadorArquivo? compartilhador;
   final AuthRepository? authRepository;
+  final ConsentimentoRepository? consentimentoRepository;
 
   @override
   State<MeusDadosPage> createState() => _MeusDadosPageState();
@@ -44,6 +49,8 @@ class _MeusDadosPageState extends State<MeusDadosPage> {
       widget.compartilhador ?? CompartilhadorArquivoNativo();
   late final AuthRepository _auth =
       widget.authRepository ?? FirebaseAuthRepository();
+  late final ConsentimentoRepository _consentimento =
+      widget.consentimentoRepository ?? ConsentimentoRepositoryLocal();
 
   bool _processando = false;
   String? _erro;
@@ -116,6 +123,14 @@ class _MeusDadosPageState extends State<MeusDadosPage> {
     }
   }
 
+  void _abrirPrivacidade() {
+    Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => ConsentimentoPage(repositorio: _consentimento),
+      ),
+    );
+  }
+
   Future<void> _sair() async {
     final navegador = Navigator.of(context);
     try {
@@ -181,6 +196,11 @@ class _MeusDadosPageState extends State<MeusDadosPage> {
                   label: const Text('Excluir minha conta'),
                 ),
                 const SizedBox(height: 32),
+                TextButton(
+                  key: const Key('meus_dados_privacidade'),
+                  onPressed: _processando ? null : _abrirPrivacidade,
+                  child: const Text('Privacidade da análise de print'),
+                ),
                 TextButton(
                   key: const Key('meus_dados_sair'),
                   onPressed: _processando ? null : _sair,

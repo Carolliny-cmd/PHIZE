@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../auth/data/firebase_auth_repository.dart';
 import '../../../auth/domain/auth_repository.dart';
+import '../../data/consentimento_repository_local.dart';
 import '../../data/historico_repository_firestore.dart';
 import '../../domain/analisador_link.dart';
 import '../../domain/analisador_print.dart';
 import '../../domain/analise_risco.dart';
 import '../../domain/caixa_compartilhamento.dart';
+import '../../domain/consentimento_repository.dart';
 import '../../domain/conteudo_compartilhado.dart';
 import '../../domain/historico_repository.dart';
 import '../../domain/imagem_em_memoria.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../registro_historico.dart';
+import 'consentimento_page.dart';
 
 /// Análise do conteúdo recebido por compartilhamento (RF10 / UC11): começa
 /// sozinha e vai direto ao resultado, sem passar pela galeria nem pelo campo
@@ -26,8 +29,12 @@ class AnaliseCompartilhadaPage extends StatefulWidget {
     required this.analisadorLink,
     this.historicoRepository,
     this.authRepository,
+    this.consentimentoRepository,
   });
 
+  static const String mensagemSemConsentimento =
+      'Para analisar um print, precisamos da sua concordância. A imagem foi '
+      'descartada. Você pode compartilhar de novo quando quiser.';
   static const String mensagemTextoSemLink =
       'Só conseguimos analisar links por aqui, e não encontramos um único '
       'link neste texto. Para analisar uma mensagem, tire um print dela e '
@@ -45,6 +52,7 @@ class AnaliseCompartilhadaPage extends StatefulWidget {
   final AnalisadorLink analisadorLink;
   final HistoricoRepository? historicoRepository;
   final AuthRepository? authRepository;
+  final ConsentimentoRepository? consentimentoRepository;
 
   @override
   State<AnaliseCompartilhadaPage> createState() =>
@@ -58,6 +66,8 @@ class _AnaliseCompartilhadaPageState extends State<AnaliseCompartilhadaPage> {
       widget.historicoRepository ?? HistoricoRepositoryFirestore();
   late final AuthRepository _auth =
       widget.authRepository ?? FirebaseAuthRepository();
+  late final ConsentimentoRepository _consentimento =
+      widget.consentimentoRepository ?? ConsentimentoRepositoryLocal();
 
   ConteudoCompartilhado? _conteudo;
   ImagemELinkCompartilhados? _escolha;
@@ -102,10 +112,21 @@ class _AnaliseCompartilhadaPageState extends State<AnaliseCompartilhadaPage> {
   }
 
   Future<void> _analisarImagem(ImagemEmMemoria imagem) async {
-    setState(() {
-      _escolha = null;
-      _carregando = true;
-    });
+    setState(() => _escolha = null);
+    final consentiu = await confirmarConsentimento(context, _consentimento);
+    if (!mounted) {
+      imagem.descartar();
+      return;
+    }
+    if (!consentiu) {
+      imagem.descartar();
+      setState(
+        () => _mensagem = AnaliseCompartilhadaPage.mensagemSemConsentimento,
+      );
+      return;
+    }
+
+    setState(() => _carregando = true);
     ResultadoAnalisePrint resultado;
     try {
       resultado = await widget.analisadorPrint.analisarImagem(imagem);

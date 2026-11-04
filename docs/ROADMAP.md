@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Prompt 9.1 — design Leve aplicado às telas (61 testes na Function, 512 no app); a Fase 8 está concluída no Android
+- **Última tarefa concluída:** Prompt 9.2 — tela de consentimento (T33), antes da análise de print (61 testes na Function, 524 no app)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** seguir a Fase 9, itens do MVP (T33, T19, T32, T02/T04); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** seguir a Fase 9, itens do MVP (T19, T32, T02/T04); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -829,11 +829,12 @@ UC11/RF10 (recebimento por compartilhamento nativo).
 
 Plano definido em 2026-11-04. O design vem antes dos itens restantes para que eles já nasçam no visual novo.
 
-1. **Design:** direção Leve (Prompt 9.1); falta o logo definitivo.
+1. **Design:** direção Leve (Prompt 9.1).
 2. **Itens do MVP fora das fases anteriores:** tela de consentimento (T33), destaque das frases suspeitas (T19), resposta progressiva (T32), login com Google e Apple (T02/T04).
 3. **Validação da base:** mensagens de teste escritas por outras pessoas, comparação da análise com e sem a base, variação do score entre execuções. Pode correr em paralelo aos itens acima.
 4. **Ambiente real:** faturamento do Gemini, plano Blaze, publicação das Functions e das regras do Firestore, teste com WhatsApp em aparelho real.
 5. **Testes com pessoas:** idosos e pessoas com menos familiaridade digital, com consentimento dos participantes.
+6. **Logo definitivo:** decisão da equipe (2026-11-04), última etapa.
 
 ### Prompt 9.1 — Design Leve (concluído no código)
 
@@ -845,7 +846,20 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 - **Ícone:** provisório, com a letra "p", até a criação do logo. Só o Android foi atualizado.
 - **Decisão de tela:** explicação, verificações e fontes continuam abertas na tela de resultado, abaixo da orientação, em vez de recolhidas em "Ver mais". O RF07 pede exibição junto com a resposta da IA, e o UC03 e os termos do Safe Browsing pedem as fontes e o aviso visíveis.
 
-> **Pontos para a equipe:** a orientação fixa é genérica por faixa; uma versão por categoria exigiria textos revisados. Tela de resultado, histórico e detalhe ainda precisam de conferência visual em tela real.
+> **Pontos para a equipe:** a orientação fixa é genérica por faixa; uma versão por categoria exigiria textos revisados. As telas foram conferidas no emulador Android.
+
+### Prompt 9.2 — Tela de consentimento (T33) (concluído)
+
+- **Quando aparece:** na primeira análise de print, pela galeria ou por compartilhamento. Sem aceite, a galeria não abre, e a imagem compartilhada é descartada sem envio. A análise de link não passa por aqui, porque não envia texto da conversa.
+- **O que informa:** a imagem fica no aparelho, o texto vai ao Gemini, os dados que são escondidos e os que não são, e a conversa não é guardada.
+- **Como retirar:** aba Conta, "Privacidade da análise de print".
+- **Registro:** versão aceita, por usuário, só no aparelho (`versaoConsentimentoAnalise`). Mudar o aviso exige aumentar a versão.
+- **Validação no emulador:** recusar mantém a galeria fechada; aceitar abre a galeria. A remoção da marca na exclusão da conta e o caminho do compartilhamento têm só testes automáticos ou revisão de código.
+
+> **Pontos para a equipe:**
+> - O texto não passou por revisão jurídica.
+> - O aceite fica só no aparelho: não serve como prova de consentimento nem entra na exportação (RF12). Se a equipe precisar de registro, ele deve ir para `users/{uid}`.
+> - O aviso não promete que o texto não é usado para treinamento, porque isso só será verdade com o faturamento do Gemini ativo (exceção temporária ao RNF07). Depois disso, vale incluir essa garantia e aumentar a versão.
 
 ---
 

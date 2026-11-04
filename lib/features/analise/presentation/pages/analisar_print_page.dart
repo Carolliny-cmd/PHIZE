@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import '../../../../core/routing/app_routes.dart';
 import '../../../auth/data/firebase_auth_repository.dart';
 import '../../../auth/domain/auth_repository.dart';
+import '../../data/consentimento_repository_local.dart';
 import '../../data/historico_repository_firestore.dart';
 import '../../domain/analisador_print.dart';
 import '../../domain/analise_risco.dart';
 import '../../domain/captura_imagem.dart';
+import '../../domain/consentimento_repository.dart';
 import '../../domain/historico_repository.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../registro_historico.dart';
+import 'consentimento_page.dart';
 
 /// Tela "Analisar print" (UC04, passo 1): o usuário escolhe o print na
 /// galeria e o pipeline (`AnalisadorPrint`) é executado.
@@ -27,6 +30,7 @@ class AnalisarPrintPage extends StatefulWidget {
     required this.captura,
     this.authRepository,
     this.historicoRepository,
+    this.consentimentoRepository,
   });
 
   final AnalisadorPrint analisadorPrint;
@@ -37,6 +41,7 @@ class AnalisarPrintPage extends StatefulWidget {
   final AuthRepository? authRepository;
 
   final HistoricoRepository? historicoRepository;
+  final ConsentimentoRepository? consentimentoRepository;
 
   @override
   State<AnalisarPrintPage> createState() => _AnalisarPrintPageState();
@@ -49,6 +54,8 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
       widget.authRepository ?? FirebaseAuthRepository();
   late final HistoricoRepository _historico =
       widget.historicoRepository ?? HistoricoRepositoryFirestore();
+  late final ConsentimentoRepository _consentimento =
+      widget.consentimentoRepository ?? ConsentimentoRepositoryLocal();
   bool _carregando = false;
   MotivoInterrupcaoPrint? _interrupcao;
 
@@ -64,6 +71,9 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
   }
 
   Future<void> _analisar() async {
+    if (!await confirmarConsentimento(context, _consentimento)) return;
+    if (!mounted) return;
+
     // Feedback de carregamento imediato após o acionamento (RNF03).
     setState(() {
       _carregando = true;

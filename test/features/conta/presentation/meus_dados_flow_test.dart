@@ -12,6 +12,7 @@ import 'package:phize/features/conta/domain/exportacao_dados.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../support/fake_auth_repository.dart';
+import '../../../support/fake_consentimento_repository.dart';
 import '../../../support/fake_conta_repository.dart';
 import '../../../support/fake_historico_repository.dart';
 
@@ -97,6 +98,31 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(historico.ultimaLeituraSomenteServidor, isTrue);
+  });
+
+  testWidgets('a aba Conta permite retirar o consentimento', (tester) async {
+    final consentimento = FakeConsentimentoRepository();
+    await tester.pumpWidget(
+      MaterialApp(
+        onGenerateRoute: (settings) => AppRouter.onGenerateRoute(
+          settings,
+          contaRepository: FakeContaRepository(),
+          historicoRepository: FakeHistoricoRepository(),
+          authRepository: FakeAuthRepository(),
+          consentimentoRepository: consentimento,
+        ),
+        initialRoute: AppRoutes.meusDados,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('meus_dados_privacidade')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('consentimento_recusar')));
+    await tester.tap(find.byKey(const Key('consentimento_recusar')));
+    await tester.pumpAndSettle();
+
+    expect(consentimento.aceitou, isFalse);
   });
 
   testWidgets('sair encerra a sessão e leva ao login', (tester) async {
