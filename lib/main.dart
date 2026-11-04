@@ -10,7 +10,11 @@ import 'core/routing/app_router.dart';
 import 'core/routing/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'features/analise/data/limpeza_copias_seletor.dart';
+import 'features/analise/data/receptor_compartilhamento.dart';
+import 'features/analise/domain/caixa_compartilhamento.dart';
+import 'features/analise/presentation/recepcao_compartilhamento.dart';
 import 'features/conta/data/compartilhador_arquivo_nativo.dart';
+import 'features/conta/data/conta_repository_firebase.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -35,22 +39,72 @@ Future<void> main() async {
       emuladorFirestore.porta,
     );
   }
-  runApp(const PhizeApp());
+  runApp(PhizeApp(rotaInicial: await _rotaInicial()));
 }
 
-class PhizeApp extends StatelessWidget {
-  const PhizeApp({super.key});
+/// Com sessão ativa, o app abre direto: é o que permite compartilhar um
+/// conteúdo e ver o resultado sem passar pelo login (RF10). Conta com exclusão
+/// pendente continua indo para a tela de bloqueio (UC12).
+Future<String> _rotaInicial() async {
+  final usuario = await FirebaseAuth.instance.authStateChanges().first;
+  if (usuario == null) return AppRoutes.login;
+  try {
+    final pendente = await ContaRepositoryFirebase().exclusaoPendente();
+    return pendente ? AppRoutes.exclusaoPendente : AppRoutes.dashboard;
+  } catch (_) {
+    return AppRoutes.dashboard;
+  }
+}
+
+class PhizeApp extends StatefulWidget {
+  const PhizeApp({super.key, this.rotaInicial = AppRoutes.login});
+
+  final String rotaInicial;
+
+  @override
+  State<PhizeApp> createState() => _PhizeAppState();
+}
+
+class _PhizeAppState extends State<PhizeApp> {
+  final _navegador = GlobalKey<NavigatorState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Depois do primeiro quadro: o que chegou com o app fechado abre sobre a
+    // tela inicial, que precisa já existir.
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _ouvirCompartilhamento(),
+    );
+  }
+
+  Future<void> _ouvirCompartilhamento() async {
+    final recepcao = RecepcaoCompartilhamento(
+      caixa: CaixaCompartilhamento.instancia,
+      sessaoAtiva: () => FirebaseAuth.instance.currentUser != null,
+      exclusaoPendente: () => ContaRepositoryFirebase().exclusaoPendente(),
+      abrirAnalise: () =>
+          _navegador.currentState?.pushNamed(AppRoutes.analiseCompartilhada),
+    );
+    try {
+      await ReceptorCompartilhamento().iniciar(recepcao.receber);
+    } catch (_) {
+      // Sem a ponte nativa, o app segue funcionando pela galeria e pelo campo
+      // de link.
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: _navegador,
       title: 'Phize',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      // `initialRoute` empilharia também a rota '/', que cai no login: o
-      // Painel ganharia uma seta para voltar ao login sem encerrar a sessão.
+      // `initialRoute` empilharia também a rota '/', que cai no login: a tela
+      // inicial ganharia uma seta para voltar ao login sem encerrar a sessão.
       onGenerateInitialRoutes: (_) => [
-        AppRouter.onGenerateRoute(const RouteSettings(name: AppRoutes.login)),
+        AppRouter.onGenerateRoute(RouteSettings(name: widget.rotaInicial)),
       ],
       onGenerateRoute: AppRouter.onGenerateRoute,
     );

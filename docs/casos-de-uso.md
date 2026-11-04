@@ -141,7 +141,7 @@ No contexto deste projeto, essas descrições são fundamentais para alinhar o d
 | **Ator Principal** | Usuário. |
 | **Pré-condições** | Aplicativo instalado e registrado como destino de compartilhamento para os tipos MIME de imagem e texto. |
 | **Fluxo Principal** | 1. O usuário seleciona a mensagem, imagem ou link em aplicativo de terceiros e aciona o menu de compartilhamento do sistema operacional. 2. Seleciona o Phize entre os destinos disponíveis. 3. O aplicativo recebe o conteúdo em memória e identifica automaticamente o tipo de entrada. 4. O fluxo prossegue conforme o UC03, para links e textos, ou conforme o UC04, para imagens, a partir da respectiva etapa de processamento. 5. O resultado é apresentado sem que o usuário precise navegar até a galeria ou colar o endereço manualmente. |
-| **Fluxos Alternativos / Exceções** | Tipo não suportado: aviso de que o formato recebido não pode ser analisado. Conteúdo misto: havendo imagem e texto na mesma submissão, o sistema solicita ao usuário a definição do alvo da análise. |
+| **Fluxos Alternativos / Exceções** | Tipo não suportado: aviso de que o formato recebido não pode ser analisado. Texto sem link: como o UC03 analisa apenas endereços, o sistema extrai o link do texto recebido; não havendo um único link, orienta o usuário a compartilhar um print da mensagem. Conteúdo misto: havendo imagem e link na mesma submissão, o sistema solicita ao usuário a definição do alvo da análise; imagem com legenda sem link é analisada como imagem. |
 | **Pós-condições** | Análise concluída a partir de ação única do usuário, mantendo-se as garantias de descarte previstas no RNF01 e no RNF07. |
 
 ### **UC12: Exportar ou Excluir Dados Pessoais**

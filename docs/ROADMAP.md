@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-03
-- **Última tarefa concluída:** Prompt 8.2 — tela Meus dados (UC12), com exportação em arquivo e exclusão definitiva da conta (61 testes na Function, 481 no app), com auditoria e correções; validado no emulador Android, exceto a falha parcial na exclusão
+- **Última tarefa concluída:** Prompt 8.3 — compartilhamento nativo no Android (UC11/RF10), validado no emulador com compartilhamento real pelo Google Fotos (61 testes na Function, 510 no app); com isso, as três tarefas da Fase 8 estão feitas
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** Prompt 8.3 (UC11/RF10); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** decidir o plano pós-Fase 8 (itens do MVP fora das fases: T02/T04, T19, T32, T33; validação da base e do diferencial); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
 
 ---
 
@@ -805,6 +805,23 @@ UC11/RF10 (recebimento por compartilhamento nativo).
 > - A marca de exclusão pendente fica só no aparelho. Reinstalar o app ou entrar por outro aparelho a perde, e a conta volta a abrir, possivelmente sem parte dos dados. Uma Function que conclua a remoção no servidor resolveria isso, e depende do plano Blaze.
 > - O arquivo exportado é JSON: legível, mas pouco amigável para o público idoso. Vale avaliar na validação com usuários.
 > - A exclusão usa senha porque só há login por e-mail. O login social (T02/T04) exigirá outra forma de confirmação.
+
+### Prompt 8.3 — Compartilhamento nativo (UC11/RF10) (concluído no Android)
+
+- **Recebimento:** o Phize aparece no menu de compartilhar para imagem e texto. `MainActivity.kt` lê a imagem direto para a memória, sem arquivo intermediário; por isso não se usa pacote pronto, que gravaria uma cópia no cache, o que o RF10 proíbe.
+- **Roteamento:** imagem vai ao pipeline do print, sem a galeria; link vai à análise de link. Imagem com link pede a escolha; imagem com legenda sem link é só imagem. O resultado entra no histórico como nas outras análises.
+- **Texto sem link (decisão da equipe, 2026-11-03):** mostra aviso e orienta a compartilhar um print. O UC11 foi detalhado; o RF10 fala em "texto", então vale rever se ele deve dizer "link".
+- **Sem sessão:** o conteúdo espera em memória (`CaixaCompartilhamento`), a tela de login avisa, e a análise abre sozinha ao entrar. Conta com exclusão pendente fica no bloqueio.
+- **Abertura do app:** com sessão ativa, o app abre direto no Painel, sem pedir login a cada abertura. Sem isso, todo compartilhamento pararia no login.
+- **Android:** `launchMode` passou a `singleTask`, para o compartilhamento não abrir uma segunda instância do app; o nome exibido passou a "Phize".
+- **Validação no emulador:** Google Fotos -> compartilhar -> Phize, com resultado direto e registro no histórico, sem cópia da imagem no aparelho; link sem sessão, com análise após o cadastro; app fechado com sessão; texto sem link; tipo não suportado. Reabrir o app não repete a análise.
+
+> **Pontos para a equipe:**
+> - **iOS não implementado:** exige Share Extension, projeto iOS configurado e testes em Mac. Só o Android recebe compartilhamento.
+> - **Imagem com link** coberta só por testes automáticos. Falta testar com o WhatsApp instalado em aparelho real.
+> - **Imagem acima de 25 MB** é recusada como não suportada.
+> - **O ícone do app** ainda é o padrão do Flutter, e ele aparece no menu de compartilhar.
+> - **Validade da sessão:** com a abertura direta, quem usa um aparelho desbloqueado vê o histórico sem senha. Vale avaliar na validação de privacidade.
 
 ---
 

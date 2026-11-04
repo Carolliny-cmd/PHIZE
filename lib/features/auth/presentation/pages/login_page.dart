@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
+import '../../../analise/domain/caixa_compartilhamento.dart';
 import '../../../conta/data/conta_repository_firebase.dart';
 import '../../../conta/domain/conta_repository.dart';
 import '../../data/firebase_auth_repository.dart';
@@ -12,12 +13,20 @@ import '../widgets/esqueci_senha_dialog.dart';
 
 /// Tela de Login (RF02 / UC02).
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, this.authRepository, this.contaRepository});
+  const LoginPage({
+    super.key,
+    this.authRepository,
+    this.contaRepository,
+    this.caixaCompartilhamento,
+  });
 
   final AuthRepository? authRepository;
 
   /// Usado só para conferir se há exclusão de conta pendente (UC12).
   final ContaRepository? contaRepository;
+
+  /// Conteúdo compartilhado aguardando o login (RF10).
+  final CaixaCompartilhamento? caixaCompartilhamento;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -83,9 +92,13 @@ class _LoginPageState extends State<LoginPage> {
       await _tentativas.resetar();
       final pendente = await _exclusaoPendente();
       if (!mounted) return;
-      Navigator.of(context).pushReplacementNamed(
+      final navegador = Navigator.of(context);
+      navegador.pushReplacementNamed(
         pendente ? AppRoutes.exclusaoPendente : AppRoutes.dashboard,
       );
+      if (!pendente && (widget.caixaCompartilhamento?.temPendente ?? false)) {
+        navegador.pushNamed(AppRoutes.analiseCompartilhada);
+      }
     } on AuthException catch (e) {
       await _tentativas.registrarFalha();
       final bloqueado = await _tentativas.bloqueado();
@@ -127,6 +140,20 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const FlutterLogo(size: 64),
               const SizedBox(height: 32),
+              if (widget.caixaCompartilhamento case final caixa?)
+                ListenableBuilder(
+                  listenable: caixa,
+                  builder: (_, _) => caixa.temPendente
+                      ? const Padding(
+                          key: Key('login_conteudo_aguardando'),
+                          padding: EdgeInsets.only(bottom: 16),
+                          child: Text(
+                            'Entre na sua conta para ver a análise do que você '
+                            'compartilhou.',
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
               if (_bloqueado)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),

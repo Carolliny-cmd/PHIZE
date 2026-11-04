@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
+import '../../../analise/domain/caixa_compartilhamento.dart';
 import '../../data/firebase_auth_repository.dart';
 import '../../domain/auth_exception.dart';
 import '../../domain/auth_repository.dart';
@@ -8,9 +9,16 @@ import '../../domain/auth_validators.dart';
 
 /// Tela de Cadastro (RF01 / UC01).
 class CadastroPage extends StatefulWidget {
-  const CadastroPage({super.key, this.authRepository});
+  const CadastroPage({
+    super.key,
+    this.authRepository,
+    this.caixaCompartilhamento,
+  });
 
   final AuthRepository? authRepository;
+
+  /// Conteúdo compartilhado aguardando o fim do cadastro (RF10).
+  final CaixaCompartilhamento? caixaCompartilhamento;
 
   @override
   State<CadastroPage> createState() => _CadastroPageState();
@@ -59,9 +67,11 @@ class _CadastroPageState extends State<CadastroPage> {
         senha: _senhaController.text,
       );
       if (!mounted) return;
-      Navigator.of(
-        context,
-      ).pushNamedAndRemoveUntil(AppRoutes.dashboard, (_) => false);
+      final navegador = Navigator.of(context);
+      navegador.pushNamedAndRemoveUntil(AppRoutes.dashboard, (_) => false);
+      if (widget.caixaCompartilhamento?.temPendente ?? false) {
+        navegador.pushNamed(AppRoutes.analiseCompartilhada);
+      }
     } on AuthException catch (e) {
       if (!mounted) return;
       setState(() {

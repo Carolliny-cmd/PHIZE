@@ -13,8 +13,10 @@ import 'package:phize/core/routing/app_routes.dart';
 import 'package:phize/features/analise/data/analise_texto_client_http.dart';
 import 'package:phize/features/analise/domain/analisador_print.dart';
 import 'package:phize/features/analise/domain/analise_texto_client.dart';
+import 'package:phize/features/analise/domain/caixa_compartilhamento.dart';
 import 'package:phize/features/analise/domain/calculadora_score.dart';
 import 'package:phize/features/analise/domain/categoria_ameaca.dart';
+import 'package:phize/features/analise/domain/conteudo_compartilhado.dart';
 import 'package:phize/features/analise/domain/faixa_risco.dart';
 import 'package:phize/features/analise/domain/imagem_em_memoria.dart';
 import 'package:phize/features/analise/domain/reconhecedor_texto.dart';
@@ -26,6 +28,7 @@ import 'package:phize/features/analise/domain/sinais_identificados.dart';
 import 'package:phize/features/analise/domain/sinal_link.dart';
 import 'package:phize/features/analise/domain/sinal_texto_print.dart';
 import 'package:phize/features/analise/domain/verificacao_link.dart';
+import 'package:phize/features/analise/presentation/pages/analise_compartilhada_page.dart';
 import 'package:phize/features/analise/presentation/pages/resultado_analise_page.dart';
 
 import '../../../support/fake_auth_repository.dart';
@@ -195,7 +198,147 @@ void _verificarInterrupcao(MotivoInterrupcaoPrint motivo) {
   expect(find.textContaining(_termoProibido), findsNothing);
 }
 
+Future<void> _abrirCompartilhado(
+  WidgetTester tester, {
+  required ConteudoCompartilhado conteudo,
+  AnaliseTextoClient? cliente,
+  ReconhecedorTexto? reconhecedor,
+  FakeHistoricoRepository? historico,
+}) async {
+  final caixa = CaixaCompartilhamento()..guardar(conteudo);
+  await tester.pumpWidget(
+    MaterialApp(
+      onGenerateRoute: (settings) => AppRouter.onGenerateRoute(
+        settings,
+        reconhecedorTexto: reconhecedor ?? _ReconhecedorFalso(),
+        analiseTextoClient: cliente ?? _ClienteFalso(),
+        historicoRepository: historico ?? FakeHistoricoRepository(),
+        authRepository: FakeAuthRepository(),
+        caixaCompartilhamento: caixa,
+      ),
+      initialRoute: AppRoutes.analiseCompartilhada,
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
+ImagemEmMemoria _imagemCompartilhada() =>
+    ImagemEmMemoria(Uint8List.fromList([5, 5, 5]));
+
 void main() {
+  group('compartilhamento nativo (UC11)', () {
+    testWidgets('imagem vai direto ao resultado, sem a galeria, é descartada '
+        'e entra no histórico', (tester) async {
+      final imagem = _imagemCompartilhada();
+      final historico = FakeHistoricoRepository();
+
+      await _abrirCompartilhado(
+        tester,
+        conteudo: ImagemCompartilhada(imagem),
+        historico: historico,
+      );
+
+      expect(find.byKey(const Key('resultado_aviso_permanente')), findsOneWidget);
+      expect(imagem.descartada, isTrue);
+      expect(historico.analises.single.tipoEntrada, TipoEntrada.imagem);
+    });
+
+    testWidgets('falha na análise da imagem descarta a imagem e não grava', (
+      tester,
+    ) async {
+      final imagem = _imagemCompartilhada();
+      final historico = FakeHistoricoRepository();
+
+      await _abrirCompartilhado(
+        tester,
+        conteudo: ImagemCompartilhada(imagem),
+        reconhecedor: _ReconhecedorFalso(erro: StateError('falha')),
+        historico: historico,
+      );
+
+      expect(imagem.descartada, isTrue);
+      expect(historico.analises, isEmpty);
+      expect(
+        find.text(MotivoInterrupcaoPrint.falhaReconhecimento.mensagem),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('compartilhado_inicio')), findsOneWidget);
+    });
+
+    testWidgets('sessão não reconhecida oferece entrar de novo', (tester) async {
+      await _abrirCompartilhado(
+        tester,
+        conteudo: ImagemCompartilhada(_imagemCompartilhada()),
+        cliente: _ClienteFalso(
+          respostas: [const AnaliseTextoNaoAutenticadoException()],
+        ),
+      );
+
+      expect(
+        find.byKey(const Key('compartilhado_entrar_de_novo')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('imagem e link: pede a escolha e analisa a imagem escolhida', (
+      tester,
+    ) async {
+      final imagem = _imagemCompartilhada();
+      await _abrirCompartilhado(
+        tester,
+        conteudo: ImagemELinkCompartilhados(
+          imagem: imagem,
+          link: 'https://site.com.br',
+        ),
+      );
+
+      expect(find.byKey(const Key('resultado_aviso_permanente')), findsNothing);
+      await tester.tap(find.byKey(const Key('compartilhado_escolher_imagem')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('resultado_aviso_permanente')), findsOneWidget);
+      expect(imagem.descartada, isTrue);
+    });
+
+    testWidgets('sair sem escolher descarta a imagem', (tester) async {
+      final imagem = _imagemCompartilhada();
+      await _abrirCompartilhado(
+        tester,
+        conteudo: ImagemELinkCompartilhados(
+          imagem: imagem,
+          link: 'https://site.com.br',
+        ),
+      );
+
+      await tester.pumpWidget(const SizedBox.shrink());
+
+      expect(imagem.descartada, isTrue);
+    });
+
+    testWidgets('texto sem link explica e oferece voltar ao início', (
+      tester,
+    ) async {
+      await _abrirCompartilhado(tester, conteudo: const TextoSemLink());
+
+      expect(
+        find.text(AnaliseCompartilhadaPage.mensagemTextoSemLink),
+        findsOneWidget,
+      );
+      await tester.tap(find.byKey(const Key('compartilhado_inicio')));
+      await tester.pumpAndSettle();
+      expect(find.text('Phize'), findsOneWidget);
+    });
+
+    testWidgets('tipo não suportado avisa', (tester) async {
+      await _abrirCompartilhado(tester, conteudo: const ConteudoNaoSuportado());
+
+      expect(
+        find.text(AnaliseCompartilhadaPage.mensagemNaoSuportado),
+        findsOneWidget,
+      );
+    });
+  });
+
   testWidgets('Dashboard: "Analisar print" ao lado de "Analisar link", com a '
       'mesma hierarquia visual, abre a tela de seleção do print', (
     tester,

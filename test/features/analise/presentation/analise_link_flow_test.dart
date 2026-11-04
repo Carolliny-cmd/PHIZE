@@ -9,7 +9,9 @@ import 'package:phize/core/constants/firebase_auth_codigos.dart';
 import 'package:phize/core/routing/app_router.dart';
 import 'package:phize/core/routing/app_routes.dart';
 import 'package:phize/features/analise/data/reputacao_dominio_client_http.dart';
+import 'package:phize/features/analise/domain/caixa_compartilhamento.dart';
 import 'package:phize/features/analise/domain/calculadora_score.dart';
+import 'package:phize/features/analise/domain/conteudo_compartilhado.dart';
 import 'package:phize/features/analise/domain/rdap_client.dart';
 import 'package:phize/features/analise/domain/reputacao_dominio_client.dart';
 import 'package:phize/features/analise/domain/resultado_analise_link.dart';
@@ -162,6 +164,29 @@ void _verificarInvariantesDoResultado() {
 const _fonteGoogle = 'Fonte: Google Safe Browsing, serviço do Google';
 
 void main() {
+  testWidgets('link compartilhado vai direto ao resultado e entra no '
+      'histórico sem o endereço (UC11)', (tester) async {
+    final historico = FakeHistoricoRepository();
+    final caixa = CaixaCompartilhamento()
+      ..guardar(const LinkCompartilhado('https://exemplo-loja.com.br/oferta'));
+    await tester.pumpWidget(
+      MaterialApp(
+        onGenerateRoute: (settings) => AppRouter.onGenerateRoute(
+          settings,
+          rdapClient: _rdapDominioAntigo(),
+          reputacaoClient: _reputacaoNaoListado(),
+          historicoRepository: historico,
+          caixaCompartilhamento: caixa,
+        ),
+        initialRoute: AppRoutes.analiseCompartilhada,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('resultado_aviso_permanente')), findsOneWidget);
+    expect(historico.analises.single.explicacao, isNot(contains('exemplo-loja')));
+  });
+
   testWidgets('análise concluída é gravada no histórico sem o endereço, sem '
       'categoria', (tester) async {
     final historico = FakeHistoricoRepository();

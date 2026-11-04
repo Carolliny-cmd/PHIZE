@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:phize/core/routing/app_router.dart';
 import 'package:phize/core/routing/app_routes.dart';
+import 'package:phize/features/analise/domain/caixa_compartilhamento.dart';
+import 'package:phize/features/analise/domain/conteudo_compartilhado.dart';
 import 'package:phize/features/auth/domain/auth_exception.dart';
 import 'package:phize/features/conta/domain/conta_repository.dart';
 import 'package:phize/features/conta/domain/exportacao_dados.dart';
@@ -244,6 +246,47 @@ void main() {
 
     expect(find.byKey(const Key('exclusao_pendente_concluir')), findsOneWidget);
     expect(find.byKey(const Key('dashboard_meus_dados')), findsNothing);
+  });
+
+  group('conteúdo compartilhado sem sessão (RF10)', () {
+    Future<void> abrirLogin(WidgetTester tester, {bool pendente = false}) async {
+      final caixa = CaixaCompartilhamento()
+        ..guardar(const TextoSemLink());
+      await tester.pumpWidget(
+        MaterialApp(
+          onGenerateRoute: (settings) => AppRouter.onGenerateRoute(
+            settings,
+            contaRepository: FakeContaRepository(pendente: pendente),
+            authRepository: FakeAuthRepository(),
+            caixaCompartilhamento: caixa,
+          ),
+          initialRoute: AppRoutes.login,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('login_conteudo_aguardando')), findsOneWidget);
+
+      await tester.enterText(
+        find.byKey(const Key('login_email')),
+        'maria@exemplo.com',
+      );
+      await tester.enterText(find.byKey(const Key('login_senha')), _senha);
+      await tester.tap(find.widgetWithText(FilledButton, 'Entrar'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('depois do login, a análise abre sozinha', (tester) async {
+      await abrirLogin(tester);
+
+      expect(find.byKey(const Key('compartilhado_mensagem')), findsOneWidget);
+    });
+
+    testWidgets('conta com exclusão pendente fica no bloqueio', (tester) async {
+      await abrirLogin(tester, pendente: true);
+
+      expect(find.byKey(const Key('exclusao_pendente_concluir')), findsOneWidget);
+      expect(find.byKey(const Key('compartilhado_mensagem')), findsNothing);
+    });
   });
 
   testWidgets('do bloqueio é possível sair', (tester) async {
