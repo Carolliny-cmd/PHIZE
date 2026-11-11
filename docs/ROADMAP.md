@@ -11,7 +11,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Última tarefa concluída:** Prompt 9.7 — trava contra cópia e conjunto de teste da recuperação (83 testes na Function, 535 no app)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** rodar `npm run avaliar-analise -- --arquivo teste.json` para medir se o modelo recusa as correspondências erradas (a busca envia fichas para 14 de 26 mensagens legítimas e 5 de 5 golpes fora da base); em seguida, as etapas 5 e 2 do plano do RAG (Prompt 9.7). A coleta de mensagens independentes foi adiada pela equipe
+- **Próximo passo:** etapa 2 do plano do RAG (texto com cara de print real, Prompt 9.7). Em seguida, repetir a medição com 3 repetições para medir a variação entre execuções. A coleta de mensagens independentes foi adiada pela equipe
 
 ---
 
@@ -911,6 +911,9 @@ A coleta de mensagens com outras pessoas ficou inviável para a equipe agora. Pl
 
 - **Feito (etapa 1):** trava contra cópia (`functions/src/sobreposicaoFichas.ts`, `npm run conferir-teste`), aplicada antes de qualquer chamada à API em `avaliar-recuperacao` e `avaliar-analise`. Conjunto `avaliacao/teste.json` com 63 golpes e 26 mensagens legítimas difíceis. Detalhes e números em `docs/calibracao-recuperacao.md`, seção "Conjunto de teste".
 - **Resultado:** a ficha certa continua em 1º lugar em 52 de 54 golpes sem palavras copiadas, mas o limiar de 0,70 quase não filtra. 14 de 26 mensagens legítimas e 5 de 5 golpes fora da base chegam ao modelo com fichas. A medição anterior (3 de 8) era otimista: 13 das 28 mensagens de `mensagens.json` copiam frases das fichas.
+
+- **Feito (etapa 5):** faixas com e sem a base calculadas pelo motor do app (`test/avaliacao/`), a partir dos sinais gravados por `avaliar-analise`. Os pesos continuam só em `ScoreConfig`.
+- **Resultado do modelo:** nenhuma correspondência errada em 14 legítimas e 5 golpes fora da base que receberam fichas; 51 de 54 correspondências certas. Com a base, 28 golpes subiram de amarelo para vermelho, e nenhuma mensagem legítima subiu de faixa. O comprovante falso de pagamento passou sem sinal: candidato a ficha nova (etapa 4).
 
 > **Pontos para a equipe:**
 > - O conjunto foi escrito com ajuda da IA e não substitui mensagens de outras pessoas. No relatório acadêmico, deixar claro que a medida usa mensagens sintéticas.

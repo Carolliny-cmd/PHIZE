@@ -1,0 +1,130 @@
+{
+  "relatorio": "2026-11-04-mensagens.json",
+  "modelo": "gemini-3.5-flash-lite",
+  "observacao": "Faixa sem a base calculada sem a regra de verificação incompleta.",
+  "resumo": {
+    "golpeDaBase": {
+      "total": 5,
+      "semBase": {
+        "baixo": 0,
+        "medio": 2,
+        "alto": 3
+      },
+      "comBase": {
+        "baixo": 0,
+        "medio": 0,
+        "alto": 5
+      },
+      "subiram": [
+        "whatsapp-pedido-de-codigo",
+        "falsa-central-falso-funcionario"
+      ],
+      "desceram": []
+    },
+    "golpeForaDaBase": {
+      "total": 0,
+      "semBase": {
+        "baixo": 0,
+        "medio": 0,
+        "alto": 0
+      },
+      "comBase": {
+        "baixo": 0,
+        "medio": 0,
+        "alto": 0
+      },
+      "subiram": [],
+      "desceram": []
+    },
+    "legitima": {
+      "total": 5,
+      "semBase": {
+        "baixo": 4,
+        "medio": 1,
+        "alto": 0
+      },
+      "comBase": {
+        "baixo": 5,
+        "medio": 0,
+        "alto": 0
+      },
+      "subiram": [],
+      "desceram": [
+        "racha de conta"
+      ]
+    }
+  },
+  "correspondenciaForaDoEsperado": [],
+  "mensagens": [
+    {
+      "mensagem": "whatsapp-pedido-de-codigo",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "falso-parente-numero-novo",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "falsa-venda",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falsa-venda"
+    },
+    {
+      "mensagem": "falsa-central-falso-funcionario",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "phishing-link-falso",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "phishing-link-falso"
+    },
+    {
+      "mensagem": "aniversario",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "excursao",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "trabalho",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "mercado",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "racha de conta",
+      "tipo": "legitima",
+      "semBase": "medio",
+      "comBase": "baixo",
+      "padraoComBase": null
+    }
+  ]
+}

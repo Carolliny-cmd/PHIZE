@@ -82,6 +82,40 @@ O que isso mostra:
 
 Os valores da versão 1.0 **não foram alterados** com base nesta medição: o conjunto de teste não serve para ajustar.
 
+### Medição do modelo e das faixas no conjunto de teste (2026-11-11)
+
+`npm run avaliar-analise -- --arquivo teste.json --repeticoes 1`, com `gemini-3.5-flash-lite` no nível gratuito. As faixas foram calculadas pelo motor do app, sem copiar os pesos:
+
+```
+flutter test test/avaliacao/relatorio_faixas_test.dart --dart-define=RELATORIO=2026-11-11-teste.json
+```
+
+Relatórios: `avaliacao/relatorios/2026-11-11-teste.json` (sinais) e `2026-11-11-teste-faixas.json` (faixas). A faixa "sem a base" é calculada sem a regra de verificação incompleta, para medir o que o modelo encontra sozinho. No app, a base indisponível impede a faixa verde.
+
+**O modelo recusou todas as correspondências erradas.**
+
+| Grupo | Chegaram ao modelo com fichas | Correspondência apontada |
+| --- | --- | --- |
+| Mensagens legítimas | 14 de 26 | 0 |
+| Golpes fora da base | 5 de 5 | 0 |
+| Golpes de fichas indexadas | 53 de 54 | 51 certas, 0 erradas |
+
+As três correspondências que faltaram: `leilao-formal` e `amor-formal` (a ficha foi enviada, mas o modelo não a apontou) e `motoboy-parafrase` (a ficha ficou abaixo do limiar). Um golpe de ficha em rascunho (`consignado-informal`) foi ligado a `devolucao-de-emprestimo`, uma modalidade vizinha, o que é esperado enquanto o rascunho não é indexado.
+
+**A base muda a faixa dos golpes e não prejudica as mensagens legítimas.**
+
+| Grupo | Sem a base | Com a base |
+| --- | --- | --- |
+| Golpes de fichas da base, inclusive rascunhos (58) | 32 amarelos, 26 vermelhos | 5 amarelos, 53 vermelhos |
+| Golpes fora da base (5) | 1 verde, 3 amarelos, 1 vermelho | igual |
+| Mensagens legítimas (26) | 24 verdes, 2 amarelos | 25 verdes, 1 amarelo |
+
+- 28 golpes subiram de amarelo para vermelho com a base, nos três estilos de escrita. Nenhuma mensagem legítima subiu de faixa.
+- Golpes fora da base não ganham nem perdem com a base, como esperado. O **comprovante falso** passou sem nenhum sinal nos dois modos: é candidato a ficha nova.
+- O único falso alarme com a base é o pedido de Pix do presente da professora (amarelo por pedido financeiro), que acontece também sem a base. É efeito da tabela de pesos, não da recuperação.
+
+**Limitações:** uma repetição por mensagem, então a variação entre execuções não foi medida. Um golpe (`sequestro-formal`) caiu de faixa com a base sem relação com a recuperação: foi variação do modelo entre as duas chamadas. Mensagens escritas com ajuda da IA, ainda que sem cópia das fichas.
+
 ## Quando recalibrar
 
 - A cada lote novo de fichas: mais fichas aumentam a chance de uma conversa comum ficar perto de alguma delas.
