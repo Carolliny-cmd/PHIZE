@@ -40,6 +40,7 @@ import {
   consultarBase,
   type PadraoRecuperado,
 } from "../src/recuperacao";
+import { conferirSobreposicao, lerConjunto } from "./conjuntoAvaliacao";
 
 const PASTA_FUNCTIONS = path.resolve(__dirname, "..", "..");
 const BASE = path.join(PASTA_FUNCTIONS, "base-conhecimento");
@@ -109,6 +110,10 @@ async function principal(): Promise<void> {
   const limite = Number(opcao("limite", "100000"));
   const espera = Number(opcao("espera", "4000"));
   const modelo = process.env[VARIAVEL_MODELO_GEMINI] || MODELO_GEMINI_PADRAO;
+
+  if (!conferirSobreposicao(lerConjunto(nomeArquivo), nomeArquivo)) {
+    throw new Error("Conjunto de teste recusado pela trava contra cópia.");
+  }
 
   const mensagens = carregarMensagens(arquivo, limite);
   for (const m of mensagens) {

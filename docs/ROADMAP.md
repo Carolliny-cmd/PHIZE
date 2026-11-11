@@ -7,11 +7,11 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 
 ## ONDE PARAMOS
 
-- **Data:** 2026-11-03
-- **Última tarefa concluída:** Prompt 9.6 — script de comparação com e sem a base e documento de coleta (75 testes na Function, 535 no app)
+- **Data:** 2026-11-11
+- **Última tarefa concluída:** Prompt 9.7 — trava contra cópia e conjunto de teste da recuperação (83 testes na Function, 535 no app)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** coletar as mensagens independentes e rodar a comparação (Fase 9, item 3); em paralelo, revisar as duas fichas em rascunho e continuar alimentando a base
+- **Próximo passo:** rodar `npm run avaliar-analise -- --arquivo teste.json` para medir se o modelo recusa as correspondências erradas (a busca envia fichas para 14 de 26 mensagens legítimas e 5 de 5 golpes fora da base); em seguida, as etapas 5 e 2 do plano do RAG (Prompt 9.7). A coleta de mensagens independentes foi adiada pela equipe
 
 ---
 
@@ -904,6 +904,17 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 - **Trava:** o script recusa mensagem com CPF, telefone ou e-mail sem marcador, antes de enviar qualquer coisa.
 - **Coleta:** [documento para as pessoas preencherem](https://claude.ai/artifact/5Ra1FxgdbR7x5Me7E3yLif), com meta de 20 golpes e 20 mensagens legítimas difíceis. Ao terminar, as mensagens vão para `functions/base-conhecimento/avaliacao/independente.json`.
 - **Piloto, só para testar o script:** 5 golpes e 5 mensagens comuns escritas pela IA, 2 repetições. Com a base: 5 de 5 golpes, nenhum falso alarme, 5 correspondências certas. Sem a base: 5 de 5 golpes, 1 falso alarme. Amostra pequena e não independente: não prova o diferencial.
+
+### Prompt 9.7 — Teste da recuperação sem coleta (concluído)
+
+A coleta de mensagens com outras pessoas ficou inviável para a equipe agora. Plano do RAG sem coleta, em 5 etapas: (1) conjunto de teste confiável; (2) texto com cara de print real, com OCR de prints sintéticos e uso só das mensagens recebidas; (3) ajustes na busca, como um vetor por gatilho e o campo `situacoesLegitimas`; (4) mais fichas a partir de fontes públicas; (5) medir a mudança de faixa com e sem a base, no motor de score do app.
+
+- **Feito (etapa 1):** trava contra cópia (`functions/src/sobreposicaoFichas.ts`, `npm run conferir-teste`), aplicada antes de qualquer chamada à API em `avaliar-recuperacao` e `avaliar-analise`. Conjunto `avaliacao/teste.json` com 63 golpes e 26 mensagens legítimas difíceis. Detalhes e números em `docs/calibracao-recuperacao.md`, seção "Conjunto de teste".
+- **Resultado:** a ficha certa continua em 1º lugar em 52 de 54 golpes sem palavras copiadas, mas o limiar de 0,70 quase não filtra. 14 de 26 mensagens legítimas e 5 de 5 golpes fora da base chegam ao modelo com fichas. A medição anterior (3 de 8) era otimista: 13 das 28 mensagens de `mensagens.json` copiam frases das fichas.
+
+> **Pontos para a equipe:**
+> - O conjunto foi escrito com ajuda da IA e não substitui mensagens de outras pessoas. No relatório acadêmico, deixar claro que a medida usa mensagens sintéticas.
+> - O limiar não foi alterado: o conjunto de teste serve para medir, não para ajustar.
 
 ---
 
