@@ -8,13 +8,15 @@ import 'package:flutter/material.dart';
 import 'core/config/emulator_config.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/app_routes.dart';
-import 'core/theme/app_theme.dart';
 import 'features/analise/data/limpeza_copias_seletor.dart';
 import 'features/analise/data/receptor_compartilhamento.dart';
 import 'features/analise/domain/caixa_compartilhamento.dart';
 import 'features/analise/presentation/recepcao_compartilhamento.dart';
 import 'features/conta/data/compartilhador_arquivo_nativo.dart';
 import 'features/conta/data/conta_repository_firebase.dart';
+import 'features/conta/data/preferencias_repository_local.dart';
+import 'features/conta/domain/preferencias_aparencia.dart';
+import 'features/conta/presentation/escopo_preferencias.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -39,7 +41,14 @@ Future<void> main() async {
       emuladorFirestore.porta,
     );
   }
-  runApp(PhizeApp(rotaInicial: await _rotaInicial()));
+  // Lidas antes do primeiro quadro, para o app já abrir no tema e no
+  // tamanho de letra escolhidos (RF14).
+  final preferencias = await ControlePreferencias.carregar(
+    PreferenciasRepositoryLocal(),
+  );
+  runApp(
+    PhizeApp(rotaInicial: await _rotaInicial(), preferencias: preferencias),
+  );
 }
 
 /// Com sessão ativa, o app abre direto: é o que permite compartilhar um
@@ -57,9 +66,16 @@ Future<String> _rotaInicial() async {
 }
 
 class PhizeApp extends StatefulWidget {
-  const PhizeApp({super.key, this.rotaInicial = AppRoutes.login});
+  const PhizeApp({
+    super.key,
+    this.rotaInicial = AppRoutes.login,
+    this.preferencias,
+  });
 
   final String rotaInicial;
+
+  /// Sem valor, as preferências padrão, gravadas no aparelho ao mudar.
+  final ControlePreferencias? preferencias;
 
   @override
   State<PhizeApp> createState() => _PhizeAppState();
@@ -67,6 +83,9 @@ class PhizeApp extends StatefulWidget {
 
 class _PhizeAppState extends State<PhizeApp> {
   final _navegador = GlobalKey<NavigatorState>();
+  late final ControlePreferencias _preferencias =
+      widget.preferencias ??
+      ControlePreferencias(PreferenciasRepositoryLocal());
 
   @override
   void initState() {
@@ -96,17 +115,24 @@ class _PhizeAppState extends State<PhizeApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: _navegador,
-      title: 'Phize',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      // `initialRoute` empilharia também a rota '/', que cai no login: a tela
-      // inicial ganharia uma seta para voltar ao login sem encerrar a sessão.
-      onGenerateInitialRoutes: (_) => [
-        AppRouter.onGenerateRoute(RouteSettings(name: widget.rotaInicial)),
-      ],
-      onGenerateRoute: AppRouter.onGenerateRoute,
+    return AparenciaApp(
+      controle: _preferencias,
+      construir: (claro, escuro, modo, builder) => MaterialApp(
+        navigatorKey: _navegador,
+        title: 'Phize',
+        debugShowCheckedModeBanner: false,
+        theme: claro,
+        darkTheme: escuro,
+        themeMode: modo,
+        builder: builder,
+        // `initialRoute` empilharia também a rota '/', que cai no login: a
+        // tela inicial ganharia uma seta para voltar ao login sem encerrar a
+        // sessão.
+        onGenerateInitialRoutes: (_) => [
+          AppRouter.onGenerateRoute(RouteSettings(name: widget.rotaInicial)),
+        ],
+        onGenerateRoute: AppRouter.onGenerateRoute,
+      ),
     );
   }
 }

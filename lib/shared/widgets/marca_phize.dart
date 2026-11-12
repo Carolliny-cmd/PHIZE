@@ -16,7 +16,7 @@ class MarcaPhize extends StatelessWidget {
         fontFamily: 'PlusJakartaSans',
         fontSize: tamanho,
         fontWeight: FontWeight.w800,
-        color: CoresPhize.azul,
+        color: context.cores.azul,
       ),
     );
   }

@@ -15,13 +15,19 @@ import '../../data/compartilhador_arquivo_nativo.dart';
 import '../../data/conta_repository_firebase.dart';
 import '../../domain/compartilhador_arquivo.dart';
 import '../../domain/conta_repository.dart';
+import '../../domain/espera_reenvio.dart';
 import '../../domain/exportacao_dados.dart';
+import '../../domain/preferencias_aparencia.dart';
+import '../escopo_preferencias.dart';
 import '../widgets/editar_nome_dialog.dart';
+import '../widgets/escolha_dialog.dart';
 import '../widgets/excluir_conta_dialog.dart';
+import '../widgets/trocar_senha_dialog.dart';
 
-/// Tela de Perfil (RF14), aberta pela aba Perfil: identificação da conta e
-/// os direitos do titular do RF12 (exportar e excluir), a privacidade da
-/// análise de print e a saída da conta.
+/// Tela de Perfil (RF14), aberta pela aba Perfil: identificação da conta,
+/// segurança (senha e verificação do e-mail), acessibilidade (letra e
+/// tema), os direitos do titular do RF12 (exportar e excluir), a
+/// privacidade da análise de print e a saída da conta.
 class PerfilPage extends StatefulWidget {
   const PerfilPage({
     super.key,
@@ -30,6 +36,7 @@ class PerfilPage extends StatefulWidget {
     this.compartilhador,
     this.authRepository,
     this.consentimentoRepository,
+    this.esperaReenvio,
   });
 
   final ContaRepository? contaRepository;
@@ -37,6 +44,11 @@ class PerfilPage extends StatefulWidget {
   final CompartilhadorArquivo? compartilhador;
   final AuthRepository? authRepository;
   final ConsentimentoRepository? consentimentoRepository;
+  final EsperaReenvio? esperaReenvio;
+
+  static const String mensagemFalhaPreferencia =
+      'Não foi possível guardar a preferência neste aparelho. Ela vale até '
+      'você fechar o app.';
 
   static const String mensagemFalhaNome =
       'Não foi possível salvar o nome. Verifique sua conexão e tente '
@@ -60,7 +72,10 @@ class _PerfilPageState extends State<PerfilPage> {
   late final ConsentimentoRepository _consentimento =
       widget.consentimentoRepository ?? ConsentimentoRepositoryLocal();
 
-  late final IdentidadeConta? _identidade = _lerIdentidade();
+  late final EsperaReenvio _espera =
+      widget.esperaReenvio ?? EsperaReenvio.global;
+
+  late IdentidadeConta? _identidade = _lerIdentidade();
   String? _nome;
   bool _nomeCarregado = false;
   bool _processando = false;
@@ -70,6 +85,118 @@ class _PerfilPageState extends State<PerfilPage> {
   void initState() {
     super.initState();
     _carregarNome();
+    _atualizarIdentidade();
+  }
+
+  /// O e-mail pode ter sido verificado depois da abertura do app.
+  Future<void> _atualizarIdentidade() async {
+    try {
+      final identidade = await _conta.atualizarIdentidade();
+      if (mounted) setState(() => _identidade = identidade);
+    } catch (_) {
+      // Sem conexão, fica o estado que o aparelho já conhecia.
+    }
+  }
+
+  Future<void> _trocarSenha() async {
+    final trocou = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => TrocarSenhaDialog(
+        trocar: (atual, nova) =>
+            _conta.trocarSenha(senhaAtual: atual, novaSenha: nova),
+      ),
+    );
+    if (trocou != true || !mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Senha alterada.')),
+    );
+  }
+
+  Future<void> _reenviarVerificacao() async {
+    final mensageiro = ScaffoldMessenger.of(context);
+    final falta = _espera.restante;
+    if (falta > Duration.zero) {
+      final segundos = (falta.inMilliseconds / 1000).ceil();
+      mensageiro.showSnackBar(
+        SnackBar(
+          content: Text('Aguarde $segundos segundos para pedir outro e-mail.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _processando = true;
+      _erro = null;
+    });
+    try {
+      await _conta.reenviarVerificacao();
+      _espera.registrarEnvio();
+      if (!mounted) return;
+      setState(() => _processando = false);
+      mensageiro.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'E-mail enviado. Abra o link que chegou na sua caixa de entrada '
+            'ou no spam.',
+          ),
+        ),
+      );
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _processando = false;
+        _erro = e.mensagem;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _processando = false;
+        _erro =
+            'Não foi possível enviar o e-mail. Verifique sua conexão e tente '
+            'novamente.';
+      });
+    }
+  }
+
+  Future<void> _escolherTamanhoLetra(ControlePreferencias controle) async {
+    final escolhido = await showDialog<TamanhoLetra>(
+      context: context,
+      builder: (_) => EscolhaDialog<TamanhoLetra>(
+        titulo: 'Tamanho da letra',
+        opcoes: TamanhoLetra.values,
+        atual: controle.atual.tamanhoLetra,
+        rotulo: (tamanho) => tamanho.rotulo,
+        chave: (tamanho) => 'tamanho_letra_${tamanho.name}',
+      ),
+    );
+    if (escolhido == null) return;
+    await _guardarPreferencia(() => controle.mudarTamanhoLetra(escolhido));
+  }
+
+  Future<void> _escolherTema(ControlePreferencias controle) async {
+    final escolhido = await showDialog<TemaPreferido>(
+      context: context,
+      builder: (_) => EscolhaDialog<TemaPreferido>(
+        titulo: 'Tema',
+        opcoes: TemaPreferido.values,
+        atual: controle.atual.tema,
+        rotulo: (tema) => tema.rotulo,
+        chave: (tema) => 'tema_${tema.name}',
+      ),
+    );
+    if (escolhido == null) return;
+    await _guardarPreferencia(() => controle.mudarTema(escolhido));
+  }
+
+  Future<void> _guardarPreferencia(Future<void> Function() mudar) async {
+    setState(() => _erro = null);
+    try {
+      await mudar();
+    } catch (_) {
+      if (mounted) setState(() => _erro = PerfilPage.mensagemFalhaPreferencia);
+    }
   }
 
   IdentidadeConta? _lerIdentidade() {
@@ -233,6 +360,7 @@ class _PerfilPageState extends State<PerfilPage> {
     final erro = _erro;
     final identidade = _identidade;
     final habilitado = !_processando;
+    final preferencias = EscopoPreferencias.maybeOf(context);
 
     return PopScope(
       canPop: !_processando,
@@ -284,6 +412,69 @@ class _PerfilPageState extends State<PerfilPage> {
                     ),
                   ],
                 ),
+                if (identidade != null) ...[
+                  const SizedBox(height: 24),
+                  const _TituloSecao('Segurança'),
+                  _Secao(
+                    children: [
+                      if (identidade.entraComSenha)
+                        ListTile(
+                          key: const Key('perfil_trocar_senha'),
+                          enabled: habilitado,
+                          leading: const Icon(Icons.lock_outline),
+                          title: const Text('Trocar senha'),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: _trocarSenha,
+                        )
+                      else
+                        const ListTile(
+                          key: Key('perfil_senha_google'),
+                          leading: Icon(Icons.lock_outline),
+                          title: Text('Senha'),
+                          subtitle: Text(
+                            'Você entra com o Google. A senha é cuidada na '
+                            'sua conta Google.',
+                          ),
+                        ),
+                      if (identidade.entraComSenha &&
+                          !identidade.emailVerificado)
+                        ListTile(
+                          key: const Key('perfil_reenviar_verificacao'),
+                          enabled: habilitado,
+                          leading: const Icon(Icons.mark_email_unread_outlined),
+                          title: const Text('Reenviar e-mail de verificação'),
+                          subtitle: const Text(
+                            'Confirme seu e-mail pelo link que enviamos.',
+                          ),
+                          onTap: _reenviarVerificacao,
+                        ),
+                    ],
+                  ),
+                ],
+                if (preferencias != null) ...[
+                  const SizedBox(height: 24),
+                  const _TituloSecao('Acessibilidade'),
+                  _Secao(
+                    children: [
+                      ListTile(
+                        key: const Key('perfil_tamanho_letra'),
+                        leading: const Icon(Icons.format_size),
+                        title: const Text('Tamanho da letra'),
+                        subtitle: Text(preferencias.atual.tamanhoLetra.rotulo),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _escolherTamanhoLetra(preferencias),
+                      ),
+                      ListTile(
+                        key: const Key('perfil_tema'),
+                        leading: const Icon(Icons.dark_mode_outlined),
+                        title: const Text('Tema'),
+                        subtitle: Text(preferencias.atual.tema.rotulo),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _escolherTema(preferencias),
+                      ),
+                    ],
+                  ),
+                ],
                 const SizedBox(height: 24),
                 const _TituloSecao('Privacidade e dados'),
                 _Secao(
@@ -368,29 +559,32 @@ class _Cabecalho extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textos = Theme.of(context).textTheme;
+    final cores = context.cores;
     final base = nome ?? email ?? '?';
     final inicial = base.isEmpty ? '?' : base.characters.first.toUpperCase();
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [CoresPhize.azulClaro, Colors.white],
+        gradient: LinearGradient(
+          colors: [cores.azulClaro, cores.superficie],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: CoresPhize.borda),
+        border: Border.all(color: cores.borda),
       ),
       child: Row(
         children: [
           ExcludeSemantics(
             child: CircleAvatar(
               radius: 30,
-              backgroundColor: CoresPhize.azul,
+              backgroundColor: cores.azul,
               child: Text(
                 inicial,
-                style: textos.titleLarge?.copyWith(color: Colors.white),
+                style: textos.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
               ),
             ),
           ),
@@ -408,7 +602,7 @@ class _Cabecalho extends StatelessWidget {
                   Text(
                     email!,
                     style: textos.bodyMedium?.copyWith(
-                      color: CoresPhize.textoSecundario,
+                      color: cores.textoSecundario,
                     ),
                   ),
                 if (emailVerificado != null) ...[
@@ -431,7 +625,11 @@ class _SeloVerificacao extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cor = verificado ? const Color(0xFF15803D) : const Color(0xFF8A5A00);
+    // Verde e âmbar com contraste para texto nos dois temas.
+    final escuro = Theme.of(context).brightness == Brightness.dark;
+    final cor = verificado
+        ? (escuro ? const Color(0xFF4ADE80) : const Color(0xFF15803D))
+        : (escuro ? const Color(0xFFFBBF24) : const Color(0xFF8A5A00));
     return Container(
       key: Key(
         verificado ? 'perfil_email_verificado' : 'perfil_email_pendente',
@@ -488,18 +686,19 @@ class _Secao extends StatelessWidget {
   Widget build(BuildContext context) {
     // Material, e não um Container com cor, para o efeito de toque dos
     // itens aparecer.
+    final cores = context.cores;
     return Material(
-      color: Colors.white,
+      color: cores.superficie,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: const BorderSide(color: CoresPhize.borda),
+        side: BorderSide(color: cores.borda),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
           for (final (i, filho) in children.indexed) ...[
             if (i > 0)
-              const Divider(height: 1, indent: 56, color: CoresPhize.borda),
+              Divider(height: 1, indent: 56, color: cores.borda),
             filho,
           ],
         ],

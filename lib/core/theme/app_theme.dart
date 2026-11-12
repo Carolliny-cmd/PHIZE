@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// Paleta da direção visual "Leve". As cores do veredito ficam em
-/// `FaixaRisco`, porque carregam o significado do semáforo (RF07).
+/// Paleta da direção visual "Leve", no tema claro. As cores do veredito
+/// ficam em `FaixaRisco`, porque carregam o significado do semáforo (RF07).
+///
+/// Telas devem ler as cores por [CoresDoTema.cores], que acompanha o tema
+/// escolhido no perfil (RF14). Usar estas constantes direto só onde o
+/// desenho é sempre claro, como a tela simulada dentro do tutorial.
 class CoresPhize {
   CoresPhize._();
 
@@ -16,26 +20,168 @@ class CoresPhize {
   static const Color erroClaro = Color(0xFFFEECEB);
 }
 
+/// Cores da marca no tema em uso (RF14). No escuro, todo texto mantém
+/// contraste de pelo menos 4,5:1 sobre o fundo e as superfícies.
+@immutable
+class CoresTema extends ThemeExtension<CoresTema> {
+  const CoresTema({
+    required this.azul,
+    required this.azulEscuro,
+    required this.azulClaro,
+    required this.tinta,
+    required this.textoSecundario,
+    required this.fundo,
+    required this.superficie,
+    required this.fundoSuave,
+    required this.borda,
+    required this.erro,
+    required this.erroClaro,
+  });
+
+  static const CoresTema claro = CoresTema(
+    azul: CoresPhize.azul,
+    azulEscuro: CoresPhize.azulEscuro,
+    azulClaro: CoresPhize.azulClaro,
+    tinta: CoresPhize.tinta,
+    textoSecundario: CoresPhize.textoSecundario,
+    fundo: Colors.white,
+    superficie: Colors.white,
+    fundoSuave: CoresPhize.fundoSuave,
+    borda: CoresPhize.borda,
+    erro: CoresPhize.erro,
+    erroClaro: CoresPhize.erroClaro,
+  );
+
+  static const CoresTema escuro = CoresTema(
+    azul: Color(0xFF8FA6FF),
+    azulEscuro: Color(0xFFC9D4FF),
+    azulClaro: Color(0xFF243063),
+    tinta: Color(0xFFE8EBF5),
+    textoSecundario: Color(0xFFA9B1C7),
+    fundo: Color(0xFF0F1428),
+    superficie: Color(0xFF171D33),
+    fundoSuave: Color(0xFF1F2640),
+    borda: Color(0xFF3A4363),
+    erro: Color(0xFFFF8A80),
+    erroClaro: Color(0xFF3D1A1A),
+  );
+
+  /// Destaque: botões, ícones ativos e progresso.
+  final Color azul;
+
+  /// Texto sobre [azulClaro].
+  final Color azulEscuro;
+
+  /// Fundo de destaque suave.
+  final Color azulClaro;
+
+  /// Texto principal.
+  final Color tinta;
+  final Color textoSecundario;
+
+  /// Fundo das telas.
+  final Color fundo;
+
+  /// Cartões e seções.
+  final Color superficie;
+
+  /// Campos e cartões discretos.
+  final Color fundoSuave;
+  final Color borda;
+  final Color erro;
+  final Color erroClaro;
+
+  @override
+  CoresTema copyWith({
+    Color? azul,
+    Color? azulEscuro,
+    Color? azulClaro,
+    Color? tinta,
+    Color? textoSecundario,
+    Color? fundo,
+    Color? superficie,
+    Color? fundoSuave,
+    Color? borda,
+    Color? erro,
+    Color? erroClaro,
+  }) {
+    return CoresTema(
+      azul: azul ?? this.azul,
+      azulEscuro: azulEscuro ?? this.azulEscuro,
+      azulClaro: azulClaro ?? this.azulClaro,
+      tinta: tinta ?? this.tinta,
+      textoSecundario: textoSecundario ?? this.textoSecundario,
+      fundo: fundo ?? this.fundo,
+      superficie: superficie ?? this.superficie,
+      fundoSuave: fundoSuave ?? this.fundoSuave,
+      borda: borda ?? this.borda,
+      erro: erro ?? this.erro,
+      erroClaro: erroClaro ?? this.erroClaro,
+    );
+  }
+
+  @override
+  CoresTema lerp(CoresTema? other, double t) {
+    if (other == null) return this;
+    Color m(Color a, Color b) => Color.lerp(a, b, t)!;
+    return CoresTema(
+      azul: m(azul, other.azul),
+      azulEscuro: m(azulEscuro, other.azulEscuro),
+      azulClaro: m(azulClaro, other.azulClaro),
+      tinta: m(tinta, other.tinta),
+      textoSecundario: m(textoSecundario, other.textoSecundario),
+      fundo: m(fundo, other.fundo),
+      superficie: m(superficie, other.superficie),
+      fundoSuave: m(fundoSuave, other.fundoSuave),
+      borda: m(borda, other.borda),
+      erro: m(erro, other.erro),
+      erroClaro: m(erroClaro, other.erroClaro),
+    );
+  }
+}
+
+extension CoresDoTema on BuildContext {
+  /// Cores da marca no tema em uso; sem a extensão no tema, as do claro.
+  CoresTema get cores =>
+      Theme.of(this).extension<CoresTema>() ?? CoresTema.claro;
+}
+
 class AppTheme {
   AppTheme._();
 
   static const double _raio = 18;
 
-  static ThemeData get light {
-    const colorScheme = ColorScheme.light(
-      primary: CoresPhize.azul,
-      onPrimary: Colors.white,
-      secondaryContainer: CoresPhize.azulClaro,
-      onSecondaryContainer: CoresPhize.azulEscuro,
-      surface: Colors.white,
-      onSurface: CoresPhize.tinta,
-      onSurfaceVariant: CoresPhize.textoSecundario,
-      surfaceContainerHighest: CoresPhize.fundoSuave,
-      outline: CoresPhize.borda,
-      error: CoresPhize.erro,
-      onError: Colors.white,
-      errorContainer: CoresPhize.erroClaro,
-      onErrorContainer: CoresPhize.erro,
+  static ThemeData get light => _construir(CoresTema.claro, Brightness.light);
+
+  /// Variante escura (RF14), com as mesmas formas e tipografia do claro.
+  static ThemeData get dark => _construir(CoresTema.escuro, Brightness.dark);
+
+  static ThemeData _construir(CoresTema c, Brightness brilho) {
+    final escuro = brilho == Brightness.dark;
+    final colorScheme = ColorScheme(
+      brightness: brilho,
+      primary: c.azul,
+      onPrimary: escuro ? c.fundo : Colors.white,
+      secondary: c.azul,
+      onSecondary: escuro ? c.fundo : Colors.white,
+      secondaryContainer: c.azulClaro,
+      onSecondaryContainer: c.azulEscuro,
+      surface: c.superficie,
+      onSurface: c.tinta,
+      onSurfaceVariant: c.textoSecundario,
+      surfaceContainerLowest: c.fundo,
+      surfaceContainerLow: c.superficie,
+      surfaceContainer: c.superficie,
+      surfaceContainerHigh: c.fundoSuave,
+      surfaceContainerHighest: c.fundoSuave,
+      outline: c.borda,
+      outlineVariant: c.borda,
+      error: c.erro,
+      onError: escuro ? c.fundo : Colors.white,
+      errorContainer: c.erroClaro,
+      onErrorContainer: c.erro,
+      inverseSurface: escuro ? c.tinta : CoresPhize.tinta,
+      onInverseSurface: escuro ? c.fundo : Colors.white,
     );
 
     final formaBotao = RoundedRectangleBorder(
@@ -54,9 +200,11 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      brightness: brilho,
       colorScheme: colorScheme,
+      extensions: [c],
       fontFamily: 'PlusJakartaSans',
-      scaffoldBackgroundColor: Colors.white,
+      scaffoldBackgroundColor: c.fundo,
       textTheme: const TextTheme(
         headlineMedium: TextStyle(fontSize: 30, fontWeight: FontWeight.w800),
         headlineSmall: TextStyle(fontSize: 25, fontWeight: FontWeight.w800),
@@ -65,10 +213,10 @@ class AppTheme {
         bodyLarge: TextStyle(fontSize: 17, height: 1.45),
         bodyMedium: TextStyle(fontSize: 16, height: 1.45),
         bodySmall: TextStyle(fontSize: 14, height: 1.4),
-      ).apply(bodyColor: CoresPhize.tinta, displayColor: CoresPhize.tinta),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
-        foregroundColor: CoresPhize.tinta,
+      ).apply(bodyColor: c.tinta, displayColor: c.tinta),
+      appBarTheme: AppBarTheme(
+        backgroundColor: c.fundo,
+        foregroundColor: c.tinta,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -77,7 +225,7 @@ class AppTheme {
           fontFamily: 'PlusJakartaSans',
           fontSize: 20,
           fontWeight: FontWeight.w700,
-          color: CoresPhize.tinta,
+          color: c.tinta,
         ),
       ),
       filledButtonTheme: FilledButtonThemeData(
@@ -92,7 +240,7 @@ class AppTheme {
           minimumSize: tamanhoBotao,
           shape: formaBotao,
           textStyle: textoBotao,
-          side: const BorderSide(color: CoresPhize.borda),
+          side: BorderSide(color: c.borda),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -103,7 +251,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: CoresPhize.fundoSuave,
+        fillColor: c.fundoSuave,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
           vertical: 18,
@@ -111,17 +259,17 @@ class AppTheme {
         border: bordaCampo,
         enabledBorder: bordaCampo,
         focusedBorder: bordaCampo.copyWith(
-          borderSide: const BorderSide(color: CoresPhize.azul, width: 2),
+          borderSide: BorderSide(color: c.azul, width: 2),
         ),
         errorBorder: bordaCampo.copyWith(
-          borderSide: const BorderSide(color: CoresPhize.erro),
+          borderSide: BorderSide(color: c.erro),
         ),
         focusedErrorBorder: bordaCampo.copyWith(
-          borderSide: const BorderSide(color: CoresPhize.erro, width: 2),
+          borderSide: BorderSide(color: c.erro, width: 2),
         ),
       ),
       cardTheme: CardThemeData(
-        color: CoresPhize.fundoSuave,
+        color: c.fundoSuave,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
@@ -129,9 +277,9 @@ class AppTheme {
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: Colors.white,
+        backgroundColor: c.fundo,
         surfaceTintColor: Colors.transparent,
-        indicatorColor: CoresPhize.azulClaro,
+        indicatorColor: c.azulClaro,
         height: 76,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (estados) => TextStyle(
@@ -141,13 +289,13 @@ class AppTheme {
                 ? FontWeight.w700
                 : FontWeight.w400,
             color: estados.contains(WidgetState.selected)
-                ? CoresPhize.azulEscuro
-                : CoresPhize.textoSecundario,
+                ? c.azulEscuro
+                : c.textoSecundario,
           ),
         ),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: Colors.white,
+        backgroundColor: c.superficie,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
@@ -155,7 +303,7 @@ class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: CoresPhize.tinta,
+        backgroundColor: colorScheme.inverseSurface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
         ),

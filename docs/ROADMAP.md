@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-12
-- **Última tarefa concluída:** etapa 2 do plano do RAG (Prompt 9.7, OCR de prints sintéticos; só as mensagens recebidas vão ao modelo) e Prompt 9.10 (tela de Perfil). 83 testes na Function, 593 no app
+- **Última tarefa concluída:** Prompt 9.11 — segurança e acessibilidade no Perfil (troca de senha, reenvio da verificação, tamanho da letra e tema escuro). 83 testes na Function, 647 no app
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** Prompts 9.11 e 9.12 (perfil, RF14). No RAG: repetir a medição com 3 repetições para medir a variação entre execuções, depois a etapa 3 (`situacoesLegitimas`, começando pelo pedido de código) e a etapa 4 (ficha do comprovante falso). A coleta de mensagens independentes foi adiada pela equipe
+- **Próximo passo:** Prompt 9.12 (aprender e sobre, RF14). No RAG: repetir a medição com 3 repetições para medir a variação entre execuções, depois a etapa 3 (`situacoesLegitimas`, começando pelo pedido de código) e a etapa 4 (ficha do comprovante falso). A coleta de mensagens independentes foi adiada pela equipe
 
 ---
 
@@ -1073,7 +1073,7 @@ pendência).
 
 > **Pontos para a equipe:** as regras novas só valem depois de publicadas no console. Contas criadas antes desta versão continuam válidas, porque já têm os três campos do cadastro.
 
-### Prompt 9.11 — Perfil: segurança e acessibilidade (RF14; T53, T54)
+### Prompt 9.11 — Perfil: segurança e acessibilidade (RF14; T53, T54) (concluído)
 
 **[CLAUDE CODE]**
 ```
@@ -1102,6 +1102,18 @@ estouro de layout no maior tamanho e no tema escuro.
 ```
 
 **Verificação [TERMINAL]:** `flutter analyze` e `flutter test`; percorrer as telas no emulador com letra muito grande e tema escuro. Depois commit.
+
+**Feito (2026-11-12):**
+- **Segurança:** "Trocar senha" pede a senha atual (nova autenticação no Firebase), a nova com a regra do RF01 e a repetição; o diálogo fica aberto com o erro em português ("Senha atual incorreta.") e nunca mostra detalhe técnico. A troca passa por `ContaRepository.trocarSenha` e não toca o `LoginAttemptTracker`. Contas só do Google veem um aviso de que a senha é cuidada pelo Google.
+- **Verificação do e-mail:** "Reenviar e-mail de verificação" aparece só para conta de e-mail e senha não verificada, com espera de 60 segundos entre pedidos (`EsperaReenvio`), além do limite do próprio Firebase. Ao abrir, o perfil busca o estado atual da conta (`atualizarIdentidade`), para o selo mudar depois de verificar o e-mail.
+- **Tamanho da letra:** Normal, Grande (1,3×) e Muito grande (1,6×), aplicados a todas as telas pelo `builder` do `MaterialApp`. Vale o maior entre o tamanho do app e o do celular: o app nunca diminui a letra já ampliada no aparelho.
+- **Tema:** claro, escuro ou igual ao do celular. Variante escura em `app_theme.dart`, com as cores da marca numa extensão de tema (`context.cores`); as telas deixaram de usar cor fixa. As faixas de risco ganharam tons claros para texto no escuro (`FaixaRisco.corTextoEm`), com contraste de pelo menos 4,5:1 conferido por teste. A tela simulada dentro do tutorial continua clara, como imagem do app.
+- **Preferências:** só no aparelho (`PreferenciasRepositoryLocal`, `shared_preferences`), lidas antes do primeiro quadro; valem para o aparelho, e não para a conta. Falha ao gravar mantém a escolha até fechar o app, com aviso.
+- **Correção:** a tela "Analisar print" não rolava e estourava com letra muito grande em celular pequeno; agora rola.
+- **Testes:** 54 novos. Troca de senha (certa, atual errada, fraca, repetição diferente, falha inesperada, cancelar, conta Google), reenvio e espera, preferências gravadas e aplicadas, e as telas principais e os dois tutoriais sem estouro de layout com letra muito grande nos dois temas (`test/core/telas_acessibilidade_test.dart`). Suíte: 647 testes.
+- **Validação visual:** imagens do perfil, do resultado, do tutorial e do diálogo de senha no tema escuro, geradas por teste. Emulador do app não usado (exige login).
+
+> **Pontos para a equipe:** a espera de 60 segundos entre reenvios é provisória, como a do bloqueio de login (RF02). Revisar o tom das cores escuras com a identidade visual.
 
 ### Prompt 9.12 — Perfil: aprender e sobre (RF14; T55)
 

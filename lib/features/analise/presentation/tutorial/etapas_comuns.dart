@@ -40,7 +40,9 @@ class ComoLerResultado extends StatelessWidget {
               children: [
                 Text(
                   faixa.rotulo,
-                  style: textos.titleMedium?.copyWith(color: faixa.corTexto),
+                  style: textos.titleMedium?.copyWith(
+                    color: faixa.corTextoEm(Theme.of(context).brightness),
+                  ),
                 ),
                 Text(_significado[faixa]!),
               ],

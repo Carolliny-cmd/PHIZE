@@ -80,15 +80,15 @@ class _LinhaEtapa extends StatelessWidget {
           SizedBox.square(
             dimension: 26,
             child: concluida
-                ? const Icon(Icons.check_circle, color: CoresPhize.azul)
+                ? Icon(Icons.check_circle, color: context.cores.azul)
                 : emAndamento
                 ? const Padding(
                     padding: EdgeInsets.all(3),
                     child: CircularProgressIndicator(strokeWidth: 3),
                   )
-                : const Icon(
+                : Icon(
                     Icons.radio_button_unchecked,
-                    color: CoresPhize.borda,
+                    color: context.cores.borda,
                   ),
           ),
           const SizedBox(width: 14),
@@ -97,8 +97,8 @@ class _LinhaEtapa extends StatelessWidget {
               etapa.titulo,
               style: TextStyle(
                 color: concluida || emAndamento
-                    ? CoresPhize.tinta
-                    : CoresPhize.textoSecundario,
+                    ? context.cores.tinta
+                    : context.cores.textoSecundario,
                 fontWeight: emAndamento ? FontWeight.w700 : FontWeight.w400,
               ),
             ),

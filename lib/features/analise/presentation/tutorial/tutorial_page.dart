@@ -92,11 +92,11 @@ class _TutorialPageState extends State<TutorialPage> {
       avancar: () => _irPara(_atual + 1),
       child: Scaffold(
         body: DecoratedBox(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [CoresPhize.azulClaro, Colors.white],
+              colors: [context.cores.azulClaro, context.cores.fundo],
               stops: [0, 0.65],
             ),
           ),
@@ -128,8 +128,8 @@ class _TutorialPageState extends State<TutorialPage> {
                                     height: 6,
                                     decoration: BoxDecoration(
                                       color: i <= _atual
-                                          ? CoresPhize.azul
-                                          : CoresPhize.borda,
+                                          ? context.cores.azul
+                                          : context.cores.borda,
                                       borderRadius: BorderRadius.circular(3),
                                     ),
                                   ),
@@ -213,9 +213,9 @@ class _PaginaEtapa extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.cores.superficie,
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: CoresPhize.borda),
+              border: Border.all(color: context.cores.borda),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -258,6 +258,10 @@ class MolduraCelular extends StatelessWidget {
         decoration: BoxDecoration(
           color: CoresPhize.tinta,
           borderRadius: BorderRadius.circular(40),
+          // No tema escuro, a borda separa o aparelho do fundo da tela.
+          border: Theme.of(context).brightness == Brightness.dark
+              ? Border.all(color: context.cores.borda, width: 1.5)
+              : null,
           boxShadow: const [
             BoxShadow(
               color: Color(0x332B46B8),
@@ -274,7 +278,15 @@ class MolduraCelular extends StatelessWidget {
                 .copyWith(textScaler: TextScaler.noScaling),
             child: DefaultTextStyle.merge(
               style: const TextStyle(fontSize: 12, height: 1.35),
-              child: ColoredBox(color: Colors.white, child: child),
+              // A tela simulada é uma imagem do app no tema claro, em
+              // qualquer tema escolhido.
+              child: Theme(
+                data: AppTheme.light,
+                child: DefaultTextStyle.merge(
+                  style: const TextStyle(color: CoresPhize.tinta),
+                  child: ColoredBox(color: Colors.white, child: child),
+                ),
+              ),
             ),
           ),
         ),

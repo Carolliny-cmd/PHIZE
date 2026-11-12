@@ -169,7 +169,9 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
         ],
       ),
       body: SafeArea(
-        child: Padding(
+        // Rolável: com letra ampliada (RF14), o texto empurra o botão para
+        // baixo da tela.
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

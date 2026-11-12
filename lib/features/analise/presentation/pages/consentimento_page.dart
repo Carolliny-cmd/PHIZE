@@ -127,7 +127,7 @@ class _Item extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icone, color: CoresPhize.azul),
+          Icon(icone, color: context.cores.azul),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

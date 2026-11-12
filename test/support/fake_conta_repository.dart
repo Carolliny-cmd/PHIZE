@@ -1,3 +1,4 @@
+import 'package:phize/features/auth/domain/auth_exception.dart';
 import 'package:phize/features/conta/domain/compartilhador_arquivo.dart';
 import 'package:phize/features/conta/domain/conta_repository.dart';
 
@@ -21,6 +22,15 @@ class FakeContaRepository implements ContaRepository {
   String? senhaRecebida;
   int exclusoes = 0;
 
+  /// Senha que a troca aceita como atual.
+  String senhaAtual = 'senha-atual-123';
+  String? novaSenhaGravada;
+  Object? erroTrocaSenha;
+  int reenvios = 0;
+  Object? erroReenvio;
+  IdentidadeConta? identidadeAtualizada;
+  bool falhaAtualizarIdentidade = false;
+
   @override
   Future<PerfilConta> carregarPerfil() async {
     if (falhaPerfil) throw StateError('falha simulada');
@@ -36,6 +46,33 @@ class FakeContaRepository implements ContaRepository {
   Future<void> salvarNomeExibicao(String? nome) async {
     if (falhaSalvarNome) throw StateError('falha simulada');
     nomeExibicao = nome;
+  }
+
+  @override
+  Future<IdentidadeConta> atualizarIdentidade() async {
+    if (falhaAtualizarIdentidade) throw StateError('falha simulada');
+    return identidadeAtualizada ?? identidade;
+  }
+
+  @override
+  Future<void> trocarSenha({
+    required String senhaAtual,
+    required String novaSenha,
+  }) async {
+    final erro = erroTrocaSenha;
+    if (erro != null) throw erro;
+    if (senhaAtual != this.senhaAtual) {
+      throw const AuthException('Senha atual incorreta.');
+    }
+    novaSenhaGravada = novaSenha;
+    this.senhaAtual = novaSenha;
+  }
+
+  @override
+  Future<void> reenviarVerificacao() async {
+    final erro = erroReenvio;
+    if (erro != null) throw erro;
+    reenvios++;
   }
 
   @override

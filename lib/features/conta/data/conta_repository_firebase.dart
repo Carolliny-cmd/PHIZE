@@ -58,8 +58,47 @@ class ContaRepositoryFirebase implements ContaRepository {
   }
 
   @override
-  IdentidadeConta get identidade {
+  IdentidadeConta get identidade => _identidadeDe(_usuario);
+
+  @override
+  Future<IdentidadeConta> atualizarIdentidade() async {
+    await _usuario.reload();
+    return _identidadeDe(_usuario);
+  }
+
+  @override
+  Future<void> trocarSenha({
+    required String senhaAtual,
+    required String novaSenha,
+  }) async {
     final usuario = _usuario;
+    await _confirmarSenha(
+      usuario,
+      senhaAtual,
+      mensagemSenhaErrada: 'Senha atual incorreta.',
+    );
+    try {
+      await usuario.updatePassword(novaSenha);
+    } on FirebaseAuthException catch (e) {
+      throw AuthException(mapearErroAutenticacao(e));
+    }
+  }
+
+  @override
+  Future<void> reenviarVerificacao() async {
+    try {
+      await _usuario.sendEmailVerification();
+    } on FirebaseAuthException catch (e) {
+      throw AuthException(switch (e.code) {
+        'too-many-requests' =>
+          'Já enviamos vários e-mails. Aguarde alguns minutos antes de pedir '
+              'outro.',
+        _ => mapearErroAutenticacao(e),
+      });
+    }
+  }
+
+  static IdentidadeConta _identidadeDe(User usuario) {
     final provedores = usuario.providerData.map((p) => p.providerId).toSet();
     return IdentidadeConta(
       email: usuario.email,
@@ -132,7 +171,11 @@ class ContaRepositoryFirebase implements ContaRepository {
     }
   }
 
-  Future<void> _confirmarSenha(User usuario, String senha) async {
+  Future<void> _confirmarSenha(
+    User usuario,
+    String senha, {
+    String mensagemSenhaErrada = 'Senha incorreta.',
+  }) async {
     final email = usuario.email;
     if (email == null) throw const AuthException(_mensagemFalhaConfirmacao);
     try {
@@ -141,7 +184,7 @@ class ContaRepositoryFirebase implements ContaRepository {
       );
     } on FirebaseAuthException catch (e) {
       throw AuthException(switch (e.code) {
-        'wrong-password' || 'invalid-credential' => 'Senha incorreta.',
+        'wrong-password' || 'invalid-credential' => mensagemSenhaErrada,
         _ => mapearErroAutenticacao(e),
       });
     }

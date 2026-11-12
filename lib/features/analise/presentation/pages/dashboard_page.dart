@@ -27,7 +27,7 @@ class DashboardPage extends StatelessWidget {
             Text(
               'Veja se é golpe antes de responder.',
               style: tema.bodyLarge?.copyWith(
-                color: CoresPhize.textoSecundario,
+                color: context.cores.textoSecundario,
               ),
             ),
             const SizedBox(height: 32),
@@ -48,13 +48,13 @@ class DashboardPage extends StatelessWidget {
               label: const Text('Analisar print'),
             ),
             if (kIsWeb)
-              const Padding(
-                padding: EdgeInsets.only(top: 6, left: 4),
+              Padding(
+                padding: const EdgeInsets.only(top: 6, left: 4),
                 child: Text(
                   'Disponível apenas em dispositivos móveis (Android/iOS).',
                   style: TextStyle(
                     fontSize: 14,
-                    color: CoresPhize.textoSecundario,
+                    color: context.cores.textoSecundario,
                   ),
                 ),
               ),
@@ -64,8 +64,8 @@ class DashboardPage extends StatelessWidget {
               style: FilledButton.styleFrom(
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                backgroundColor: CoresPhize.azulClaro,
-                foregroundColor: CoresPhize.azulEscuro,
+                backgroundColor: context.cores.azulClaro,
+                foregroundColor: context.cores.azulEscuro,
               ),
               onPressed: () =>
                   Navigator.of(context).pushNamed(AppRoutes.analisarLink),

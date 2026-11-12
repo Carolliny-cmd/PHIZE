@@ -12,6 +12,24 @@ abstract class ContaRepository {
   /// Lança em caso de falha.
   Future<void> salvarNomeExibicao(String? nome);
 
+  /// Busca no servidor o estado atual da conta, como o e-mail recém
+  /// verificado. Lança em caso de falha.
+  Future<IdentidadeConta> atualizarIdentidade();
+
+  /// Troca a senha de quem entra com e-mail e senha, depois de confirmar a
+  /// [senhaAtual] (RF14). Não conta como tentativa de login.
+  ///
+  /// Lança `AuthException` com mensagem pronta para exibição.
+  Future<void> trocarSenha({
+    required String senhaAtual,
+    required String novaSenha,
+  });
+
+  /// Envia de novo o e-mail de verificação (RF14).
+  ///
+  /// Lança `AuthException` com mensagem pronta para exibição.
+  Future<void> reenviarVerificacao();
+
   /// `false` para quem entra só com o Google e confirma a exclusão por ele.
   bool get exigeSenha;
 

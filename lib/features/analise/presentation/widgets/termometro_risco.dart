@@ -41,7 +41,9 @@ class TermometroRisco extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           faixa.rotulo,
-          style: tema.headlineSmall?.copyWith(color: faixa.corTexto),
+          style: tema.headlineSmall?.copyWith(
+            color: faixa.corTextoEm(Theme.of(context).brightness),
+          ),
           textAlign: TextAlign.center,
         ),
       ],

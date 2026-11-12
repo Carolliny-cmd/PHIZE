@@ -22,13 +22,13 @@ class ExplicacaoEtapa extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.touch_app_outlined, color: CoresPhize.azul),
+              Icon(Icons.touch_app_outlined, color: context.cores.azul),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   experimente!,
-                  style: const TextStyle(
-                    color: CoresPhize.azulEscuro,
+                  style: TextStyle(
+                    color: context.cores.azulEscuro,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -124,7 +124,7 @@ class OpcaoExemplo extends StatelessWidget {
     final forma = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(14),
       side: BorderSide(
-        color: selecionado ? CoresPhize.azul : CoresPhize.borda,
+        color: selecionado ? context.cores.azul : context.cores.borda,
         width: selecionado ? 2 : 1,
       ),
     );
@@ -134,7 +134,7 @@ class OpcaoExemplo extends StatelessWidget {
       inMutuallyExclusiveGroup: true,
       child: Material(
         shape: forma,
-        color: selecionado ? CoresPhize.azulClaro : Colors.white,
+        color: selecionado ? context.cores.azulClaro : context.cores.superficie,
         child: InkWell(
           customBorder: forma,
           onTap: aoTocar,
@@ -146,7 +146,7 @@ class OpcaoExemplo extends StatelessWidget {
                   selecionado
                       ? Icons.radio_button_checked
                       : Icons.radio_button_unchecked,
-                  color: CoresPhize.azul,
+                  color: context.cores.azul,
                 ),
                 const SizedBox(width: 12),
                 Expanded(child: Text(texto)),
