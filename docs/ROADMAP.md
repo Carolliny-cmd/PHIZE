@@ -11,7 +11,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Última tarefa concluída:** Prompt 9.12 — seções Aprender e Sobre do Perfil; com ele, o plano de orientação e perfil (RF13, RF14) está completo. 83 testes na Function, 658 no app
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** decisões da equipe sobre o RNF07 no nível gratuito (declarar a limitação e, talvez, avisar no consentimento). Projeto só com recursos gratuitos (decisão de 2026-11-12): extrair o máximo do nível gratuito na análise de print e de link. No RAG: medição com 3 repetições, etapas 3 e 4. Depois do MVP: notícias e comunidade (Fase 10) e, em seguida, nova rodada de design
+- **Próximo passo:** decidir se a tela de consentimento passa a avisar que o Google pode usar o texto (nível gratuito; exige nova versão do consentimento). Projeto só com recursos gratuitos (decisão de 2026-11-12): extrair o máximo do nível gratuito na análise de print e de link. No RAG: medição com 3 repetições, etapas 3 e 4. Depois do MVP: notícias e comunidade (Fase 10) e, em seguida, nova rodada de design
 
 ---
 
@@ -206,7 +206,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | Validação da tabela v1.0 (docs/score-calibracao.md) pela equipe | Não bloqueante | RF07 |
 | ~~Ativar o plano Blaze para deploy das Cloud Functions~~ — **decidido (2026-11-12): não ativar.** Projeto acadêmico, só com recursos gratuitos. As Functions rodam apenas no emulador local, inclusive nas demonstrações; Auth e Firestore seguem no plano gratuito (Spark) | ~~Publicação~~ Resolvida | Fase 5 |
 | ~~Provedor de LLM com termos que vedem uso para treinamento (RNF07)~~ — **decidido: contratado** | ~~Fase 6.2~~ Resolvida | custo recorrente |
-| ~~Ativar faturamento no projeto da chave do Gemini~~ — **decidido (2026-11-12): não ativar.** A exceção ao RNF07 da Fase 6.3 deixa de ser temporária e vale para todo o projeto acadêmico, com as mesmas condições: só conteúdo fictício é enviado ao modelo, inclusive nos testes com pessoas. Pendente: declarar essa limitação em `docs/requisitos.md` (RNF07) e no relatório, que hoje exigem API que vede o treinamento | Revisão do documento | RNF07 |
+| ~~Ativar faturamento no projeto da chave do Gemini~~ — **decidido (2026-11-12): não ativar.** A exceção ao RNF07 da Fase 6.3 deixa de ser temporária e vale para todo o projeto acadêmico, com as mesmas condições: só conteúdo fictício é enviado ao modelo, inclusive nos testes com pessoas. Limitação declarada no RNF07 de `docs/requisitos.md` e de `docs/relatorio-completo.md` ("Limitação declarada (escopo acadêmico)") | ~~Revisão do documento~~ Resolvida | RNF07 |
 | ~~Ativar Cloud Vision e criar chave restrita~~ — **dispensado: OCR embarcado (decisão de 2026-10-07)** | ~~Fase 6.2~~ Resolvida | console |
 | Validação da troca do OCR para reconhecimento embarcado (ML Kit), decisão de 2026-10-07 | Não bloqueante | RNF06 |
 | Validação das categorias de ameaça v1.0 (docs/categorias-ameaca.md) | Não bloqueante | RNF07 / UC04 |
@@ -255,6 +255,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - ~~Os trechos destacados do RF04 não são devolvidos pelo pipeline do UC04~~ — **resolvida no Prompt 9.3**.
 - O streaming do RNF03 não foi implementado: a medição do Prompt 9.4 mostrou ganho de só 0,5 s. Reavaliar com o faturamento ativo.
 - ~~O build de release do Android falha (R8: classes ausentes do ML Kit)~~ — **resolvida em 2026-11-12**: `android/app/proguard-rules.pro` com `-dontwarn` para as escritas chinesa, devanágari, japonesa e coreana, que o app não usa. `flutter build apk --release` gera o APK (83,3 MB). O APK de release não fala com os emuladores do Firebase (sem exceção de HTTP); os testes de fluxo usam o build de debug.
+- A limitação acadêmica do RNF07 (nível gratuito do Gemini, só conteúdo fictício; 2026-11-12) foi declarada em `docs/requisitos.md` e `docs/relatorio-completo.md`. Ainda descrevem a exigência antiga, sem a ressalva: `docs/arquitetura.md` (seção 4, transmissão a terceiros), a tarefa T13 do `docs/BACKLOG.md`, a Seção 3 do `CLAUDE.md` e os .docx acadêmicos. Alinhar quando a equipe revisar esses textos.
 - Sincronizar `docs/relatorio-completo.md` e os .docx acadêmicos com os RF13 e RF14 (2026-11-12); `docs/requisitos.md` prevalece até lá. O diagrama de classes de `docs/uml.md` (imagem) precisa do atributo `nomeExibicao` em Usuário depois do Prompt 9.10.
 - `ReconhecedorTextoMlKit` passou a organizar o texto do print (ordem de leitura, sem interface, só mensagens recebidas; Prompt 9.7). A arquitetura (seção 3.1) descreve só a extração do texto; avaliar se esse passo merece registro no documento.
 
