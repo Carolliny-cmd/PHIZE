@@ -29,14 +29,16 @@ class ExemploTutorialLink {
       ),
   ];
 
+  /// O primeiro é o da simulação passo a passo; os outros podem ser
+  /// escolhidos na última etapa.
   static const List<ExemploTutorialLink> todos = [
-    ExemploTutorialLink(
-      endereco: 'loja-fe1iz.example/promocao',
-      sinais: {SinalLink.typosquatting, SinalLink.dominioRecemCriado},
-    ),
     ExemploTutorialLink(
       endereco: 'entrega-taxa.example/pagar',
       sinais: {SinalLink.listadoSafeBrowsing},
+    ),
+    ExemploTutorialLink(
+      endereco: 'loja-fe1iz.example/promocao',
+      sinais: {SinalLink.typosquatting, SinalLink.dominioRecemCriado},
     ),
     ExemploTutorialLink(endereco: 'lojafeliz.example', sinais: {}),
   ];
@@ -48,6 +50,12 @@ class VerificacaoExemplo {
 
   final SinalLink sinal;
   final bool encontrado;
+
+  String get titulo => switch (sinal) {
+    SinalLink.typosquatting => 'Nome parecido com empresa conhecida',
+    SinalLink.dominioRecemCriado => 'Idade do site',
+    SinalLink.listadoSafeBrowsing => 'Lista do Google',
+  };
 
   String get texto => switch ((sinal, encontrado)) {
     (SinalLink.typosquatting, true) =>

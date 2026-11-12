@@ -974,13 +974,14 @@ estouro de layout; semântica para leitor de tela nos botões.
 **Verificação [TERMINAL]:** `flutter analyze` e `flutter test`; abrir a análise de link no emulador duas vezes. Depois commit.
 
 **Feito (2026-11-12):**
-- **Estrutura:** `TutorialPage` (`lib/features/analise/presentation/tutorial/`), com até 4 etapas, progresso lido pelo leitor de tela ("Etapa 2 de 4"), Voltar, Próximo, Pular e "Começar" na última. Com a redução de movimento do sistema, troca de etapa e números sem animação.
+- **Estrutura:** `TutorialPage` (`lib/features/analise/presentation/tutorial/`), com até 4 etapas, barra de progresso lida pelo leitor de tela ("Etapa 2 de 4"), Voltar, Próximo, Pular e "Começar" na última. Cada etapa tem uma **cena simulada num celular desenhado** (`MolduraCelular`) e um cartão com a explicação. O conteúdo do celular tem tamanho fixo; a explicação acompanha o tamanho de letra da pessoa. Com a redução de movimento do sistema ligada, nada é animado.
 - **Marca de visto:** `TutorialRepositoryLocal`, por usuário, por tipo e com versão (`versaoTutorial`). Concluir, pular ou voltar grava a marca. Se a marca não puder ser lida, o tutorial não abre e a análise segue. A exclusão da conta apaga as marcas.
 - **Tela de link:** o tutorial abre na primeira vez, e o botão "?" da barra o reabre.
-- **Exemplo interativo:** três links inventados no domínio reservado `.example`, da loja fictícia "Loja Feliz". O resultado sai de `CalculadoraScore`, sem números próprios, sem rede e sem histórico. Com letra grande, a tela rola até o resultado.
-- **Etapa "Como ler o resultado":** comum aos dois tutoriais (`etapas_comuns.dart`), com os rótulos de `RotulosRisco` e o aviso permanente.
-- **Testes:** 17 novos, com letra 1,6× num celular pequeno e sem o termo "Seguro". Os testes do fluxo de link passam um tutorial já visto.
-- **Validação visual:** imagens das 4 etapas geradas por teste, com a fonte do app, em letra normal e 1,6×. O emulador não foi usado, porque o app completo exige login.
+- **Simulação (revisão de design pedida pela equipe, 2026-11-12):** a pessoa repete o caminho do app no celular desenhado: (1) toca e segura o link numa conversa fictícia e vê "Link copiado"; (2) toca em "Colar" e "Verificar link" na tela simulada do Phize; (3) acompanha as três verificações sendo concluídas uma a uma; (4) lê o resultado e pode trocar entre outros exemplos. Etiquetas pulsantes indicam onde tocar. Pular e Próximo continuam disponíveis o tempo todo: ninguém fica preso na simulação.
+- **Exemplos:** três links inventados no domínio reservado `.example`, da loja fictícia "Loja Feliz". O resultado sai de `CalculadoraScore`, sem números próprios, sem rede e sem histórico.
+- **"Como ler o resultado":** cartão comum aos dois tutoriais (`ComoLerResultado`, em `etapas_comuns.dart`), com os rótulos de `RotulosRisco` e o aviso permanente.
+- **Testes:** 18 novos, incluindo a simulação completa, letra 1,6× num celular pequeno, redução de movimento e ausência do termo "Seguro". Os testes do fluxo de link passam um tutorial já visto.
+- **Validação visual:** imagens de cada passo da simulação geradas por teste, com a fonte do app, em letra normal e 1,6×. O emulador não foi usado, porque o app completo exige login.
 
 > **Pontos para a equipe:** revisar os textos do tutorial, que estão em `tutorial_link.dart` e `etapas_comuns.dart`. O exemplo fictício imita uma loja inventada, não uma marca real.
 

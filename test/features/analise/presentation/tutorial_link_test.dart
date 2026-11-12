@@ -43,7 +43,7 @@ class _ReputacaoProibida implements ReputacaoDominioClient {
 
 final _termoProibido = RegExp(r'\bsegur[oa]s?\b', caseSensitive: false);
 
-const _tituloTutorial = 'Onde está o link';
+const _tituloTutorial = 'Copie o link, sem abrir';
 
 class _Tela {
   _Tela({FakeTutorialRepository? tutorial})
@@ -96,6 +96,24 @@ Future<void> _escolherExemplo(WidgetTester tester, int i) async {
   await tester.ensureVisible(opcao);
   await tester.pumpAndSettle();
   await tester.tap(opcao);
+  await tester.pumpAndSettle();
+}
+
+Finder _etapa(int n) => find.bySemanticsLabel(RegExp('Etapa $n de 4'));
+
+Future<void> _tocar(
+  WidgetTester tester,
+  String chave, {
+  bool longo = false,
+}) async {
+  final alvo = find.byKey(Key(chave));
+  await tester.ensureVisible(alvo);
+  await tester.pumpAndSettle();
+  if (longo) {
+    await tester.longPress(alvo);
+  } else {
+    await tester.tap(alvo, warnIfMissed: false);
+  }
   await tester.pumpAndSettle();
 }
 
@@ -228,30 +246,26 @@ void main() {
       expect(find.text(_tituloTutorial), findsOneWidget);
     });
 
-    testWidgets('percorre as 4 etapas e conclui com "Começar"', (
+    testWidgets('Próximo e Voltar percorrem as 4 etapas; "Começar" conclui', (
       tester,
     ) async {
       final tela = _Tela();
       await tela.abrir(tester);
 
-      expect(find.bySemanticsLabel('Etapa 1 de 4'), findsOneWidget);
+      expect(_etapa(1), findsOneWidget);
       expect(find.byKey(const Key('tutorial_voltar')), findsNothing);
       await _avancar(tester);
-      expect(find.bySemanticsLabel('Etapa 2 de 4'), findsOneWidget);
-      expect(find.text('O que o Phize confere'), findsOneWidget);
+      expect(_etapa(2), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('tutorial_voltar')));
       await tester.pumpAndSettle();
-      expect(find.bySemanticsLabel('Etapa 1 de 4'), findsOneWidget);
+      expect(_etapa(1), findsOneWidget);
 
       await _avancar(tester);
       await _avancar(tester);
       await _avancar(tester);
-      expect(find.bySemanticsLabel('Etapa 4 de 4'), findsOneWidget);
+      expect(_etapa(4), findsOneWidget);
       expect(find.text(RotulosRisco.avisoPermanente), findsOneWidget);
-      for (final faixa in FaixaRisco.values) {
-        expect(find.text(faixa.rotulo), findsOneWidget);
-      }
       expect(find.text('Começar'), findsOneWidget);
 
       await _avancar(tester);
@@ -259,23 +273,74 @@ void main() {
       expect(tela.tutorial.vistos, contains(TipoTutorial.link));
     });
 
-    testWidgets('o exemplo mostra o resultado do motor, sem rede e sem '
-        'histórico', (tester) async {
+    testWidgets('simulação: copiar, colar, verificar e ver o resultado', (
+      tester,
+    ) async {
       final tela = _Tela();
       await tela.abrir(tester);
+      final principal = ExemploTutorialLink.todos.first;
+
+      // Etapa 1: copiar o link da conversa.
+      expect(find.byKey(const Key('tutorial_link_copiado')), findsNothing);
+      await _tocar(tester, 'tutorial_chat_link', longo: true);
+      expect(find.byKey(const Key('tutorial_link_copiado')), findsOneWidget);
+      await _avancar(tester);
+
+      // Etapa 2: "Verificar link" só funciona depois de colar.
+      await _tocar(tester, 'tutorial_verificar');
+      expect(_etapa(2), findsOneWidget);
+      await _tocar(tester, 'tutorial_colar');
+      expect(find.text(principal.endereco), findsWidgets);
+      await _tocar(tester, 'tutorial_verificar');
+
+      // Etapa 3: as três verificações do exemplo, concluídas uma a uma.
+      expect(_etapa(3), findsOneWidget);
+      for (final v in principal.verificacoes) {
+        expect(find.text(v.texto), findsOneWidget);
+      }
+      await _tocar(tester, 'tutorial_ver_resultado');
+
+      // Etapa 4: o resultado calculado pelo motor de score.
+      expect(_etapa(4), findsOneWidget);
+      final noCelular = find.byKey(const Key('tutorial_resultado_exemplo'));
+      final resultado = principal.resultado;
+      expect(
+        find.descendant(of: noCelular, matching: find.text(resultado.rotulo)),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: noCelular,
+          matching: find.text('${resultado.pontuacao}'),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('outros exemplos mostram o resultado do motor, sem rede e '
+        'sem histórico', (tester) async {
+      final tela = _Tela();
+      await tela.abrir(tester);
+      await _avancar(tester);
       await _avancar(tester);
       await _avancar(tester);
 
       for (final (i, exemplo) in ExemploTutorialLink.todos.indexed) {
         await _escolherExemplo(tester, i);
-        await tester.pumpAndSettle();
 
+        final noCelular = find.byKey(const Key('tutorial_resultado_exemplo'));
         final resultado = exemplo.resultado;
-        expect(find.text(resultado.faixa.rotulo), findsOneWidget);
-        expect(find.text('${resultado.pontuacao}'), findsOneWidget);
-        expect(find.text(resultado.faixa.oQueFazer), findsOneWidget);
-        for (final verificacao in exemplo.verificacoes) {
-          expect(find.text(verificacao.texto), findsOneWidget);
+        for (final texto in [
+          resultado.faixa.rotulo,
+          '${resultado.pontuacao}',
+          resultado.faixa.oQueFazer,
+          for (final v in exemplo.verificacoes) v.texto,
+        ]) {
+          expect(
+            find.descendant(of: noCelular, matching: find.text(texto)),
+            findsOneWidget,
+            reason: 'exemplo $i: $texto',
+          );
         }
       }
 
@@ -287,15 +352,18 @@ void main() {
     testWidgets('nenhuma etapa usa o termo proibido "Seguro"', (tester) async {
       final tela = _Tela();
       await tela.abrir(tester);
+      await _tocar(tester, 'tutorial_chat_link');
+      expect(find.textContaining(_termoProibido), findsNothing);
       await _avancar(tester);
+      await _tocar(tester, 'tutorial_colar');
+      expect(find.textContaining(_termoProibido), findsNothing);
+      await _avancar(tester);
+      expect(find.textContaining(_termoProibido), findsNothing);
       await _avancar(tester);
       for (var i = 0; i < ExemploTutorialLink.todos.length; i++) {
         await _escolherExemplo(tester, i);
-        await tester.pumpAndSettle();
         expect(find.textContaining(_termoProibido), findsNothing);
       }
-      await _avancar(tester);
-      expect(find.textContaining(_termoProibido), findsNothing);
     });
 
     testWidgets('letra muito grande em celular pequeno, sem estouro', (
@@ -305,29 +373,36 @@ void main() {
       final tela = _Tela();
       await tela.abrir(tester, escalaTexto: 1.6);
 
-      for (var etapa = 1; etapa <= 4; etapa++) {
-        if (etapa == 3) {
-          await tester.tap(find.byKey(const Key('tutorial_exemplo_0')));
-          await tester.pumpAndSettle();
-          // A tela rola até o resultado, que nasce abaixo da área visível.
-          final rotulo = ExemploTutorialLink.todos.first.resultado.rotulo;
-          expect(find.text(rotulo).hitTestable(), findsOneWidget);
-        }
-        expect(tester.takeException(), isNull);
-        if (etapa < 4) await _avancar(tester);
+      await _tocar(tester, 'tutorial_chat_link');
+      await _avancar(tester);
+      await _tocar(tester, 'tutorial_colar');
+      await _tocar(tester, 'tutorial_verificar');
+      await _tocar(tester, 'tutorial_ver_resultado');
+      for (var i = 0; i < ExemploTutorialLink.todos.length; i++) {
+        await _escolherExemplo(tester, i);
       }
+      expect(tester.takeException(), isNull);
     });
 
-    testWidgets('com redução de movimento, troca de etapa sem animação', (
-      tester,
-    ) async {
+    testWidgets('com redução de movimento, nada fica animado', (tester) async {
       final tela = _Tela();
       await tela.abrir(tester, semAnimacao: true);
 
       await tester.tap(find.byKey(const Key('tutorial_proximo')));
       await tester.pump();
+      expect(_etapa(2), findsOneWidget);
 
-      expect(find.bySemanticsLabel('Etapa 2 de 4'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('tutorial_proximo')));
+      await tester.pump();
+      await tester.pump();
+      // As verificações aparecem concluídas de uma vez.
+      final principal = ExemploTutorialLink.todos.first;
+      for (final v in principal.verificacoes) {
+        expect(find.text(v.texto), findsOneWidget);
+      }
+      // E o botão para ver o resultado já está disponível.
+      await _tocar(tester, 'tutorial_ver_resultado');
+      expect(_etapa(4), findsOneWidget);
     });
   });
 }
