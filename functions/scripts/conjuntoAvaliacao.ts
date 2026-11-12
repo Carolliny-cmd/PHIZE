@@ -64,6 +64,9 @@ export function lerFichasComparaveis(): FichaComparavel[] {
         gatilhosLinguisticos: Array.isArray(f.gatilhosLinguisticos)
           ? f.gatilhosLinguisticos.map(String)
           : [],
+        situacoesLegitimas: Array.isArray(f.situacoesLegitimas)
+          ? f.situacoesLegitimas.map(String)
+          : [],
         padraoSolicitacaoFinanceira: String(f.padraoSolicitacaoFinanceira ?? ""),
       });
     }

@@ -23,6 +23,10 @@
           "acesse o link para emitir a guia do IPVA",
           "regularize o débito do veículo para evitar multa"
         ],
+        "situacoesLegitimas": [
+          "lembrete do calendário de pagamento do IPVA que manda emitir a guia no site ou aplicativo oficial, sem anexar boleto nem link de pagamento",
+          "guia emitida pela própria pessoa no portal da Secretaria da Fazenda ou do Detran, com o governo do estado como beneficiário"
+        ],
         "padraoSolicitacaoFinanceira": "Pagamento de boleto ou Pix por site ou link falso; o dinheiro vai para o golpista e o imposto continua em aberto.",
         "orientacaoPreventiva": "Emita a guia só no site ou aplicativo oficial da Secretaria da Fazenda ou do Detran, digitando o endereço. O órgão não envia guia por WhatsApp, SMS ou e-mail. Antes de pagar, confira se o beneficiário é o governo do estado.",
         "fontes": [
@@ -56,6 +60,10 @@
           "precisamos cancelar o empréstimo contratado em seu nome",
           "devolva o valor por Pix para cancelar",
           "pague este boleto para estornar o empréstimo"
+        ],
+        "situacoesLegitimas": [
+          "aviso do próprio banco, no aplicativo ou nos canais oficiais, sobre empréstimo que a pessoa contratou de fato",
+          "orientação para contestar uma contratação desconhecida direto com o banco, sem pagar nada a terceiros"
         ],
         "padraoSolicitacaoFinanceira": "Devolução, por Pix ou boleto, de um empréstimo que o próprio golpista contratou em nome da vítima.",
         "orientacaoPreventiva": "Não devolva valores a pessoas ou empresas desconhecidas. Procure o banco pelos canais oficiais: devoluções verdadeiras são feitas pela própria instituição.",
@@ -94,6 +102,10 @@
           "confirme sua senha para cancelar a compra",
           "faça uma transferência para estornar o valor"
         ],
+        "situacoesLegitimas": [
+          "aviso do banco que orienta a pessoa a procurar ela mesma a central pelo número oficial ou abrir o aplicativo, sem pedir senha nem código",
+          "notificação de compra ou de acesso que a própria pessoa reconhece, sem pedido de transferência ou de dados"
+        ],
         "padraoSolicitacaoFinanceira": "Senha, dados pessoais, código de segurança ou transferência apresentada como estorno ou regularização.",
         "orientacaoPreventiva": "Bancos não pedem senha, código de segurança nem transferência para estorno. Desligue e ligue para o banco pelos canais oficiais, de outro telefone.",
         "fontes": [
@@ -131,6 +143,10 @@
           "nosso escritório é parceiro da PGFN",
           "baixe o aplicativo para negociar sua dívida"
         ],
+        "situacoesLegitimas": [
+          "orientação para consultar e negociar débitos no portal REGULARIZE, sem link de pagamento nem chave Pix",
+          "documento de arrecadação (DARF, DAS, GPS ou GRRF) emitido pela própria pessoa no portal oficial"
+        ],
         "padraoSolicitacaoFinanceira": "Pagamento por Pix ou transferência, dados pessoais e bancários ou instalação de aplicativo falso.",
         "orientacaoPreventiva": "Dívidas com a União são negociadas só no REGULARIZE e pagas por documento de arrecadação (DARF, DAS, GPS ou GRRF), nunca por Pix. A PGFN não tem escritórios parceiros nem aplicativo do REGULARIZE para celular.",
         "fontes": [
@@ -166,6 +182,10 @@
           "para garantir a vaga, faça o curso obrigatório",
           "pague o exame admissional para seguir no processo",
           "mande foto dos documentos e seus dados bancários"
+        ],
+        "situacoesLegitimas": [
+          "convite para entrevista de empresa conhecida, sem cobrança de taxa, curso ou exame",
+          "pedido de documentos depois da contratação, feito pelo setor de pessoal da empresa por canal oficial"
         ],
         "padraoSolicitacaoFinanceira": "Taxas de curso, exame ou inscrição, além de documentos e dados bancários usados depois em outros golpes.",
         "orientacaoPreventiva": "Empresas sérias não cobram para participar de seleção, exame ou curso. Confirme a vaga no site oficial da empresa e não envie documentos nem dados bancários antes de uma entrevista.",
@@ -204,6 +224,10 @@
           "liquidação de estoque",
           "envio imediato depois do pagamento"
         ],
+        "situacoesLegitimas": [
+          "compra feita pela pessoa em loja conhecida, com aviso de confirmação ou de envio do pedido no site ou aplicativo da loja",
+          "venda combinada pessoalmente entre conhecidos, com preço compatível com o mercado"
+        ],
         "padraoSolicitacaoFinanceira": "Pagamento antecipado, geralmente por Pix ou boleto, por produto que não existe ou não será entregue.",
         "orientacaoPreventiva": "Desconfie de preço muito abaixo do mercado. Pesquise a reputação da loja, prefira sites conhecidos e não compre por links recebidos em mensagens.",
         "fontes": [
@@ -238,6 +262,10 @@
           "o boleto anterior foi cancelado, pague este",
           "segunda via com novo vencimento",
           "evite juros, pague ainda hoje"
+        ],
+        "situacoesLegitimas": [
+          "boleto de conta que a pessoa reconhece, emitido no site ou aplicativo oficial da empresa, com beneficiário, CNPJ e valor conferidos",
+          "lembrete de vencimento enviado pela empresa que manda acessar a área do cliente, sem boleto anexo nem pedido de Pix para outra conta"
         ],
         "padraoSolicitacaoFinanceira": "Pagamento de boleto adulterado, cujo dinheiro vai para a conta do golpista.",
         "orientacaoPreventiva": "Antes de pagar, confira o nome e o CPF ou CNPJ do beneficiário, o valor e o vencimento. Na dúvida, fale com a empresa pelo SAC oficial.",
@@ -276,6 +304,10 @@
           "comece com pouco e veja o retorno",
           "invista mais para liberar o saque"
         ],
+        "situacoesLegitimas": [
+          "informativo de banco ou corretora autorizada sobre aplicação que a pessoa já tem, com rendimento compatível com o mercado",
+          "conversa sobre investimento entre conhecidos, sem promessa de retorno garantido nem pressão para depositar"
+        ],
         "padraoSolicitacaoFinanceira": "Depósitos em supostos investimentos; pequenos retornos iniciais estimulam valores maiores, que somem.",
         "orientacaoPreventiva": "Desconfie de retornos muito acima do mercado e de pressão para decidir rápido. Verifique se a empresa é autorizada a operar antes de investir.",
         "fontes": [
@@ -312,6 +344,10 @@
           "envio do certificado de arrematação após o pagamento",
           "pague hoje para garantir o lote"
         ],
+        "situacoesLegitimas": [
+          "divulgação de leilão oficial com edital publicado no site do Detran e conduzido por leiloeiro oficial",
+          "aviso de leilão judicial ou público com número de processo e edital, sem pedido de pagamento por Pix a pessoa física"
+        ],
         "padraoSolicitacaoFinanceira": "Pagamento de boleto ou Pix por veículo supostamente arrematado em leilão que não existe.",
         "orientacaoPreventiva": "Os leilões verdadeiros são conduzidos por leiloeiros oficiais, com edital publicado no site do Detran. Acesse o site oficial digitando o endereço e desconfie de preço muito abaixo do mercado.",
         "fontes": [
@@ -344,6 +380,10 @@
           "corte o cartão ao meio",
           "informe a senha para bloquearmos o cartão",
           "um portador vai buscar o cartão para perícia"
+        ],
+        "situacoesLegitimas": [
+          "entrega de cartão novo pelos Correios ou transportadora, pedida pela própria pessoa, sem recolher cartão antigo nem pedir senha",
+          "orientação do banco para a própria pessoa cortar e descartar o cartão bloqueado"
         ],
         "padraoSolicitacaoFinanceira": "Entrega do cartão (cortado, com o chip intacto) e da senha a um falso portador.",
         "orientacaoPreventiva": "Nenhum banco pede o cartão de volta nem manda alguém buscá-lo. Desligue e ligue para o banco de outro aparelho.",
@@ -381,6 +421,10 @@
           "faz um Pix para essa chave, é de um conhecido meu",
           "não posso falar agora, só por mensagem"
         ],
+        "situacoesLegitimas": [
+          "parente que avisa a troca de número e se identifica por chamada de voz ou de vídeo, sem pedir dinheiro",
+          "pedido de dinheiro entre familiares combinado antes por ligação, para a conta já conhecida da própria pessoa"
+        ],
         "padraoSolicitacaoFinanceira": "Pix ou pagamento de conta, em geral para conta de terceiro, com urgência.",
         "orientacaoPreventiva": "Antes de enviar dinheiro, confirme que é mesmo a pessoa: ligue para o número antigo ou faça uma chamada de vídeo. Desconfie de pedido de dinheiro feito só por mensagem.",
         "fontes": [
@@ -416,6 +460,10 @@
           "pague a taxa para liberar o seu prêmio",
           "resgate seu prêmio pelo link antes que expire",
           "você ganhou um carro no sorteio"
+        ],
+        "situacoesLegitimas": [
+          "resultado de sorteio ou promoção de que a pessoa participou, conferido no site ou aplicativo oficial, sem cobrança de taxa",
+          "aviso de resgate de pontos ou cashback dentro do aplicativo oficial do programa"
         ],
         "padraoSolicitacaoFinanceira": "Pagamento de taxa para liberar um prêmio que não existe.",
         "orientacaoPreventiva": "Nunca pague para receber prêmio. Confira no site ou aplicativo oficial do programa e não clique em links nem ligue para números enviados na mensagem.",
@@ -453,6 +501,10 @@
           "não posso fazer chamada de vídeo agora",
           "não conte para ninguém sobre nós"
         ],
+        "situacoesLegitimas": [
+          "conversa entre pessoas que já se conhecem pessoalmente, sem pedido de dinheiro",
+          "relacionamento confirmado por chamada de vídeo e encontros presenciais, sem pressão financeira"
+        ],
         "padraoSolicitacaoFinanceira": "Dinheiro ou outros favores financeiros, pedidos cedo no relacionamento e justificados por emergências.",
         "orientacaoPreventiva": "Desconfie de relacionamento que avança rápido demais e de pedido de dinheiro logo no começo. Prefira chamada de vídeo e converse com alguém de confiança antes de transferir qualquer valor.",
         "fontes": [
@@ -487,6 +539,10 @@
           "detectamos movimentações suspeitas",
           "instale este aplicativo para proteger sua conta",
           "baixe o aplicativo do link para resolvermos agora"
+        ],
+        "situacoesLegitimas": [
+          "suporte técnico que a própria pessoa procurou no canal oficial da empresa, sem pedir para instalar aplicativo de acesso remoto",
+          "aviso de atualização do aplicativo do banco feita pela loja oficial de aplicativos do celular"
         ],
         "padraoSolicitacaoFinanceira": "Instalação de aplicativo que dá ao golpista acesso ao celular e às contas da vítima.",
         "orientacaoPreventiva": "Não instale aplicativos indicados por quem ligou ou mandou mensagem. Desligue e confirme o caso com o banco pelos canais oficiais, de outro telefone.",
@@ -524,6 +580,10 @@
           "você tem um valor a receber, acesse aqui",
           "regularize sua situação pelo link"
         ],
+        "situacoesLegitimas": [
+          "aviso que orienta a pessoa a abrir o aplicativo oficial ou digitar o endereço oficial, sem link para fazer login",
+          "link enviado por conhecido para conteúdo comum, como notícia, vídeo ou localização, sem pedido de senha ou dados"
+        ],
         "padraoSolicitacaoFinanceira": "Não há pedido financeiro direto: a página falsa coleta dados pessoais, senhas e dados de cartão.",
         "orientacaoPreventiva": "Não clique em links recebidos por mensagem ou e-mail. Na dúvida, entre no site ou aplicativo oficial digitando o endereço você mesmo, ou consulte o banco.",
         "fontes": [
@@ -557,6 +617,10 @@
           "errei a chave, pode me devolver?",
           "devolve nessa outra chave, por favor",
           "preciso desse dinheiro de volta com urgência"
+        ],
+        "situacoesLegitimas": [
+          "pessoa conhecida que avisa ter mandado Pix errado e pede a devolução pela função de devolução do banco, para a conta de origem",
+          "aviso de Pix recebido que a pessoa esperava, como pagamento combinado ou divisão de conta"
         ],
         "padraoSolicitacaoFinanceira": "Devolução de um Pix recebido para uma chave diferente da de origem; depois o golpista pede o estorno ao banco e fica com os dois valores.",
         "orientacaoPreventiva": "Devolva só pela função de devolução do próprio aplicativo do banco, para a conta de origem. Nunca faça um novo Pix para outra chave. Na dúvida, ligue para o seu banco antes.",
@@ -595,6 +659,10 @@
           "pague por Pix ou QR Code para evitar a devolução",
           "seu nome será negativado se não pagar"
         ],
+        "situacoesLegitimas": [
+          "aviso dos Correios que manda acompanhar e pagar tributos só no Minhas Importações, sem link de pagamento nem chave Pix",
+          "notificação de entrega de compra que a pessoa fez, sem cobrança de taxa para liberar"
+        ],
         "padraoSolicitacaoFinanceira": "Pagamento de imposto ou taxa falsa por Pix, QR Code, cartão ou transferência.",
         "orientacaoPreventiva": "A Receita Federal não liga nem manda mensagem cobrando para liberar mercadoria e não aceita Pix, QR Code ou cartão. Encomendas dos Correios: pague só pelo Minhas Importações, no site ou aplicativo dos Correios.",
         "fontes": [
@@ -630,6 +698,10 @@
           "você vai receber um código por SMS, me informe para confirmar",
           "me passa o código de 6 dígitos que chegou no seu celular",
           "é só para gerar o número do protocolo"
+        ],
+        "situacoesLegitimas": [
+          "SMS automático do próprio serviço com o código que a pessoa pediu ao entrar no aplicativo, com o aviso de não compartilhar",
+          "a própria pessoa avisando que vai receber ou que recebeu um código para acessar a conta dela, sem pedir o código a ninguém"
         ],
         "padraoSolicitacaoFinanceira": "Não há pedido financeiro direto: o golpista pede o código de verificação do WhatsApp para clonar a conta e depois pedir dinheiro aos contatos da vítima.",
         "orientacaoPreventiva": "Nunca informe a ninguém o código que chega por SMS. Ative a confirmação em duas etapas do WhatsApp e deixe a foto de perfil visível só para contatos.",

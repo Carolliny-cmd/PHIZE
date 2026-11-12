@@ -15,6 +15,10 @@
     "acesse o link para emitir a guia do IPVA",
     "regularize o débito do veículo para evitar multa"
   ],
+  "situacoesLegitimas": [
+    "lembrete do calendário de pagamento do IPVA que manda emitir a guia no site ou aplicativo oficial, sem anexar boleto nem link de pagamento",
+    "guia emitida pela própria pessoa no portal da Secretaria da Fazenda ou do Detran, com o governo do estado como beneficiário"
+  ],
   "padraoSolicitacaoFinanceira": "Pagamento de boleto ou Pix por site ou link falso; o dinheiro vai para o golpista e o imposto continua em aberto.",
   "orientacaoPreventiva": "Emita a guia só no site ou aplicativo oficial da Secretaria da Fazenda ou do Detran, digitando o endereço. O órgão não envia guia por WhatsApp, SMS ou e-mail. Antes de pagar, confira se o beneficiário é o governo do estado.",
   "fontes": [

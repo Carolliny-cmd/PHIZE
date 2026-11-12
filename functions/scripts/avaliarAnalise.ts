@@ -8,13 +8,17 @@
  * --repeticoes (padrão 3), --limite (mensagens de cada grupo), --espera (ms
  * entre chamadas, padrão 4000), --retomar (relatório em avaliacao/relatorios/
  * cujas chamadas que falharam serão refeitas; as rodadas já obtidas são
- * mantidas e o mesmo relatório é regravado).
+ * mantidas e o mesmo relatório é regravado), --sufixo (acrescentado ao nome
+ * do relatório, para não sobrescrever o do mesmo dia), --sem-base-de (relatório
+ * anterior do mesmo arquivo cujas rodadas sem a base são reaproveitadas: só a
+ * análise com a base é refeita, o que poupa metade das chamadas quando só a
+ * base mudou).
  *
  * Depois de 3 falhas seguidas (limite da API, em geral), a rodada para e grava
  * o que conseguiu; dá para continuar depois com --retomar.
  *
  * Só aceita mensagens fictícias ou públicas: a chave em uso está no nível
- * gratuito (exceção temporária ao RNF07). O relatório grava só identificadores
+ * gratuito (RNF07, limitação declarada de escopo acadêmico). O relatório grava só identificadores
  * e sinais, nunca o texto das mensagens.
  */
 
@@ -139,11 +143,30 @@ async function principal(): Promise<void> {
         repeticoes: number;
         falhas: string[];
         rodadas: Rodada[];
+        semBaseReaproveitadaDe?: string;
       })
     : null;
   const pendentes = anterior ? new Set(anterior.falhas) : null;
 
   const rodadas: Rodada[] = anterior ? [...anterior.rodadas] : [];
+
+  // A análise sem a base não depende das fichas: quando só a base mudou, as
+  // rodadas sem a base de um relatório anterior continuam válidas.
+  const semBaseDe = anterior ? "" : opcao("sem-base-de", "");
+  if (semBaseDe) {
+    const ids = new Set(mensagens.map((m) => m.id));
+    const reaproveitadas = (
+      JSON.parse(readFileSync(path.join(pasta, semBaseDe), "utf8")) as {
+        rodadas: Rodada[];
+      }
+    ).rodadas.filter((r) => r.modo === "sem_base" && ids.has(r.mensagem));
+    if (reaproveitadas.length === 0) {
+      throw new Error(`${semBaseDe} não tem rodadas sem a base deste conjunto.`);
+    }
+    rodadas.push(...reaproveitadas);
+    console.log(`Sem a base: ${reaproveitadas.length} rodadas de ${semBaseDe}.`);
+  }
+  const modos: ModoAvaliacao[] = semBaseDe ? ["com_base"] : ["com_base", "sem_base"];
   const falhas: string[] = [];
 
   const analisar = async (m: Mensagem, modo: ModoAvaliacao) => {
@@ -172,7 +195,7 @@ async function principal(): Promise<void> {
 
   const vezes = anterior ? 1 : repeticoes;
   const chamadas = mensagens.flatMap((m) =>
-    (["com_base", "sem_base"] as const)
+    modos
       .filter((modo) => !pendentes || pendentes.has(`${m.id} (${modo})`))
       .flatMap((modo) => Array.from({ length: vezes }, () => ({ m, modo }))),
   );
@@ -212,10 +235,14 @@ async function principal(): Promise<void> {
 
   mkdirSync(pasta, { recursive: true });
   const nome =
-    retomar || `${new Date().toISOString().slice(0, 10)}-${path.parse(nomeArquivo).name}.json`;
+    retomar ||
+    `${new Date().toISOString().slice(0, 10)}-${path.parse(nomeArquivo).name}${opcao("sufixo", "")}.json`;
   const relatorio = {
     modelo,
     repeticoes: anterior ? anterior.repeticoes : repeticoes,
+    ...(semBaseDe || anterior?.semBaseReaproveitadaDe
+      ? { semBaseReaproveitadaDe: semBaseDe || anterior?.semBaseReaproveitadaDe }
+      : {}),
     comBase,
     semBase,
     falhas,

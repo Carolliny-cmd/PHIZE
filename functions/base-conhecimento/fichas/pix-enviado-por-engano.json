@@ -12,6 +12,10 @@
     "devolve nessa outra chave, por favor",
     "preciso desse dinheiro de volta com urgência"
   ],
+  "situacoesLegitimas": [
+    "pessoa conhecida que avisa ter mandado Pix errado e pede a devolução pela função de devolução do banco, para a conta de origem",
+    "aviso de Pix recebido que a pessoa esperava, como pagamento combinado ou divisão de conta"
+  ],
   "padraoSolicitacaoFinanceira": "Devolução de um Pix recebido para uma chave diferente da de origem; depois o golpista pede o estorno ao banco e fica com os dois valores.",
   "orientacaoPreventiva": "Devolva só pela função de devolução do próprio aplicativo do banco, para a conta de origem. Nunca faça um novo Pix para outra chave. Na dúvida, ligue para o seu banco antes.",
   "fontes": [

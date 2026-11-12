@@ -14,6 +14,10 @@
     "pague o exame admissional para seguir no processo",
     "mande foto dos documentos e seus dados bancários"
   ],
+  "situacoesLegitimas": [
+    "convite para entrevista de empresa conhecida, sem cobrança de taxa, curso ou exame",
+    "pedido de documentos depois da contratação, feito pelo setor de pessoal da empresa por canal oficial"
+  ],
   "padraoSolicitacaoFinanceira": "Taxas de curso, exame ou inscrição, além de documentos e dados bancários usados depois em outros golpes.",
   "orientacaoPreventiva": "Empresas sérias não cobram para participar de seleção, exame ou curso. Confirme a vaga no site oficial da empresa e não envie documentos nem dados bancários antes de uma entrevista.",
   "fontes": [

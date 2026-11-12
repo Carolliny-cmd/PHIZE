@@ -66,6 +66,21 @@ test("compara também com modalidade e pedido financeiro", () => {
   assert.ok(r.some((s) => s.trecho.includes("pagamento antecipado")));
 });
 
+test("compara também com as situações legítimas", () => {
+  const f: FichaComparavel = {
+    id: "f",
+    modalidade: "Golpe do código",
+    gatilhosLinguisticos: ["me passa o código"],
+    situacoesLegitimas: ["você mesmo pediu o código para entrar no aplicativo"],
+    padraoSolicitacaoFinanceira: "Código de verificação.",
+  };
+  const r = encontrarSobreposicoes(
+    "Eu mesmo pediu o código para entrar no aplicativo do banco.",
+    [f],
+  );
+  assert.ok(r.some((s) => s.trecho.includes("entrar no aplicativo")));
+});
+
 test("respeita o tamanho de sequência pedido", () => {
   const f = ficha("f", ["pague a taxa de liberação"]);
   const texto = "É preciso pagar a taxa de liberação.";

@@ -118,6 +118,33 @@ test("campos vazios, listas vazias e campos desconhecidos são rejeitados", () =
   assert.ok(erros.some((e) => e.includes("observacao")));
 });
 
+test("situacoesLegitimas é opcional, mas, se vier, segue as regras de lista", () => {
+  assert.deepEqual(validarFicha(fichaTeste(), "golpe-teste"), []);
+  assert.deepEqual(
+    validarFicha(
+      { ...fichaTeste(), situacoesLegitimas: ["aviso real do banco"] },
+      "golpe-teste",
+    ),
+    [],
+  );
+  const vazia = validarFicha(
+    { ...fichaTeste(), situacoesLegitimas: [] },
+    "golpe-teste",
+  );
+  assert.ok(vazia.some((e) => e.includes("situacoesLegitimas")));
+  const itemVazio = validarFicha(
+    { ...fichaTeste(), situacoesLegitimas: ["  "] },
+    "golpe-teste",
+  );
+  assert.ok(itemVazio.some((e) => e.includes("situacoesLegitimas[0]")));
+});
+
+test("situações legítimas não entram no embedding nem mudam o hash", () => {
+  const com = { ...fichaTeste(), situacoesLegitimas: ["aviso real do banco"] };
+  assert.doesNotMatch(textoParaEmbedding(com), /aviso real do banco/);
+  assert.equal(hashEntrada(com, "m", 3), hashEntrada(fichaTeste(), "m", 3));
+});
+
 test("arquivo que não é objeto é rejeitado", () => {
   assert.equal(validarFicha([fichaTeste()], "golpe-teste").length, 1);
   assert.equal(validarFicha(null, "golpe-teste").length, 1);

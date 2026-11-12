@@ -15,6 +15,10 @@
     "nosso escritório é parceiro da PGFN",
     "baixe o aplicativo para negociar sua dívida"
   ],
+  "situacoesLegitimas": [
+    "orientação para consultar e negociar débitos no portal REGULARIZE, sem link de pagamento nem chave Pix",
+    "documento de arrecadação (DARF, DAS, GPS ou GRRF) emitido pela própria pessoa no portal oficial"
+  ],
   "padraoSolicitacaoFinanceira": "Pagamento por Pix ou transferência, dados pessoais e bancários ou instalação de aplicativo falso.",
   "orientacaoPreventiva": "Dívidas com a União são negociadas só no REGULARIZE e pagas por documento de arrecadação (DARF, DAS, GPS ou GRRF), nunca por Pix. A PGFN não tem escritórios parceiros nem aplicativo do REGULARIZE para celular.",
   "fontes": [

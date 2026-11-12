@@ -14,6 +14,10 @@
     "faz um Pix para essa chave, é de um conhecido meu",
     "não posso falar agora, só por mensagem"
   ],
+  "situacoesLegitimas": [
+    "parente que avisa a troca de número e se identifica por chamada de voz ou de vídeo, sem pedir dinheiro",
+    "pedido de dinheiro entre familiares combinado antes por ligação, para a conta já conhecida da própria pessoa"
+  ],
   "padraoSolicitacaoFinanceira": "Pix ou pagamento de conta, em geral para conta de terceiro, com urgência.",
   "orientacaoPreventiva": "Antes de enviar dinheiro, confirme que é mesmo a pessoa: ligue para o número antigo ou faça uma chamada de vídeo. Desconfie de pedido de dinheiro feito só por mensagem.",
   "fontes": [

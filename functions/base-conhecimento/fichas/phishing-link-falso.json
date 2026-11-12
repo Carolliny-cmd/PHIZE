@@ -14,6 +14,10 @@
     "você tem um valor a receber, acesse aqui",
     "regularize sua situação pelo link"
   ],
+  "situacoesLegitimas": [
+    "aviso que orienta a pessoa a abrir o aplicativo oficial ou digitar o endereço oficial, sem link para fazer login",
+    "link enviado por conhecido para conteúdo comum, como notícia, vídeo ou localização, sem pedido de senha ou dados"
+  ],
   "padraoSolicitacaoFinanceira": "Não há pedido financeiro direto: a página falsa coleta dados pessoais, senhas e dados de cartão.",
   "orientacaoPreventiva": "Não clique em links recebidos por mensagem ou e-mail. Na dúvida, entre no site ou aplicativo oficial digitando o endereço você mesmo, ou consulte o banco.",
   "fontes": [

@@ -15,6 +15,10 @@
     "comece com pouco e veja o retorno",
     "invista mais para liberar o saque"
   ],
+  "situacoesLegitimas": [
+    "informativo de banco ou corretora autorizada sobre aplicação que a pessoa já tem, com rendimento compatível com o mercado",
+    "conversa sobre investimento entre conhecidos, sem promessa de retorno garantido nem pressão para depositar"
+  ],
   "padraoSolicitacaoFinanceira": "Depósitos em supostos investimentos; pequenos retornos iniciais estimulam valores maiores, que somem.",
   "orientacaoPreventiva": "Desconfie de retornos muito acima do mercado e de pressão para decidir rápido. Verifique se a empresa é autorizada a operar antes de investir.",
   "fontes": [

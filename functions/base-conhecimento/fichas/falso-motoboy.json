@@ -11,6 +11,10 @@
     "informe a senha para bloquearmos o cartão",
     "um portador vai buscar o cartão para perícia"
   ],
+  "situacoesLegitimas": [
+    "entrega de cartão novo pelos Correios ou transportadora, pedida pela própria pessoa, sem recolher cartão antigo nem pedir senha",
+    "orientação do banco para a própria pessoa cortar e descartar o cartão bloqueado"
+  ],
   "padraoSolicitacaoFinanceira": "Entrega do cartão (cortado, com o chip intacto) e da senha a um falso portador.",
   "orientacaoPreventiva": "Nenhum banco pede o cartão de volta nem manda alguém buscá-lo. Desligue e ligue para o banco de outro aparelho.",
   "fontes": [

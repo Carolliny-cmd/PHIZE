@@ -21,6 +21,8 @@ export interface FichaComparavel {
   id: string;
   modalidade: string;
   gatilhosLinguisticos: string[];
+  /** Também comparadas: escrever a ficha a partir do teste o viciaria. */
+  situacoesLegitimas?: string[];
   padraoSolicitacaoFinanceira: string;
 }
 
@@ -82,11 +84,15 @@ function sequencias(
   return resultado;
 }
 
-/** Texto da ficha que entra no embedding, menos os canais. */
+/**
+ * Texto da ficha que entra no embedding, menos os canais, e as situações
+ * legítimas, que vão ao prompt.
+ */
 function textosDaFicha(ficha: FichaComparavel): string[] {
   return [
     ficha.modalidade,
     ...ficha.gatilhosLinguisticos,
+    ...(ficha.situacoesLegitimas ?? []),
     ficha.padraoSolicitacaoFinanceira,
   ];
 }

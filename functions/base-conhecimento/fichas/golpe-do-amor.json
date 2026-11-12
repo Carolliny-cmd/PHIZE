@@ -14,6 +14,10 @@
     "não posso fazer chamada de vídeo agora",
     "não conte para ninguém sobre nós"
   ],
+  "situacoesLegitimas": [
+    "conversa entre pessoas que já se conhecem pessoalmente, sem pedido de dinheiro",
+    "relacionamento confirmado por chamada de vídeo e encontros presenciais, sem pressão financeira"
+  ],
   "padraoSolicitacaoFinanceira": "Dinheiro ou outros favores financeiros, pedidos cedo no relacionamento e justificados por emergências.",
   "orientacaoPreventiva": "Desconfie de relacionamento que avança rápido demais e de pedido de dinheiro logo no começo. Prefira chamada de vídeo e converse com alguém de confiança antes de transferir qualquer valor.",
   "fontes": [

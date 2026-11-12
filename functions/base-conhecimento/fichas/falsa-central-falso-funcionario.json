@@ -15,6 +15,10 @@
     "confirme sua senha para cancelar a compra",
     "faça uma transferência para estornar o valor"
   ],
+  "situacoesLegitimas": [
+    "aviso do banco que orienta a pessoa a procurar ela mesma a central pelo número oficial ou abrir o aplicativo, sem pedir senha nem código",
+    "notificação de compra ou de acesso que a própria pessoa reconhece, sem pedido de transferência ou de dados"
+  ],
   "padraoSolicitacaoFinanceira": "Senha, dados pessoais, código de segurança ou transferência apresentada como estorno ou regularização.",
   "orientacaoPreventiva": "Bancos não pedem senha, código de segurança nem transferência para estorno. Desligue e ligue para o banco pelos canais oficiais, de outro telefone.",
   "fontes": [

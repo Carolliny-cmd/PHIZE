@@ -14,6 +14,10 @@
     "me passa o código de 6 dígitos que chegou no seu celular",
     "é só para gerar o número do protocolo"
   ],
+  "situacoesLegitimas": [
+    "SMS automático do próprio serviço com o código que a pessoa pediu ao entrar no aplicativo, com o aviso de não compartilhar",
+    "a própria pessoa avisando que vai receber ou que recebeu um código para acessar a conta dela, sem pedir o código a ninguém"
+  ],
   "padraoSolicitacaoFinanceira": "Não há pedido financeiro direto: o golpista pede o código de verificação do WhatsApp para clonar a conta e depois pedir dinheiro aos contatos da vítima.",
   "orientacaoPreventiva": "Nunca informe a ninguém o código que chega por SMS. Ative a confirmação em duas etapas do WhatsApp e deixe a foto de perfil visível só para contatos.",
   "fontes": [

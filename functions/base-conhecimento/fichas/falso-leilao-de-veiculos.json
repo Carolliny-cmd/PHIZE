@@ -14,6 +14,10 @@
     "envio do certificado de arrematação após o pagamento",
     "pague hoje para garantir o lote"
   ],
+  "situacoesLegitimas": [
+    "divulgação de leilão oficial com edital publicado no site do Detran e conduzido por leiloeiro oficial",
+    "aviso de leilão judicial ou público com número de processo e edital, sem pedido de pagamento por Pix a pessoa física"
+  ],
   "padraoSolicitacaoFinanceira": "Pagamento de boleto ou Pix por veículo supostamente arrematado em leilão que não existe.",
   "orientacaoPreventiva": "Os leilões verdadeiros são conduzidos por leiloeiros oficiais, com edital publicado no site do Detran. Acesse o site oficial digitando o endereço e desconfie de preço muito abaixo do mercado.",
   "fontes": [

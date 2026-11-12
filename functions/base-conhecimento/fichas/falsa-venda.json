@@ -15,6 +15,10 @@
     "liquidação de estoque",
     "envio imediato depois do pagamento"
   ],
+  "situacoesLegitimas": [
+    "compra feita pela pessoa em loja conhecida, com aviso de confirmação ou de envio do pedido no site ou aplicativo da loja",
+    "venda combinada pessoalmente entre conhecidos, com preço compatível com o mercado"
+  ],
   "padraoSolicitacaoFinanceira": "Pagamento antecipado, geralmente por Pix ou boleto, por produto que não existe ou não será entregue.",
   "orientacaoPreventiva": "Desconfie de preço muito abaixo do mercado. Pesquise a reputação da loja, prefira sites conhecidos e não compre por links recebidos em mensagens.",
   "fontes": [

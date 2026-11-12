@@ -7,6 +7,9 @@
     "<frase ou expressão típica que o golpista usa>",
     "<outra frase típica>"
   ],
+  "situacoesLegitimas": [
+    "<opcional: situação real parecida com o golpe, segundo as fontes, que não deve ser tratada como golpe>"
+  ],
   "padraoSolicitacaoFinanceira": "<o que o golpista pede: Pix, boleto, dados do cartão, código de verificação; ou 'não há pedido financeiro direto'>",
   "orientacaoPreventiva": "<o que a pessoa deve fazer, segundo as fontes>",
   "fontes": [

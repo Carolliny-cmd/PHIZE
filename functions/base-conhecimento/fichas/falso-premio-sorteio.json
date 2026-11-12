@@ -14,6 +14,10 @@
     "resgate seu prêmio pelo link antes que expire",
     "você ganhou um carro no sorteio"
   ],
+  "situacoesLegitimas": [
+    "resultado de sorteio ou promoção de que a pessoa participou, conferido no site ou aplicativo oficial, sem cobrança de taxa",
+    "aviso de resgate de pontos ou cashback dentro do aplicativo oficial do programa"
+  ],
   "padraoSolicitacaoFinanceira": "Pagamento de taxa para liberar um prêmio que não existe.",
   "orientacaoPreventiva": "Nunca pague para receber prêmio. Confira no site ou aplicativo oficial do programa e não clique em links nem ligue para números enviados na mensagem.",
   "fontes": [

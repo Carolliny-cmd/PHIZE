@@ -15,6 +15,10 @@
     "pague por Pix ou QR Code para evitar a devolução",
     "seu nome será negativado se não pagar"
   ],
+  "situacoesLegitimas": [
+    "aviso dos Correios que manda acompanhar e pagar tributos só no Minhas Importações, sem link de pagamento nem chave Pix",
+    "notificação de entrega de compra que a pessoa fez, sem cobrança de taxa para liberar"
+  ],
   "padraoSolicitacaoFinanceira": "Pagamento de imposto ou taxa falsa por Pix, QR Code, cartão ou transferência.",
   "orientacaoPreventiva": "A Receita Federal não liga nem manda mensagem cobrando para liberar mercadoria e não aceita Pix, QR Code ou cartão. Encomendas dos Correios: pague só pelo Minhas Importações, no site ou aplicativo dos Correios.",
   "fontes": [

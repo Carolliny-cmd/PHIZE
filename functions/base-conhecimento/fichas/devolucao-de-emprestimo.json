@@ -12,6 +12,10 @@
     "devolva o valor por Pix para cancelar",
     "pague este boleto para estornar o empréstimo"
   ],
+  "situacoesLegitimas": [
+    "aviso do próprio banco, no aplicativo ou nos canais oficiais, sobre empréstimo que a pessoa contratou de fato",
+    "orientação para contestar uma contratação desconhecida direto com o banco, sem pagar nada a terceiros"
+  ],
   "padraoSolicitacaoFinanceira": "Devolução, por Pix ou boleto, de um empréstimo que o próprio golpista contratou em nome da vítima.",
   "orientacaoPreventiva": "Não devolva valores a pessoas ou empresas desconhecidas. Procure o banco pelos canais oficiais: devoluções verdadeiras são feitas pela própria instituição.",
   "fontes": [

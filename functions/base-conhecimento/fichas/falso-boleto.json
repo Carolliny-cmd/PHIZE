@@ -13,6 +13,10 @@
     "segunda via com novo vencimento",
     "evite juros, pague ainda hoje"
   ],
+  "situacoesLegitimas": [
+    "boleto de conta que a pessoa reconhece, emitido no site ou aplicativo oficial da empresa, com beneficiário, CNPJ e valor conferidos",
+    "lembrete de vencimento enviado pela empresa que manda acessar a área do cliente, sem boleto anexo nem pedido de Pix para outra conta"
+  ],
   "padraoSolicitacaoFinanceira": "Pagamento de boleto adulterado, cujo dinheiro vai para a conta do golpista.",
   "orientacaoPreventiva": "Antes de pagar, confira o nome e o CPF ou CNPJ do beneficiário, o valor e o vencimento. Na dúvida, fale com a empresa pelo SAC oficial.",
   "fontes": [

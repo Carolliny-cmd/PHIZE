@@ -13,6 +13,10 @@
     "instale este aplicativo para proteger sua conta",
     "baixe o aplicativo do link para resolvermos agora"
   ],
+  "situacoesLegitimas": [
+    "suporte técnico que a própria pessoa procurou no canal oficial da empresa, sem pedir para instalar aplicativo de acesso remoto",
+    "aviso de atualização do aplicativo do banco feita pela loja oficial de aplicativos do celular"
+  ],
   "padraoSolicitacaoFinanceira": "Instalação de aplicativo que dá ao golpista acesso ao celular e às contas da vítima.",
   "orientacaoPreventiva": "Não instale aplicativos indicados por quem ligou ou mandou mensagem. Desligue e confirme o caso com o banco pelos canais oficiais, de outro telefone.",
   "fontes": [

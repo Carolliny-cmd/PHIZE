@@ -42,6 +42,12 @@ export interface Ficha {
   categoria: CategoriaAmeaca;
   canais: string[];
   gatilhosLinguisticos: string[];
+  /**
+   * Situações legítimas parecidas com o golpe (etapa 3 do plano do RAG).
+   * Opcional. Vai ao prompt para o modelo não apontar correspondência em
+   * mensagem real; não entra no embedding.
+   */
+  situacoesLegitimas?: string[];
   padraoSolicitacaoFinanceira: string;
   orientacaoPreventiva: string;
   fontes: FonteFicha[];
@@ -69,6 +75,7 @@ const CAMPOS_FICHA = [
   "categoria",
   "canais",
   "gatilhosLinguisticos",
+  "situacoesLegitimas",
   "padraoSolicitacaoFinanceira",
   "orientacaoPreventiva",
   "fontes",
@@ -173,6 +180,9 @@ export function validarFicha(dado: unknown, nomeArquivo: string): string[] {
 
   listaDeTextos(ficha.canais, "canais", erros);
   listaDeTextos(ficha.gatilhosLinguisticos, "gatilhosLinguisticos", erros);
+  if (ficha.situacoesLegitimas !== undefined) {
+    listaDeTextos(ficha.situacoesLegitimas, "situacoesLegitimas", erros);
+  }
 
   if (!Array.isArray(ficha.fontes) || ficha.fontes.length === 0) {
     erros.push('"fontes" deve listar ao menos uma fonte pública consultada');

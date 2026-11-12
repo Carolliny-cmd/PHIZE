@@ -11,7 +11,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Última tarefa concluída:** Prompt 9.12 — seções Aprender e Sobre do Perfil; com ele, o plano de orientação e perfil (RF13, RF14) está completo. 83 testes na Function, 658 no app
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** etapas 3 e 4 do RAG e a medição com 3 repetições, dentro da cota gratuita. Projeto só com recursos gratuitos (decisão de 2026-11-12): extrair o máximo do nível gratuito na análise de print e de link. No RAG: medição com 3 repetições, etapas 3 e 4. Depois do MVP: notícias e comunidade (Fase 10) e, em seguida, nova rodada de design
+- **Próximo passo:** revisão das situações legítimas das fichas pela equipe; medição da etapa 3 com 3 repetições (só com a base, dividida em dias pela cota); etapa 4 (ficha do comprovante falso). Projeto só com recursos gratuitos (decisão de 2026-11-12): extrair o máximo do nível gratuito na análise de print e de link. No RAG: medição com 3 repetições, etapas 3 e 4. Depois do MVP: notícias e comunidade (Fase 10) e, em seguida, nova rodada de design
 
 ---
 
@@ -926,6 +926,10 @@ A coleta de mensagens com outras pessoas ficou inviável para a equipe agora. Pl
 
 - **Feito (etapa 2):** 89 prints sintéticos (`tool/prints_sinteticos/`) passados pelo ML Kit no emulador, como o app faz. `organizarTextoPrint` (`lib/features/analise/domain/organizacao_texto_print.dart`) põe o texto em ordem de leitura, tira a interface e fica só com as mensagens recebidas; `ReconhecedorTextoMlKit` passou a usá-la. Detalhes em `docs/calibracao-recuperacao.md`, seção sobre texto de print.
 - **Resultado:** na busca, a ficha certa em 1º lugar cai de 52 para 45 de 54 com o texto bruto e volta a 52 só com as recebidas. No modelo, só com as recebidas: 53 correspondências certas (50 no bruto) e o falso vermelho do bruto (`legit-leilao-judicial` ligado a `falso-leilao-de-veiculos`) some. Resta `legit-codigo-proprio`, que subiu de verde para amarelo, ligado a `whatsapp-pedido-de-codigo` (candidato à etapa 3), e `consignado-informal`, que aponta a ficha vizinha `devolucao-de-emprestimo` sem mudar a faixa.
+
+- **Feito (etapa 3, parte 1):** campo opcional `situacoesLegitimas` nas fichas (schema, prompt e trava contra cópia), com duas situações reais por ficha escritas com ajuda da IA a partir da orientação e das fontes de cada uma. Não entra no embedding: busca e limiar inalterados, índice regravado sem vetor novo. `avaliar-analise` ganhou `--sufixo` e `--sem-base-de` (refaz só a análise com a base). Detalhes em `docs/calibracao-recuperacao.md`, seção "Situações legítimas nas fichas".
+- **Resultado:** com a base, as 26 legítimas ficaram verdes (`legit-codigo-proprio` deixou de ser ligado ao golpe do código) e nenhum golpe mudou de faixa. As correspondências certas foram de 53 para 50, numa única repetição, com variação visível entre execuções; o falso advogado (sem ficha) foi ligado ao falso prêmio.
+- **Falta na etapa 3:** revisão humana das situações legítimas (curadoria) e a medição com 3 repetições só com a base, para separar o efeito da etapa 3 da variação do modelo. O "vetor por gatilho" ficou para depois dessa medição.
 
 > **Pontos para a equipe:**
 > - O conjunto foi escrito com ajuda da IA e não substitui mensagens de outras pessoas. No relatório acadêmico, deixar claro que a medida usa mensagens sintéticas.

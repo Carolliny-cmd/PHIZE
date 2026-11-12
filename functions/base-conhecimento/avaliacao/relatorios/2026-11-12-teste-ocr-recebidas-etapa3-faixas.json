@@ -1,0 +1,715 @@
+{
+  "relatorio": "2026-11-12-teste-ocr-recebidas-etapa3.json",
+  "modelo": "gemini-3.5-flash-lite",
+  "observacao": "Faixa sem a base calculada sem a regra de verificação incompleta.",
+  "resumo": {
+    "golpeDaBase": {
+      "total": 58,
+      "semBase": {
+        "baixo": 0,
+        "medio": 34,
+        "alto": 24
+      },
+      "comBase": {
+        "baixo": 0,
+        "medio": 4,
+        "alto": 54
+      },
+      "subiram": [
+        "ipva-formal",
+        "emprestimo-formal",
+        "central-formal",
+        "central-informal",
+        "central-parafrase",
+        "pgfn-parafrase",
+        "emprego-informal",
+        "venda-informal",
+        "venda-parafrase",
+        "boleto-formal",
+        "investimento-formal",
+        "investimento-informal",
+        "investimento-parafrase",
+        "motoboy-parafrase",
+        "premio-informal",
+        "amor-parafrase",
+        "maofantasma-parafrase",
+        "boleto-parafrase",
+        "motoboy-formal",
+        "motoboy-informal",
+        "premio-formal",
+        "amor-informal",
+        "maofantasma-formal",
+        "maofantasma-informal",
+        "phishing-informal",
+        "pixerrado-formal",
+        "pixerrado-parafrase",
+        "codigo-formal",
+        "codigo-parafrase",
+        "consignado-informal"
+      ],
+      "desceram": []
+    },
+    "golpeForaDaBase": {
+      "total": 5,
+      "semBase": {
+        "baixo": 1,
+        "medio": 3,
+        "alto": 1
+      },
+      "comBase": {
+        "baixo": 1,
+        "medio": 2,
+        "alto": 2
+      },
+      "subiram": [
+        "fora-falso-advogado"
+      ],
+      "desceram": []
+    },
+    "legitima": {
+      "total": 26,
+      "semBase": {
+        "baixo": 25,
+        "medio": 1,
+        "alto": 0
+      },
+      "comBase": {
+        "baixo": 26,
+        "medio": 0,
+        "alto": 0
+      },
+      "subiram": [],
+      "desceram": [
+        "legit-presente-professora"
+      ]
+    }
+  },
+  "correspondenciaForaDoEsperado": [
+    "fora-falso-advogado -> falso-premio-sorteio"
+  ],
+  "mensagens": [
+    {
+      "mensagem": "ipva-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "boleto-falso-ipva-licenciamento"
+    },
+    {
+      "mensagem": "ipva-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "boleto-falso-ipva-licenciamento"
+    },
+    {
+      "mensagem": "ipva-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "boleto-falso-ipva-licenciamento"
+    },
+    {
+      "mensagem": "emprestimo-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "emprestimo-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "emprestimo-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "central-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "central-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "central-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "pgfn-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falsa-cobranca-divida-ativa"
+    },
+    {
+      "mensagem": "pgfn-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falsa-cobranca-divida-ativa"
+    },
+    {
+      "mensagem": "pgfn-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falsa-cobranca-divida-ativa"
+    },
+    {
+      "mensagem": "emprego-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "emprego-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "emprego-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "venda-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falsa-venda"
+    },
+    {
+      "mensagem": "venda-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falsa-venda"
+    },
+    {
+      "mensagem": "venda-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falsa-venda"
+    },
+    {
+      "mensagem": "boleto-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-boleto"
+    },
+    {
+      "mensagem": "investimento-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-investimento"
+    },
+    {
+      "mensagem": "investimento-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-investimento"
+    },
+    {
+      "mensagem": "investimento-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-investimento"
+    },
+    {
+      "mensagem": "leilao-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "leilao-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "motoboy-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "parente-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "parente-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "premio-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "premio-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "amor-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "golpe-do-amor"
+    },
+    {
+      "mensagem": "maofantasma-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "mao-fantasma"
+    },
+    {
+      "mensagem": "fora-comprovante-falso",
+      "tipo": "golpeForaDaBase",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "fora-emprestimo-taxa",
+      "tipo": "golpeForaDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "boleto-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falso-boleto"
+    },
+    {
+      "mensagem": "boleto-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-boleto"
+    },
+    {
+      "mensagem": "leilao-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "medio",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "motoboy-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-motoboy"
+    },
+    {
+      "mensagem": "motoboy-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-motoboy"
+    },
+    {
+      "mensagem": "parente-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "premio-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "amor-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "medio",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "amor-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "golpe-do-amor"
+    },
+    {
+      "mensagem": "maofantasma-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "mao-fantasma"
+    },
+    {
+      "mensagem": "maofantasma-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "mao-fantasma"
+    },
+    {
+      "mensagem": "phishing-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "phishing-link-falso"
+    },
+    {
+      "mensagem": "phishing-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "phishing-link-falso"
+    },
+    {
+      "mensagem": "phishing-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "phishing-link-falso"
+    },
+    {
+      "mensagem": "pixerrado-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "pix-enviado-por-engano"
+    },
+    {
+      "mensagem": "pixerrado-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "pix-enviado-por-engano"
+    },
+    {
+      "mensagem": "pixerrado-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "pix-enviado-por-engano"
+    },
+    {
+      "mensagem": "encomenda-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "taxa-falsa-encomenda-internacional"
+    },
+    {
+      "mensagem": "encomenda-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "taxa-falsa-encomenda-internacional"
+    },
+    {
+      "mensagem": "encomenda-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "taxa-falsa-encomenda-internacional"
+    },
+    {
+      "mensagem": "codigo-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "codigo-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "codigo-parafrase",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "consignado-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "medio",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "consignado-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "sequestro-formal",
+      "tipo": "golpeDaBase",
+      "semBase": "alto",
+      "comBase": "alto",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "sequestro-informal",
+      "tipo": "golpeDaBase",
+      "semBase": "medio",
+      "comBase": "medio",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "fora-aluguel-temporada",
+      "tipo": "golpeForaDaBase",
+      "semBase": "medio",
+      "comBase": "medio",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "fora-vaquinha-falsa",
+      "tipo": "golpeForaDaBase",
+      "semBase": "medio",
+      "comBase": "medio",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "fora-falso-advogado",
+      "tipo": "golpeForaDaBase",
+      "semBase": "medio",
+      "comBase": "alto",
+      "padraoComBase": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "legit-aviso-compra",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-alerta-banco",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-rastreio",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-pedido-entrega",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-codigo-proprio",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-mae-pix",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-condominio-reajuste",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-escola-mensalidade",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-fatura-internet",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-entrevista",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-admissao",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-rifa-escola",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-rendimento-cdb",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-noticia-restituicao",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-alerta-familia",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-clinica",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-mercado-entrega",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-bicicleta",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-leilao-judicial",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-cartao-novo",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-calendario-ipva",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-namorado",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-estorno-loja",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-presente-professora",
+      "tipo": "legitima",
+      "semBase": "medio",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-suporte",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    },
+    {
+      "mensagem": "legit-ofertas-mercado",
+      "tipo": "legitima",
+      "semBase": "baixo",
+      "comBase": "baixo",
+      "padraoComBase": null
+    }
+  ]
+}

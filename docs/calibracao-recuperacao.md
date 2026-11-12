@@ -190,6 +190,28 @@ flutter test test/avaliacao/conjuntos_ocr_test.dart --dart-define=GERAR_OCR=true
 
 O primeiro passo só é necessário ao mudar `teste.json`; os dois primeiros, ao mudar o desenho dos prints ou a versão do ML Kit. `npm run avaliar-analise` aceita `--retomar <relatório>` para refazer só as chamadas que falharam por limite da API.
 
+## Situações legítimas nas fichas (etapa 3, 2026-11-12)
+
+Cada ficha ganhou o campo opcional `situacoesLegitimas`: duas situações reais parecidas com o golpe, escritas com ajuda da IA a partir da orientação preventiva e das fontes da própria ficha, nunca das mensagens de teste (a trava contra cópia passou a comparar também este campo e barrou uma frase, reescrita na ficha). O campo vai ao modelo junto com o padrão, com a instrução de não apontar o padrão quando a mensagem se encaixa numa dessas situações. Não entra no embedding: a busca e o limiar não mudaram, e o índice foi regravado sem gerar vetor novo.
+
+Medição: `npm run avaliar-analise -- --arquivo teste-ocr-recebidas.json --repeticoes 1 --sufixo -etapa3 --sem-base-de 2026-11-12-teste-ocr-recebidas.json`, que refaz só a análise com a base e reaproveita a sem a base (89 chamadas em vez de 178). Relatórios: `2026-11-12-teste-ocr-recebidas-etapa3.json` e o `-faixas.json`, comparados com `2026-11-12-teste-ocr-recebidas.json`.
+
+| Com a base, só as mensagens recebidas | Antes | Com situações legítimas |
+| --- | --- | --- |
+| Golpes detectados | 62 de 63 | 62 de 63 |
+| Correspondências certas | 53 | 50 |
+| Correspondência em legítima ou em golpe fora da base | `legit-codigo-proprio` → `whatsapp-pedido-de-codigo` | `fora-falso-advogado` → `falso-premio-sorteio` |
+| Golpes da base (58) | amarelo 4, vermelho 54 | amarelo 4, vermelho 54 |
+| Golpes fora da base (5) | verde 1, amarelo 3, vermelho 1 | verde 1, amarelo 2, vermelho 2 |
+| Legítimas (26) | verde 25, amarelo 1 | **verde 26** |
+
+- **O alvo foi atingido:** a pessoa avisando que vai receber o próprio código deixou de ser ligada ao golpe do código e voltou a verde. Com a base, nenhuma legítima ficou fora do verde.
+- **Nenhum golpe mudou de faixa.** Três perderam a correspondência (`amor-formal`, `emprego-informal`, `leilao-formal`), mas seguiram vermelhos pelos outros sinais. No leilão, a situação legítima "leilão oficial com edital" pode ter pesado contra a mensagem que imita o edital.
+- O golpe do falso advogado, que não tem ficha, foi ligado ao falso prêmio: a faixa (vermelho) é adequada, mas a explicação cita o golpe vizinho.
+- **Uma repetição não basta para concluir.** Entre esta execução e a anterior, o sinal de urgência apareceu e sumiu em mensagens que a etapa 3 não afeta (as três do código, por exemplo). As diferenças de uma ou duas correspondências estão dentro dessa variação; a medição com 3 repetições, só com a base, dirá se as perdas são da etapa 3.
+
+**Pendente:** as situações legítimas foram escritas com ajuda da IA e precisam da revisão de quem assina a curadoria de cada ficha.
+
 ## Quando recalibrar
 
 - A cada lote novo de fichas: mais fichas aumentam a chance de uma conversa comum ficar perto de alguma delas.
