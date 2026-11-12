@@ -11,6 +11,6 @@ class AppRoutes {
   static const String analisarPrint = '/analisar-print';
   static const String resultado = '/resultado';
   static const String analiseCompartilhada = '/analise-compartilhada';
-  static const String meusDados = '/meus-dados';
+  static const String perfil = '/perfil';
   static const String exclusaoPendente = '/exclusao-pendente';
 }

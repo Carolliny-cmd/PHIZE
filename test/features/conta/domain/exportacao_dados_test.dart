@@ -16,6 +16,7 @@ void main() {
         uid: 'uid-teste',
         email: 'maria@exemplo.com',
         criadaEm: DateTime(2026, 1, 2),
+        nomeExibicao: 'Maria',
       ),
       analises: [
         AnaliseRisco(
@@ -41,6 +42,7 @@ void main() {
     final dados = jsonDecode(conteudo) as Map<String, dynamic>;
     expect(dados['perfil']['identificador'], 'uid-teste');
     expect(dados['perfil']['email'], 'maria@exemplo.com');
+    expect(dados['perfil']['nomeExibicao'], 'Maria');
     final analises = dados['analises'] as List<dynamic>;
     expect(analises, hasLength(2));
     expect(analises[0]['veredito'], RotulosRisco.altoRisco);

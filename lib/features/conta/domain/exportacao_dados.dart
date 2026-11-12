@@ -20,6 +20,7 @@ String montarExportacao({
     'perfil': {
       'identificador': perfil.uid,
       'email': perfil.email,
+      'nomeExibicao': perfil.nomeExibicao,
       'contaCriadaEm': perfil.criadaEm?.toIso8601String(),
     },
     'analises': [

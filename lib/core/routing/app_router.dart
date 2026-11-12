@@ -35,7 +35,7 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/conta/domain/compartilhador_arquivo.dart';
 import '../../features/conta/domain/conta_repository.dart';
 import '../../features/conta/presentation/pages/exclusao_pendente_page.dart';
-import '../../features/conta/presentation/pages/meus_dados_page.dart';
+import '../../features/conta/presentation/pages/perfil_page.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -128,9 +128,9 @@ class AppRouter {
             consentimentoRepository: consentimentoRepository,
           ),
         );
-      case AppRoutes.meusDados:
+      case AppRoutes.perfil:
         return MaterialPageRoute(
-          builder: (_) => MeusDadosPage(
+          builder: (_) => PerfilPage(
             contaRepository: contaRepository,
             historicoRepository: historicoRepository,
             compartilhador: compartilhador,

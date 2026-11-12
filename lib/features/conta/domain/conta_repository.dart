@@ -1,7 +1,16 @@
-/// Direitos do titular sobre a conta autenticada (RF12 / UC12).
+/// Perfil (RF14) e direitos do titular (RF12 / UC12) sobre a conta
+/// autenticada.
 abstract class ContaRepository {
-  /// Perfil gravado no cadastro, para a exportação. Lança em caso de falha.
+  /// Perfil gravado no Firestore, para a tela de perfil e a exportação.
+  /// Lança em caso de falha.
   Future<PerfilConta> carregarPerfil();
+
+  /// O que o Firebase Authentication já sabe da conta, sem rede.
+  IdentidadeConta get identidade;
+
+  /// Grava o nome de exibição já normalizado; `null` apaga o nome.
+  /// Lança em caso de falha.
+  Future<void> salvarNomeExibicao(String? nome);
 
   /// `false` para quem entra só com o Google e confirma a exclusão por ele.
   bool get exigeSenha;
@@ -27,11 +36,30 @@ class PerfilConta {
     required this.uid,
     required this.email,
     required this.criadaEm,
+    this.nomeExibicao,
   });
 
   final String uid;
   final String? email;
   final DateTime? criadaEm;
+
+  /// Opcional (RF14). Único dado pessoal acrescentado ao cadastro.
+  final String? nomeExibicao;
+}
+
+/// Dados de identificação vindos do Firebase Authentication (RF14).
+class IdentidadeConta {
+  const IdentidadeConta({
+    required this.email,
+    required this.emailVerificado,
+    required this.entraComSenha,
+    required this.entraComGoogle,
+  });
+
+  final String? email;
+  final bool emailVerificado;
+  final bool entraComSenha;
+  final bool entraComGoogle;
 }
 
 class ExclusaoIncompletaException implements Exception {

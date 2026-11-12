@@ -7,11 +7,11 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 
 ## ONDE PARAMOS
 
-- **Data:** 2026-11-11
-- **Última tarefa concluída:** Prompt 9.7 — trava contra cópia e conjunto de teste da recuperação (83 testes na Function, 535 no app)
+- **Data:** 2026-11-12
+- **Última tarefa concluída:** Prompt 9.10 — tela de Perfil e nome de exibição (83 testes na Function, 593 no app)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** fechar a etapa 2 do plano do RAG (texto com cara de print real, Prompt 9.7) e começar o Prompt 9.8 (tutorial de primeiro uso, RF13). Em seguida, repetir a medição com 3 repetições para medir a variação entre execuções. A coleta de mensagens independentes foi adiada pela equipe
+- **Próximo passo:** fechar a etapa 2 do plano do RAG (texto com cara de print real, Prompt 9.7) e seguir com os Prompts 9.11 e 9.12 (perfil, RF14). Em seguida, repetir a medição com 3 repetições para medir a variação entre execuções. A coleta de mensagens independentes foi adiada pela equipe
 
 ---
 
@@ -224,7 +224,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 ## PENDÊNCIAS TÉCNICAS
 
 - ~~`firestore.rules` não cobre subcoleções de `users/{uid}`~~ — **resolvida no Prompt 8.1**; publicar as regras novas no console junto com o deploy.
-- Restringir os campos graváveis em `users/{uid}` aos previstos (melhoria de segurança) — planejado no Prompt 9.10.
+- ~~Restringir os campos graváveis em `users/{uid}` aos previstos~~ — **resolvida no Prompt 9.10**; publicar as regras novas no console junto com o deploy.
 - Adicionar ao roadmap os passos de publicação das regras pelo console e teste no Playground.
 - Sincronizar os .docx acadêmicos com as alterações de RF07, arquitetura 3.3 e 6, UC03 e relatório 4.8.
 - A rotina de mascaramento local pode lançar `StateError` (falha na restauração do isolamento de URL/domínio). O fluxo do UC04 (Fase 6) deve tratar essa exceção interrompendo a análise, sem expor o texto ao usuário nem a log.
@@ -1028,7 +1028,7 @@ tutorial e consentimento, letra ampliada e leitor de tela.
 
 > **Pontos para a equipe:** revisar os textos do tutorial em `tutorial_print.dart`. A dica de captura de tela ("botão de ligar e de abaixar o volume") vale para a maioria dos Android; o iPhone usa outra combinação.
 
-### Prompt 9.10 — Perfil: reorganização e nome de exibição (RF14; T51, T52)
+### Prompt 9.10 — Perfil: reorganização e nome de exibição (RF14; T51, T52) (concluído)
 
 **[CLAUDE CODE]**
 ```
@@ -1057,6 +1057,16 @@ pendência).
 ```
 
 **Verificação [TERMINAL]:** `flutter analyze` e `flutter test`; no emulador, editar o nome, exportar e conferir o arquivo. Depois commit; publicar as regras novas junto com o próximo deploy.
+
+**Feito (2026-11-12):**
+- **Tela de Perfil:** `PerfilPage` substitui "Meus dados"; a aba e a rota passaram a se chamar Perfil (`AppRoutes.perfil`). No topo, um cartão com a inicial, o nome (ou "Olá!"), o e-mail e o selo de e-mail verificado ou não. Seções **Identificação** (nome de exibição, e-mail e forma de login) e **Privacidade e dados** (exportar, privacidade da análise de print, excluir conta), e "Sair da conta" no fim.
+- **Nome de exibição:** opcional, até 40 caracteres, sem conferência de nome real. Espaços sobrando são removidos, e campo vazio apaga o nome (`nome_exibicao.dart`). Fica em `users/{uid}.nomeExibicao`, entra na exportação e sai com o documento na exclusão da conta.
+- **Identificação sem rede:** e-mail, verificação e forma de login vêm do Firebase Authentication (`ContaRepository.identidade`); só o nome é lido do Firestore.
+- **Regras do Firestore:** o perfil passou a ter lista fechada de campos (`uid`, `email`, `createdAt`, `nomeExibicao`), e depois do cadastro só o nome pode mudar, com tipo e tamanho conferidos. Conferidas no emulador do Firestore com 18 casos, entre aceitos e recusados: `tool/regras_firestore/conferir_perfil.mjs` (exige Java 11 ou mais novo; o do Android Studio serve).
+- **Testes:** 13 novos (nome, identificação, exportação) e os testes de "Meus dados" adaptados ao Perfil. Suíte: 593 testes.
+- **Validação visual:** imagens da tela com nome, de conta Google sem nome e com letra 1,6×, geradas por teste. Emulador do app não usado (exige login).
+
+> **Pontos para a equipe:** as regras novas só valem depois de publicadas no console. Contas criadas antes desta versão continuam válidas, porque já têm os três campos do cadastro.
 
 ### Prompt 9.11 — Perfil: segurança e acessibilidade (RF14; T53, T54)
 

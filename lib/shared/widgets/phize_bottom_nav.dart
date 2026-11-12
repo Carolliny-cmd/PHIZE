@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/routing/app_routes.dart';
 
-/// Navegação principal do aplicativo: Início, Histórico e Conta.
+/// Navegação principal do aplicativo: Início, Histórico e Perfil.
 class PhizeBottomNav extends StatelessWidget {
   const PhizeBottomNav({super.key, required this.currentIndex});
 
@@ -17,7 +17,7 @@ class PhizeBottomNav extends StatelessWidget {
         const rotas = [
           AppRoutes.dashboard,
           AppRoutes.historico,
-          AppRoutes.meusDados,
+          AppRoutes.perfil,
         ];
         Navigator.of(context).pushReplacementNamed(rotas[index]);
       },
@@ -35,7 +35,7 @@ class PhizeBottomNav extends StatelessWidget {
         NavigationDestination(
           icon: Icon(Icons.person_outline),
           selectedIcon: Icon(Icons.person),
-          label: 'Conta',
+          label: 'Perfil',
         ),
       ],
     );

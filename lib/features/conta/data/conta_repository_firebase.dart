@@ -48,11 +48,32 @@ class ContaRepositoryFirebase implements ContaRepository {
     final documento = await _perfil(usuario.uid)
         .get(const GetOptions(source: Source.server));
     final criadaEm = documento.data()?['createdAt'];
+    final nome = documento.data()?['nomeExibicao'];
     return PerfilConta(
       uid: usuario.uid,
       email: usuario.email,
       criadaEm: criadaEm is Timestamp ? criadaEm.toDate() : null,
+      nomeExibicao: nome is String ? nome : null,
     );
+  }
+
+  @override
+  IdentidadeConta get identidade {
+    final usuario = _usuario;
+    final provedores = usuario.providerData.map((p) => p.providerId).toSet();
+    return IdentidadeConta(
+      email: usuario.email,
+      emailVerificado: usuario.emailVerified,
+      entraComSenha: provedores.contains(EmailAuthProvider.PROVIDER_ID),
+      entraComGoogle: provedores.contains(GoogleAuthProvider.PROVIDER_ID),
+    );
+  }
+
+  @override
+  Future<void> salvarNomeExibicao(String? nome) async {
+    // Só este campo muda; as regras do Firestore recusam qualquer outro.
+    await _perfil(_usuario.uid)
+        .update({'nomeExibicao': nome ?? FieldValue.delete()});
   }
 
   @override

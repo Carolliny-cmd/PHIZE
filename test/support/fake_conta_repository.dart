@@ -9,6 +9,15 @@ class FakeContaRepository implements ContaRepository {
   bool exigeSenha = true;
   Object? erroExclusao;
   bool falhaPerfil = false;
+  bool falhaSalvarNome = false;
+  String? nomeExibicao;
+  @override
+  IdentidadeConta identidade = const IdentidadeConta(
+    email: 'maria@exemplo.com',
+    emailVerificado: true,
+    entraComSenha: true,
+    entraComGoogle: false,
+  );
   String? senhaRecebida;
   int exclusoes = 0;
 
@@ -19,7 +28,14 @@ class FakeContaRepository implements ContaRepository {
       uid: 'uid-teste',
       email: 'maria@exemplo.com',
       criadaEm: DateTime(2026, 1, 2),
+      nomeExibicao: nomeExibicao,
     );
+  }
+
+  @override
+  Future<void> salvarNomeExibicao(String? nome) async {
+    if (falhaSalvarNome) throw StateError('falha simulada');
+    nomeExibicao = nome;
   }
 
   @override

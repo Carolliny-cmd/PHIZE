@@ -9,6 +9,8 @@ import 'package:phize/features/analise/domain/conteudo_compartilhado.dart';
 import 'package:phize/features/auth/domain/auth_exception.dart';
 import 'package:phize/features/conta/domain/conta_repository.dart';
 import 'package:phize/features/conta/domain/exportacao_dados.dart';
+import 'package:phize/features/conta/domain/nome_exibicao.dart';
+import 'package:phize/features/conta/presentation/pages/perfil_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../support/fake_auth_repository.dart';
@@ -24,7 +26,7 @@ Future<void> _abrir(
   FakeHistoricoRepository? historico,
   FakeCompartilhador? compartilhador,
   FakeAuthRepository? auth,
-  String rota = AppRoutes.meusDados,
+  String rota = AppRoutes.perfil,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -41,8 +43,16 @@ Future<void> _abrir(
   await tester.pumpAndSettle();
 }
 
+/// Os itens do perfil podem estar abaixo da área visível do teste.
+Future<void> _tocar(WidgetTester tester, String chave) async {
+  final alvo = find.byKey(Key(chave));
+  await tester.ensureVisible(alvo);
+  await tester.pumpAndSettle();
+  await tester.tap(alvo);
+}
+
 Future<void> _abrirDialogo(WidgetTester tester) async {
-  await tester.tap(find.byKey(const Key('meus_dados_excluir')));
+  await _tocar(tester, 'perfil_excluir');
   await tester.pumpAndSettle();
 }
 
@@ -56,18 +66,18 @@ Future<void> _confirmarExclusao(WidgetTester tester) async {
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  testWidgets('Painel abre Meus dados', (tester) async {
+  testWidgets('Painel abre o Perfil', (tester) async {
     await _abrir(
       tester,
       conta: FakeContaRepository(),
       rota: AppRoutes.dashboard,
     );
 
-    await tester.tap(find.text('Conta'));
+    await tester.tap(find.text('Perfil'));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('meus_dados_exportar')), findsOneWidget);
-    expect(find.byKey(const Key('meus_dados_excluir')), findsOneWidget);
+    expect(find.byKey(const Key('perfil_exportar')), findsOneWidget);
+    expect(find.byKey(const Key('perfil_excluir')), findsOneWidget);
   });
 
   testWidgets('exportar entrega arquivo com perfil e histórico', (
@@ -80,7 +90,7 @@ void main() {
       compartilhador: compartilhador,
     );
 
-    await tester.tap(find.byKey(const Key('meus_dados_exportar')));
+    await _tocar(tester, 'perfil_exportar');
     await tester.pumpAndSettle();
 
     expect(compartilhador.nomeArquivo, nomeArquivoExportacao);
@@ -94,13 +104,13 @@ void main() {
     final historico = FakeHistoricoRepository();
     await _abrir(tester, conta: FakeContaRepository(), historico: historico);
 
-    await tester.tap(find.byKey(const Key('meus_dados_exportar')));
+    await _tocar(tester, 'perfil_exportar');
     await tester.pumpAndSettle();
 
     expect(historico.ultimaLeituraSomenteServidor, isTrue);
   });
 
-  testWidgets('a aba Conta permite retirar o consentimento', (tester) async {
+  testWidgets('a aba Perfil permite retirar o consentimento', (tester) async {
     final consentimento = FakeConsentimentoRepository();
     await tester.pumpWidget(
       MaterialApp(
@@ -111,12 +121,12 @@ void main() {
           authRepository: FakeAuthRepository(),
           consentimentoRepository: consentimento,
         ),
-        initialRoute: AppRoutes.meusDados,
+        initialRoute: AppRoutes.perfil,
       ),
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('meus_dados_privacidade')));
+    await _tocar(tester, 'perfil_privacidade');
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.byKey(const Key('consentimento_recusar')));
     await tester.tap(find.byKey(const Key('consentimento_recusar')));
@@ -129,7 +139,7 @@ void main() {
     final auth = FakeAuthRepository();
     await _abrir(tester, conta: FakeContaRepository(), auth: auth);
 
-    await tester.tap(find.byKey(const Key('meus_dados_sair')));
+    await _tocar(tester, 'perfil_sair');
     await tester.pumpAndSettle();
 
     expect(auth.saiu, isTrue);
@@ -145,7 +155,7 @@ void main() {
     await _confirmarExclusao(tester);
 
     expect(find.textContaining('nada foi apagado'), findsOneWidget);
-    expect(find.byKey(const Key('meus_dados_excluir')), findsOneWidget);
+    expect(find.byKey(const Key('perfil_excluir')), findsOneWidget);
     expect(find.byKey(const Key('exclusao_pendente_concluir')), findsNothing);
   });
 
@@ -159,11 +169,11 @@ void main() {
       compartilhador: compartilhador,
     );
 
-    await tester.tap(find.byKey(const Key('meus_dados_exportar')));
+    await _tocar(tester, 'perfil_exportar');
     await tester.pumpAndSettle();
 
     expect(compartilhador.conteudo, isNull);
-    expect(find.byKey(const Key('meus_dados_erro')), findsOneWidget);
+    expect(find.byKey(const Key('perfil_erro')), findsOneWidget);
     final botao = tester.widget<OutlinedButton>(
       find.byWidgetPredicate((w) => w is OutlinedButton).first,
     );
@@ -182,7 +192,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(conta.exclusoes, 0);
-    expect(find.byKey(const Key('meus_dados_excluir')), findsOneWidget);
+    expect(find.byKey(const Key('perfil_excluir')), findsOneWidget);
   });
 
   testWidgets('sem senha, a exclusão não começa', (tester) async {
@@ -297,7 +307,7 @@ void main() {
     await _confirmarExclusao(tester);
 
     expect(find.text('Senha incorreta.'), findsOneWidget);
-    expect(find.byKey(const Key('meus_dados_excluir')), findsOneWidget);
+    expect(find.byKey(const Key('perfil_excluir')), findsOneWidget);
   });
 
   testWidgets('falha parcial bloqueia a conta até a exclusão terminar', (
@@ -349,7 +359,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('exclusao_pendente_concluir')), findsOneWidget);
-    expect(find.text('Conta'), findsNothing);
+    expect(find.text('Perfil'), findsNothing);
   });
 
   group('conteúdo compartilhado sem sessão (RF10)', () {
@@ -407,5 +417,147 @@ void main() {
 
     expect(auth.saiu, isTrue);
     expect(find.byKey(const Key('login_email')), findsOneWidget);
+  });
+
+  group('identificação (RF14)', () {
+    testWidgets('mostra o e-mail verificado e a forma de login', (
+      tester,
+    ) async {
+      await _abrir(tester, conta: FakeContaRepository());
+
+      expect(find.text('maria@exemplo.com'), findsWidgets);
+      expect(find.byKey(const Key('perfil_email_verificado')), findsOneWidget);
+      expect(find.text('E-mail e senha'), findsOneWidget);
+    });
+
+    testWidgets('conta do Google com e-mail não verificado', (tester) async {
+      final conta = FakeContaRepository()
+        ..identidade = const IdentidadeConta(
+          email: 'jose@exemplo.com',
+          emailVerificado: false,
+          entraComSenha: false,
+          entraComGoogle: true,
+        );
+      await _abrir(tester, conta: conta);
+
+      expect(find.byKey(const Key('perfil_email_pendente')), findsOneWidget);
+      expect(find.text('Google'), findsOneWidget);
+    });
+
+    testWidgets('salvar o nome grava a versão normalizada e mostra no topo', (
+      tester,
+    ) async {
+      final conta = FakeContaRepository();
+      await _abrir(tester, conta: conta);
+
+      await _tocar(tester, 'perfil_nome');
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('editar_nome_campo')),
+        '  Maria   da Silva ',
+      );
+      await tester.tap(find.byKey(const Key('editar_nome_salvar')));
+      await tester.pumpAndSettle();
+
+      expect(conta.nomeExibicao, 'Maria da Silva');
+      expect(
+        tester.widget<Text>(find.byKey(const Key('perfil_cabecalho_nome'))).data,
+        'Maria da Silva',
+      );
+      expect(find.text('Nome salvo.'), findsOneWidget);
+    });
+
+    testWidgets('o nome já gravado aparece ao abrir e pode ser removido', (
+      tester,
+    ) async {
+      final conta = FakeContaRepository()..nomeExibicao = 'Vó Neuza';
+      await _abrir(tester, conta: conta);
+      expect(find.text('Vó Neuza'), findsWidgets);
+
+      await _tocar(tester, 'perfil_nome');
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('editar_nome_remover')));
+      await tester.pumpAndSettle();
+
+      expect(conta.nomeExibicao, isNull);
+      expect(find.text('Vó Neuza'), findsNothing);
+      expect(find.text('Nome removido.'), findsOneWidget);
+    });
+
+    testWidgets('campo vazio salvo equivale a remover o nome', (tester) async {
+      final conta = FakeContaRepository()..nomeExibicao = 'Maria';
+      await _abrir(tester, conta: conta);
+
+      await _tocar(tester, 'perfil_nome');
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('editar_nome_campo')), '  ');
+      await tester.tap(find.byKey(const Key('editar_nome_salvar')));
+      await tester.pumpAndSettle();
+
+      expect(conta.nomeExibicao, isNull);
+    });
+
+    testWidgets('o campo não aceita mais que o limite', (tester) async {
+      await _abrir(tester, conta: FakeContaRepository());
+
+      await _tocar(tester, 'perfil_nome');
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('editar_nome_campo')),
+        'a' * (limiteNomeExibicao + 10),
+      );
+      await tester.pump();
+
+      final campo = tester.widget<TextField>(
+        find.byKey(const Key('editar_nome_campo')),
+      );
+      expect(campo.controller!.text.length, limiteNomeExibicao);
+    });
+
+    testWidgets('cancelar não grava nada', (tester) async {
+      final conta = FakeContaRepository()..nomeExibicao = 'Maria';
+      await _abrir(tester, conta: conta);
+
+      await _tocar(tester, 'perfil_nome');
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('editar_nome_campo')), 'Outro');
+      await tester.tap(find.byKey(const Key('editar_nome_cancelar')));
+      await tester.pumpAndSettle();
+
+      expect(conta.nomeExibicao, 'Maria');
+    });
+
+    testWidgets('falha ao salvar mostra o aviso e mantém o nome anterior', (
+      tester,
+    ) async {
+      final conta = FakeContaRepository()
+        ..nomeExibicao = 'Maria'
+        ..falhaSalvarNome = true;
+      await _abrir(tester, conta: conta);
+
+      await _tocar(tester, 'perfil_nome');
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('editar_nome_campo')), 'Outro');
+      await tester.tap(find.byKey(const Key('editar_nome_salvar')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(PerfilPage.mensagemFalhaNome), findsOneWidget);
+      expect(find.text('Outro'), findsNothing);
+    });
+
+    testWidgets('a exportação inclui o nome de exibição', (tester) async {
+      final compartilhador = FakeCompartilhador();
+      await _abrir(
+        tester,
+        conta: FakeContaRepository()..nomeExibicao = 'Maria',
+        compartilhador: compartilhador,
+      );
+
+      await _tocar(tester, 'perfil_exportar');
+      await tester.pumpAndSettle();
+
+      final dados = jsonDecode(compartilhador.conteudo!) as Map<String, dynamic>;
+      expect(dados['perfil']['nomeExibicao'], 'Maria');
+    });
   });
 }
