@@ -34,7 +34,9 @@ class _ExcluirContaDialogState extends State<ExcluirContaDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Excluir conta definitivamente?'),
+      // Título e rótulo curtos: com letra muito grande (RF14), palavras
+      // longas quebravam no meio e o rótulo do campo ficava cortado.
+      title: const Text('Excluir sua conta?'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -50,13 +52,15 @@ class _ExcluirContaDialogState extends State<ExcluirContaDialog> {
               const Text('Em seguida, confirme com sua conta Google.'),
             ],
             if (widget.exigeSenha) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
+              const Text('Para confirmar, digite sua senha.'),
+              const SizedBox(height: 12),
               TextField(
                 key: const Key('excluir_conta_senha'),
                 controller: _senhaController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: 'Digite sua senha para confirmar',
+                  labelText: 'Senha',
                   errorText: _erro,
                 ),
               ),

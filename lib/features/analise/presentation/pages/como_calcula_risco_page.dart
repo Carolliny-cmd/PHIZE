@@ -56,7 +56,9 @@ class ComoCalculaRiscoPage extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Como o Phize calcula o risco')),
+      // Título curto: o nome completo, usado no perfil, ficava cortado na
+      // barra com letra muito grande (RF14).
+      appBar: AppBar(title: const Text('Cálculo do risco')),
       body: SafeArea(
         child: SingleChildScrollView(
           key: const Key('como_calcula_conteudo'),

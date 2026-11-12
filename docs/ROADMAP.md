@@ -11,7 +11,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Última tarefa concluída:** Prompt 9.12 — seções Aprender e Sobre do Perfil; com ele, o plano de orientação e perfil (RF13, RF14) está completo. 83 testes na Function, 658 no app
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** revisão dos textos do tutorial e da explicação do risco pela equipe, e testes no emulador com login. No RAG: repetir a medição com 3 repetições para medir a variação entre execuções, depois a etapa 3 (`situacoesLegitimas`, começando pelo pedido de código) e a etapa 4 (ficha do comprovante falso). A coleta de mensagens independentes foi adiada pela equipe
+- **Próximo passo:** decisões da equipe sobre o RNF07 no nível gratuito (declarar a limitação e, talvez, avisar no consentimento). Projeto só com recursos gratuitos (decisão de 2026-11-12): extrair o máximo do nível gratuito na análise de print e de link. No RAG: medição com 3 repetições, etapas 3 e 4. Depois do MVP: notícias e comunidade (Fase 10) e, em seguida, nova rodada de design
 
 ---
 
@@ -204,9 +204,9 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | Tempo de expiração do bloqueio de login (provisório: 15 min) | Revisão | RF02 |
 | Bloquear usuário com e-mail não verificado (padrão atual: não) | Revisão | RF01/UC01 |
 | Validação da tabela v1.0 (docs/score-calibracao.md) pela equipe | Não bloqueante | RF07 |
-| Ativar o plano Blaze para deploy das Cloud Functions | Publicação e testes em dispositivo real | Fase 5 |
+| ~~Ativar o plano Blaze para deploy das Cloud Functions~~ — **decidido (2026-11-12): não ativar.** Projeto acadêmico, só com recursos gratuitos. As Functions rodam apenas no emulador local, inclusive nas demonstrações; Auth e Firestore seguem no plano gratuito (Spark) | ~~Publicação~~ Resolvida | Fase 5 |
 | ~~Provedor de LLM com termos que vedem uso para treinamento (RNF07)~~ — **decidido: contratado** | ~~Fase 6.2~~ Resolvida | custo recorrente |
-| **Ativar faturamento no projeto da chave do Gemini** — a chave em uso está no nível gratuito, cujos termos permitem uso do conteúdo para treinamento (exceção temporária ao RNF07, registrada na Fase 6.3) | Qualquer uso com conversa real; fim da exceção | RNF07, custo recorrente |
+| ~~Ativar faturamento no projeto da chave do Gemini~~ — **decidido (2026-11-12): não ativar.** A exceção ao RNF07 da Fase 6.3 deixa de ser temporária e vale para todo o projeto acadêmico, com as mesmas condições: só conteúdo fictício é enviado ao modelo, inclusive nos testes com pessoas. Pendente: declarar essa limitação em `docs/requisitos.md` (RNF07) e no relatório, que hoje exigem API que vede o treinamento | Revisão do documento | RNF07 |
 | ~~Ativar Cloud Vision e criar chave restrita~~ — **dispensado: OCR embarcado (decisão de 2026-10-07)** | ~~Fase 6.2~~ Resolvida | console |
 | Validação da troca do OCR para reconhecimento embarcado (ML Kit), decisão de 2026-10-07 | Não bloqueante | RNF06 |
 | Validação das categorias de ameaça v1.0 (docs/categorias-ameaca.md) | Não bloqueante | RNF07 / UC04 |
@@ -217,6 +217,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | RAG na análise de link (UC03, passo 6 do fluxo principal) — o Prompt 7.2 conectou a base só à análise de print | Revisão do escopo | UC03 / RNF05 |
 | Texto aprovado da política de privacidade e do contato da equipe, para a seção "Sobre o Phize" do perfil (hoje só versão e aviso) | Publicação | RF14 / LGPD |
 | Espera entre reenvios do e-mail de verificação (provisório: 60 s) | Revisão | RF14 |
+| Categoria própria para o golpe do Pix enviado por engano (hoje cai em "Outro golpe" pela lista fechada v1.0) | Não bloqueante | `docs/categorias-ameaca.md` |
 | Índice da base dentro da Function: a atualização da base passa a exigir nova publicação das Functions, não nova versão do app (arquitetura, seção 3.2 b, fala em nova versão do aplicativo) | Revisão do documento | Arquitetura 3.2 b |
 
 > Padrão adotado: **não bloquear**, seguindo o UC01.
@@ -253,7 +254,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - O modelo é instruído a nunca afirmar que a mensagem é segura, mas o código não verifica a explicação devolvida.
 - ~~Os trechos destacados do RF04 não são devolvidos pelo pipeline do UC04~~ — **resolvida no Prompt 9.3**.
 - O streaming do RNF03 não foi implementado: a medição do Prompt 9.4 mostrou ganho de só 0,5 s. Reavaliar com o faturamento ativo.
-- **O build de release do Android falha** (encontrado em 2026-11-11): o R8 acusa classes ausentes do ML Kit (`com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions$Builder` e outros scripts opcionais), referenciadas pelo plugin `google_mlkit_text_recognition`. Corrigir antes de gerar APK ou AAB de publicação: adicionar regras `-dontwarn` para esses pacotes em `android/app/proguard-rules.pro` (o próprio build sugere as regras em `build/app/outputs/mapping/release/missing_rules.txt`) ou incluir as dependências desses scripts.
+- ~~O build de release do Android falha (R8: classes ausentes do ML Kit)~~ — **resolvida em 2026-11-12**: `android/app/proguard-rules.pro` com `-dontwarn` para as escritas chinesa, devanágari, japonesa e coreana, que o app não usa. `flutter build apk --release` gera o APK (83,3 MB). O APK de release não fala com os emuladores do Firebase (sem exceção de HTTP); os testes de fluxo usam o build de debug.
 - Sincronizar `docs/relatorio-completo.md` e os .docx acadêmicos com os RF13 e RF14 (2026-11-12); `docs/requisitos.md` prevalece até lá. O diagrama de classes de `docs/uml.md` (imagem) precisa do atributo `nomeExibicao` em Usuário depois do Prompt 9.10.
 - `ReconhecedorTextoMlKit` passou a organizar o texto do print (ordem de leitura, sem interface, só mensagens recebidas; Prompt 9.7). A arquitetura (seção 3.1) descreve só a extração do texto; avaliar se esse passo merece registro no documento.
 
@@ -1154,6 +1155,27 @@ de peso na tela de explicação.
 > - Aprovar o texto dos tutoriais e da tela "Como o Phize calcula o risco" antes dos testes com pessoas.
 > - A política de privacidade e o contato da equipe ainda não existem como texto aprovado.
 > - O nome de exibição só terá uso visível na comunidade (Fase 10); até lá, aparece no perfil e na exportação.
+
+### Teste dos fluxos no emulador (2026-11-12)
+
+Build de debug no emulador Android (API 37), com Functions, Auth e Firestore emulados, Safe Browsing e Gemini no nível gratuito. Só conteúdo fictício: o endereço de teste oficial do Google e prints de `build/prints_sinteticos/`.
+
+**Funcionou:**
+- Cadastro, saída, login (senha errada recusada com "E-mail ou senha incorretos."), exclusão da conta: depois dela não sobra conta no Auth nem documento em `users` ou `analises`.
+- Tutoriais do link e do print abrem sozinhos na primeira vez, com as interações das cenas; "Pular" funciona; reabrem pelo Perfil.
+- Análise de link: o endereço de teste do Safe Browsing deu 70, "Alto risco de golpe"; idade do domínio pelo RDAP.
+- Análise de print: consentimento antes da primeira escolha, seletor de fotos do Android, OCR, Gemini (1,9 s na Function): 90, "Alto risco de golpe", com três sinais e as frases destacadas.
+- Compartilhar um link de outro app (RF10) abre direto o resultado.
+- Histórico e detalhe; o Firestore guarda só score, faixa, categoria (print), explicação, tipo e data (RNF07, etapa 4).
+- Perfil: nome de exibição gravado e aceito pelas regras novas; reenvio da verificação e a espera de 60 s; depois de verificar o e-mail no emulador, o selo muda sozinho; troca de senha (atual errada recusada; a nova vale no login seguinte e a antiga deixa de valer); tema escuro e letra muito grande em todas as telas, mantidos depois de fechar o app à força; versão 1.0.0 (1).
+- `flutter build apk --release` gera o APK.
+
+**Achados:**
+- **Corrigido — primeira consulta de reputação depois de ligar os emuladores dava "verificação não concluída" por tempo limite.** O emulador só inicia cada Function na primeira chamada, e a partida passa dos 5 s de `timeoutConsulta` (o aquecimento das duas levou 14 s); as chamadas seguintes levam menos de 0,4 s. O tempo limite não foi aumentado, porque o RF03 exige o status do link em menos de 5 s. Em vez disso, `tool/emuladores/aquecer_functions.sh` chama as Functions sem login e sem conteúdo logo depois de ligar os emuladores, passo 2 de `docs/emulador-local.md`. Conferido: emuladores religados, aquecidos, e a primeira análise do app deu 70, com a Function em 0,35 s.
+- **Corrigido:** a tela de consentimento mandava mudar a escolha "na aba Conta"; a aba se chama Perfil desde o Prompt 9.10.
+- **Corrigido — títulos com letra muito grande:** a tela de explicação passou a se chamar "Cálculo do risco" na barra superior (o item do perfil mantém o nome completo); o diálogo de exclusão passou a "Excluir sua conta?", com "Para confirmar, digite sua senha." acima do campo "Senha". Conferido no emulador.
+- **Sem correção no código:** o print do golpe do Pix enviado por engano saiu com tipo "Outro golpe", o que está certo pela lista fechada de `docs/categorias-ameaca.md`, que não tem categoria para esse golpe. Criar uma categoria é decisão da equipe (registrada em Decisões Pendentes). O trecho destacado reproduz um erro do OCR ("pixX"), limitação já declarada do reconhecimento embarcado.
+- Não testados: login com Google (exige conta Google no emulador), exportação dos dados (abre a folha de compartilhar do Android), bloqueio após 5 tentativas de login (coberto por teste automático) e compartilhamento de imagem.
 
 ---
 

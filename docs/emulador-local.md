@@ -138,7 +138,13 @@ $env:PATH = "C:\Program Files\Android\Android Studio\jbr\bin;" + $env:PATH
    firebase emulators:start --only functions,auth,firestore
    ```
 
-2. **[TERMINAL]** Rodar o app, em outro terminal.
+2. **[TERMINAL]** Quando aparecer `All emulators ready`, aquecer as Functions, em outro terminal:
+   ```
+   bash tool/emuladores/aquecer_functions.sh
+   ```
+   O emulador só inicia cada Function na primeira chamada, e essa partida passa dos 5 segundos que a análise de link espera pela consulta de reputação (RF03). Sem este passo, a primeira análise de link depois de ligar os emuladores mostra a lista do Google como "verificação não concluída". O script chama as Functions sem login e sem conteúdo, e cada uma deve responder `HTTP 401`.
+
+3. **[TERMINAL]** Rodar o app.
 
    Emulador Android:
    ```
@@ -150,7 +156,7 @@ $env:PATH = "C:\Program Files\Android\Android Studio\jbr\bin;" + $env:PATH
    flutter run -d chrome --dart-define=PHIZE_AUTH_EMULATOR=127.0.0.1:9099 --dart-define=PHIZE_FIRESTORE_EMULATOR=127.0.0.1:8085 --dart-define=PHIZE_FUNCTIONS_URL=http://127.0.0.1:5001/phize-de7a1/southamerica-east1
    ```
 
-3. **[APP]** Criar uma conta pela tela de cadastro. A conta existe só no emulador (aparece em `http://127.0.0.1:4000/auth`, e o documento `users/{uid}` em `http://127.0.0.1:4000/firestore`) e some quando ele é encerrado; nada é criado no projeto real.
+4. **[APP]** Criar uma conta pela tela de cadastro. A conta existe só no emulador (aparece em `http://127.0.0.1:4000/auth`, e o documento `users/{uid}` em `http://127.0.0.1:4000/firestore`) e some quando ele é encerrado; nada é criado no projeto real.
 
 Uma compilação sem essas variáveis, inclusive a de release, continua usando a produção.
 

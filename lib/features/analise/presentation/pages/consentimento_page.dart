@@ -28,7 +28,7 @@ Future<bool> confirmarConsentimento(
 }
 
 /// Aviso do que acontece com o print e limites do mascaramento local (T33;
-/// RNF07, limitação declarada). Também abre pela aba Conta, para o usuário
+/// RNF07, limitação declarada). Também abre pela aba Perfil, para o usuário
 /// rever ou retirar o consentimento.
 class ConsentimentoPage extends StatelessWidget {
   const ConsentimentoPage({super.key, required this.repositorio});
@@ -87,7 +87,7 @@ class ConsentimentoPage extends StatelessWidget {
                 titulo: 'A conversa não é guardada',
                 texto:
                     'Seu histórico guarda só o resultado da análise. Você pode '
-                    'mudar esta escolha na aba Conta.',
+                    'mudar esta escolha na aba Perfil.',
               ),
               const SizedBox(height: 12),
               FilledButton(
