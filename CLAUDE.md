@@ -29,11 +29,13 @@ Estas regras derivam de RNF01 e RNF07 e **não podem ser flexibilizadas, contorn
 ### RNF07 — Quatro etapas obrigatórias do ciclo de vida do dado textual (nesta ordem)
 
 1. **Mascaramento local:** antes da transmissão, o dispositivo aplica regex sobre o texto extraído, substituindo por marcadores genéricos (ex.: `[TELEFONE]`) os dados estruturados: CPF, CNPJ, telefone, e-mail, chave Pix aleatória, número de cartão e código de barras de boleto.
-2. **Transmissão:** texto mascarado enviado ao provedor de LLM via TLS 1.2+, exclusivamente por APIs corporativas cujos termos vedem uso do conteúdo para treinamento de modelos.
+2. **Transmissão:** texto mascarado enviado ao provedor de LLM via TLS 1.2+, exclusivamente por APIs corporativas cujos termos vedem uso do conteúdo para treinamento de modelos. Na versão acadêmica há exceção declarada (ver a segunda limitação abaixo).
 3. **Descarte na origem:** concluída a resposta, o texto é removido da memória da aplicação — nunca escrito em cache, log ou arquivo temporário.
 4. **Persistência seletiva:** grava-se no Cloud Firestore somente score numérico, faixa de risco, categoria da ameaça, explicação pedagógica, tipo de entrada e timestamp. Análises de link não têm categoria de ameaça. O texto analisado **não é gravado em nenhuma hipótese**.
 
-> Limitação declarada (RNF07): o mascaramento local cobre apenas dados de formato previsível. Nomes próprios e conteúdo livre não são mascarados no dispositivo — mitigado por provedores com retenção zero e não persistência do texto.
+> Limitação declarada (RNF07): o mascaramento local cobre apenas dados de formato previsível. Nomes próprios e conteúdo livre não são mascarados no dispositivo — mitigado pela não persistência do texto e pelo envio exclusivo de conteúdo fictício (limitação seguinte).
+>
+> Limitação declarada (RNF07, escopo acadêmico, decisão da equipe de 12/11/2026): o projeto usa só recursos gratuitos. O LLM é acessado pela camada gratuita do Google Gemini, cujos termos não vedam o uso do conteúdo para treinamento, e as Cloud Functions rodam só no emulador local. Por isso, **somente conteúdo fictício pode ser enviado ao LLM**, em qualquer fase (testes automatizados, scripts de avaliação, demonstrações e testes com participantes); nenhum código, teste ou script pode usar conversa ou dado pessoal real. As etapas 1, 3 e 4 e o TLS continuam obrigatórios. Disponibilizar o app a usuários reais exige antes um plano cujos termos vedem o treinamento.
 
 ## 4. Regra do RF07 — Cálculo do Score de Risco
 

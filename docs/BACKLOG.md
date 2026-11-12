@@ -16,7 +16,7 @@ Tarefas técnicas derivadas dos Requisitos Funcionais (RF01–RF14) e Não Funci
 | T10 | Implementar carregamento da imagem em memória volátil com descarte imediato após o OCR, inclusive em bloco de tratamento de exceção | RNF01, RF04 | MVP | T09 |
 | T11 | Implementar verificação de suficiência do texto extraído, interrompendo o fluxo sem transmissão à nuvem quando o volume for insuficiente | RF04 | MVP | T09 |
 | T12 | Implementar rotina de mascaramento local (regex) de dados pessoais estruturados: CPF, CNPJ, telefone, e-mail, chave Pix, número de cartão e código de barras de boleto | RNF07 | MVP | T09 |
-| T13 | Implementar transmissão do texto mascarado ao provedor de LLM via TLS 1.2+, restrita a APIs corporativas cujos termos vedem uso do conteúdo para treinamento | RNF07 | MVP | T12 |
+| T13 | Implementar transmissão do texto mascarado ao provedor de LLM via TLS 1.2+, restrita a APIs corporativas cujos termos vedem uso do conteúdo para treinamento (versão acadêmica: camada gratuita do Gemini só com conteúdo fictício, conforme a limitação declarada no RNF07) | RNF07 | MVP | T12 |
 | T14 | Implementar descarte do texto da memória da aplicação após a resposta da IA, sem gravação em cache, log ou arquivo temporário | RNF07 | MVP | T13 |
 | T15 | Constituir a base de conhecimento vetorial inicial de padrões de fraude brasileiros a partir de fontes públicas/oficiais, com curadoria humana | RNF05 | MVP | T01 |
 | T16 | Implementar recuperação semântica dos padrões de maior similaridade e injeção no prompt do modelo (RAG) | RNF05 | MVP | T15 |

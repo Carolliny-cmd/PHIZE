@@ -22,7 +22,7 @@ Além do ambiente acadêmico, diversos atores possuem interesse direto no sucess
 
 - **Usuários finais (vítimas em potencial):** Especialmente idosos e pessoas com menor letramento digital, que buscam proteção prática e vereditos de segurança rápidos.
 
-- **Empresas de tecnologia em IA:** Atuam como parceiros fundamentais para o fornecimento de APIs de Processamento de Linguagem Natural (ex.: Google Gemini, OpenAI) e da biblioteca de reconhecimento de texto embarcada (Google ML Kit Text Recognition), executada no próprio dispositivo sem transmissão da imagem. A seleção do provedor de linguagem está condicionada à oferta de termos contratuais que vedem o uso do conteúdo submetido para treinamento de modelos, conforme RNF07.
+- **Empresas de tecnologia em IA:** Atuam como parceiros fundamentais para o fornecimento de APIs de Processamento de Linguagem Natural (ex.: Google Gemini, OpenAI) e da biblioteca de reconhecimento de texto embarcada (Google ML Kit Text Recognition), executada no próprio dispositivo sem transmissão da imagem. A seleção do provedor de linguagem está condicionada à oferta de termos contratuais que vedem o uso do conteúdo submetido para treinamento de modelos, conforme RNF07. Na versão acadêmica, que utiliza apenas recursos gratuitos, emprega-se a camada gratuita do Google Gemini somente com conteúdo fictício, conforme a limitação de escopo acadêmico declarada no RNF07; a condição contratual passa a valer na disponibilização a usuários reais.
 
 - **Instituições Financeiras e Fintechs:** Entidades bancárias que poderiam integrar a tecnologia em seus ecossistemas para reduzir o volume de fraudes via PIX contra seus clientes.
 
