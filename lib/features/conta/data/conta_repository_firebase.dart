@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../analise/data/consentimento_repository_local.dart';
+import '../../analise/data/tutorial_repository_local.dart';
 import '../../auth/data/auth_error_mapper.dart';
 import '../../auth/data/credencial_google.dart';
 import '../../auth/domain/auth_exception.dart';
@@ -84,6 +85,11 @@ class ContaRepositoryFirebase implements ContaRepository {
       await ConsentimentoRepositoryLocal.removerDe(uid);
     } catch (_) {
       // A conta já não existe; a marca não identifica ninguém.
+    }
+    try {
+      await TutorialRepositoryLocal.removerDe(uid);
+    } catch (_) {
+      // Idem: só a marca de tutorial visto (RF13).
     }
   }
 

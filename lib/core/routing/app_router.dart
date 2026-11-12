@@ -21,6 +21,7 @@ import '../../features/analise/domain/reputacao_dominio_client.dart';
 import '../../features/analise/domain/resultado_analise_link.dart';
 import '../../features/analise/domain/resultado_analise_print.dart';
 import '../../features/analise/domain/seletor_imagem.dart';
+import '../../features/analise/domain/tutorial_repository.dart';
 import '../../features/analise/presentation/pages/analisar_link_page.dart';
 import '../../features/analise/presentation/pages/analisar_print_page.dart';
 import '../../features/analise/presentation/pages/analise_compartilhada_page.dart';
@@ -53,6 +54,7 @@ class AppRouter {
     CompartilhadorArquivo? compartilhador,
     CaixaCompartilhamento? caixaCompartilhamento,
     ConsentimentoRepository? consentimentoRepository,
+    TutorialRepository? tutorialRepository,
   }) {
     final caixa = caixaCompartilhamento ?? CaixaCompartilhamento.instancia;
 
@@ -101,6 +103,7 @@ class AppRouter {
           builder: (_) => AnalisarLinkPage(
             analisadorLink: criarAnalisadorLink(),
             historicoRepository: historicoRepository,
+            tutorialRepository: tutorialRepository,
           ),
         );
       case AppRoutes.analisarPrint:

@@ -24,6 +24,7 @@ import 'package:phize/features/analise/presentation/pages/resultado_analise_page
 import 'package:phize/features/analise/presentation/registro_historico.dart';
 
 import '../../../support/fake_historico_repository.dart';
+import '../../../support/fake_tutorial_repository.dart';
 
 /// Dublê de RDAP: nenhum teste deste arquivo acessa a rede. Registra cada
 /// domínio pedido e, por padrão, responde com o `ldhName` do próprio
@@ -127,6 +128,7 @@ Future<void> _abrirAnalisarLink(
         rdapClient: rdapClient,
         reputacaoClient: reputacao,
         historicoRepository: historico ?? FakeHistoricoRepository(),
+        tutorialRepository: FakeTutorialRepository(),
       ),
       initialRoute: AppRoutes.analisarLink,
     ),

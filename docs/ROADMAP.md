@@ -930,7 +930,7 @@ A equipe propôs quatro melhorias no app. Duas entram agora, como requisitos do 
 
 Ordem: 9.8 e 9.9 (tutorial), depois 9.10 a 9.12 (perfil). Cada prompt é um commit.
 
-### Prompt 9.8 — Tutorial: estrutura, exemplo e análise de link (RF13; T47, T48, T50)
+### Prompt 9.8 — Tutorial: estrutura, exemplo e análise de link (RF13; T47, T48, T50) (concluído)
 
 **[CLAUDE CODE]**
 ```
@@ -972,6 +972,17 @@ estouro de layout; semântica para leitor de tela nos botões.
 ```
 
 **Verificação [TERMINAL]:** `flutter analyze` e `flutter test`; abrir a análise de link no emulador duas vezes. Depois commit.
+
+**Feito (2026-11-12):**
+- **Estrutura:** `TutorialPage` (`lib/features/analise/presentation/tutorial/`), com até 4 etapas, progresso lido pelo leitor de tela ("Etapa 2 de 4"), Voltar, Próximo, Pular e "Começar" na última. Com a redução de movimento do sistema, troca de etapa e números sem animação.
+- **Marca de visto:** `TutorialRepositoryLocal`, por usuário, por tipo e com versão (`versaoTutorial`). Concluir, pular ou voltar grava a marca. Se a marca não puder ser lida, o tutorial não abre e a análise segue. A exclusão da conta apaga as marcas.
+- **Tela de link:** o tutorial abre na primeira vez, e o botão "?" da barra o reabre.
+- **Exemplo interativo:** três links inventados no domínio reservado `.example`, da loja fictícia "Loja Feliz". O resultado sai de `CalculadoraScore`, sem números próprios, sem rede e sem histórico. Com letra grande, a tela rola até o resultado.
+- **Etapa "Como ler o resultado":** comum aos dois tutoriais (`etapas_comuns.dart`), com os rótulos de `RotulosRisco` e o aviso permanente.
+- **Testes:** 17 novos, com letra 1,6× num celular pequeno e sem o termo "Seguro". Os testes do fluxo de link passam um tutorial já visto.
+- **Validação visual:** imagens das 4 etapas geradas por teste, com a fonte do app, em letra normal e 1,6×. O emulador não foi usado, porque o app completo exige login.
+
+> **Pontos para a equipe:** revisar os textos do tutorial, que estão em `tutorial_link.dart` e `etapas_comuns.dart`. O exemplo fictício imita uma loja inventada, não uma marca real.
 
 ### Prompt 9.9 — Tutorial da análise de print (RF13; T49)
 

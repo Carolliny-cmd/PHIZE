@@ -4,8 +4,12 @@ import '../../../../core/routing/app_routes.dart';
 import '../../data/historico_repository_firestore.dart';
 import '../../domain/analisador_link.dart';
 import '../../domain/analise_risco.dart';
+import '../../data/tutorial_repository_local.dart';
 import '../../domain/historico_repository.dart';
+import '../../domain/tutorial_repository.dart';
 import '../registro_historico.dart';
+import '../tutorial/tutorial_link.dart';
+import '../tutorial/tutorial_page.dart';
 
 /// Tela "Analisar Link" (UC03, passos 1 e 2): o usuário cola a URL e
 /// aciona a verificação. O endereço fica apenas em memória, no campo de
@@ -16,10 +20,12 @@ class AnalisarLinkPage extends StatefulWidget {
     super.key,
     required this.analisadorLink,
     this.historicoRepository,
+    this.tutorialRepository,
   });
 
   final AnalisadorLink analisadorLink;
   final HistoricoRepository? historicoRepository;
+  final TutorialRepository? tutorialRepository;
 
   @override
   State<AnalisarLinkPage> createState() => _AnalisarLinkPageState();
@@ -30,9 +36,33 @@ class _AnalisarLinkPageState extends State<AnalisarLinkPage> {
   // inicializado.
   late final HistoricoRepository _historico =
       widget.historicoRepository ?? HistoricoRepositoryFirestore();
+  late final TutorialRepository _tutorial =
+      widget.tutorialRepository ?? TutorialRepositoryLocal();
   final _urlController = TextEditingController();
   bool _carregando = false;
   String? _erro;
+
+  @override
+  void initState() {
+    super.initState();
+    // Tutorial de primeiro uso (RF13), depois que a tela aparece.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      abrirTutorialNaPrimeiraVez(
+        context,
+        tipo: TipoTutorial.link,
+        repositorio: _tutorial,
+        construir: (_) => const TutorialLinkPage(),
+      );
+    });
+  }
+
+  void _abrirTutorial() => abrirTutorial(
+    context,
+    tipo: TipoTutorial.link,
+    repositorio: _tutorial,
+    construir: (_) => const TutorialLinkPage(),
+  );
 
   @override
   void dispose() {
@@ -76,7 +106,17 @@ class _AnalisarLinkPageState extends State<AnalisarLinkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Analisar link')),
+      appBar: AppBar(
+        title: const Text('Analisar link'),
+        actions: [
+          IconButton(
+            key: const Key('analisar_link_ajuda'),
+            tooltip: 'Como funciona',
+            icon: const Icon(Icons.help_outline),
+            onPressed: _carregando ? null : _abrirTutorial,
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
