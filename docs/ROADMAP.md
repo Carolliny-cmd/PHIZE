@@ -11,7 +11,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Última tarefa concluída:** Prompt 9.12 — seções Aprender e Sobre do Perfil; com ele, o plano de orientação e perfil (RF13, RF14) está completo. 83 testes na Function, 658 no app
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** decidir se a tela de consentimento passa a avisar que o Google pode usar o texto (nível gratuito; exige nova versão do consentimento). Projeto só com recursos gratuitos (decisão de 2026-11-12): extrair o máximo do nível gratuito na análise de print e de link. No RAG: medição com 3 repetições, etapas 3 e 4. Depois do MVP: notícias e comunidade (Fase 10) e, em seguida, nova rodada de design
+- **Próximo passo:** etapas 3 e 4 do RAG e a medição com 3 repetições, dentro da cota gratuita. Projeto só com recursos gratuitos (decisão de 2026-11-12): extrair o máximo do nível gratuito na análise de print e de link. No RAG: medição com 3 repetições, etapas 3 e 4. Depois do MVP: notícias e comunidade (Fase 10) e, em seguida, nova rodada de design
 
 ---
 
@@ -868,6 +868,7 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 > - O texto não passou por revisão jurídica.
 > - O aceite fica só no aparelho: não serve como prova de consentimento nem entra na exportação (RF12). Se a equipe precisar de registro, ele deve ir para `users/{uid}`.
 > - O aviso não promete que o texto não é usado para treinamento, porque isso só será verdade com o faturamento do Gemini ativo (exceção temporária ao RNF07). Depois disso, vale incluir essa garantia e aumentar a versão.
+> - **Versão 2 do consentimento (2026-11-12):** com a decisão de ficar no nível gratuito, o aviso ganhou o item "Use só conversas de teste": o Phize é acadêmico, o Google pode usar o texto enviado (inclusive com leitura por pessoas) e só mensagens de teste devem ser analisadas (RNF07, limitação de escopo acadêmico). `versaoConsentimentoAnalise` passou a 2, e quem aceitou a versão 1 vê o aviso de novo. Conferido no emulador.
 
 ### Prompt 9.3 — Destaque das frases suspeitas (T19) (concluído)
 

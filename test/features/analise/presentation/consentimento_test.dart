@@ -77,7 +77,31 @@ void main() {
       await abrir(tester, FakeConsentimentoRepository(aceitou: false));
 
       expect(find.textContaining('Nomes de pessoas'), findsOneWidget);
-      expect(find.textContaining('Gemini'), findsOneWidget);
+      expect(find.textContaining('Gemini'), findsWidgets);
+    });
+
+    testWidgets('o aviso pede só conversas de teste (RNF07, escopo acadêmico)', (
+      tester,
+    ) async {
+      await abrir(tester, FakeConsentimentoRepository(aceitou: false));
+
+      final aviso = find.byKey(const Key('consentimento_aviso_teste'));
+      await tester.ensureVisible(aviso);
+      expect(aviso, findsOneWidget);
+      expect(
+        find.descendant(
+          of: aviso,
+          matching: find.textContaining('versão gratuita do Gemini'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: aviso,
+          matching: find.textContaining('não analise conversas reais'),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('aceitar libera e fica registrado', (tester) async {

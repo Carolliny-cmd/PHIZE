@@ -73,6 +73,19 @@ class ConsentimentoPage extends StatelessWidget {
                     'Enviamos o texto do print ao Gemini, a inteligência '
                     'artificial do Google, para identificar sinais de golpe.',
               ),
+              // RNF07, limitação declarada de escopo acadêmico: o nível
+              // gratuito do Gemini não veda o uso do texto para treinamento.
+              const _Item(
+                key: Key('consentimento_aviso_teste'),
+                icone: Icons.science_outlined,
+                titulo: 'Use só conversas de teste',
+                texto:
+                    'O Phize é um projeto acadêmico e usa a versão gratuita do '
+                    'Gemini. Nela, o Google pode usar o texto enviado para '
+                    'melhorar os serviços dele, inclusive com leitura por '
+                    'pessoas. Por isso, não analise conversas reais: use '
+                    'apenas mensagens de teste.',
+              ),
               const _Item(
                 icone: Icons.visibility_off_outlined,
                 titulo: 'Escondemos parte dos dados, não todos',
@@ -111,6 +124,7 @@ class ConsentimentoPage extends StatelessWidget {
 
 class _Item extends StatelessWidget {
   const _Item({
+    super.key,
     required this.icone,
     required this.titulo,
     required this.texto,
