@@ -11,7 +11,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Última tarefa concluída:** Prompt 9.7 — trava contra cópia e conjunto de teste da recuperação (83 testes na Function, 535 no app)
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** etapa 2 do plano do RAG (texto com cara de print real, Prompt 9.7). Em seguida, repetir a medição com 3 repetições para medir a variação entre execuções. A coleta de mensagens independentes foi adiada pela equipe
+- **Próximo passo:** fechar a etapa 2 do plano do RAG (texto com cara de print real, Prompt 9.7) e começar o Prompt 9.8 (tutorial de primeiro uso, RF13). Em seguida, repetir a medição com 3 repetições para medir a variação entre execuções. A coleta de mensagens independentes foi adiada pela equipe
 
 ---
 
@@ -224,7 +224,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 ## PENDÊNCIAS TÉCNICAS
 
 - ~~`firestore.rules` não cobre subcoleções de `users/{uid}`~~ — **resolvida no Prompt 8.1**; publicar as regras novas no console junto com o deploy.
-- Restringir os campos graváveis em `users/{uid}` aos três previstos (melhoria de segurança).
+- Restringir os campos graváveis em `users/{uid}` aos previstos (melhoria de segurança) — planejado no Prompt 9.10.
 - Adicionar ao roadmap os passos de publicação das regras pelo console e teste no Playground.
 - Sincronizar os .docx acadêmicos com as alterações de RF07, arquitetura 3.3 e 6, UC03 e relatório 4.8.
 - A rotina de mascaramento local pode lançar `StateError` (falha na restauração do isolamento de URL/domínio). O fluxo do UC04 (Fase 6) deve tratar essa exceção interrompendo a análise, sem expor o texto ao usuário nem a log.
@@ -251,6 +251,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - O modelo é instruído a nunca afirmar que a mensagem é segura, mas o código não verifica a explicação devolvida.
 - ~~Os trechos destacados do RF04 não são devolvidos pelo pipeline do UC04~~ — **resolvida no Prompt 9.3**.
 - O streaming do RNF03 não foi implementado: a medição do Prompt 9.4 mostrou ganho de só 0,5 s. Reavaliar com o faturamento ativo.
+- Sincronizar `docs/relatorio-completo.md` e os .docx acadêmicos com os RF13 e RF14 (2026-11-12); `docs/requisitos.md` prevalece até lá. O diagrama de classes de `docs/uml.md` (imagem) precisa do atributo `nomeExibicao` em Usuário depois do Prompt 9.10.
 
 ---
 
@@ -835,6 +836,7 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 4. **Ambiente real:** faturamento do Gemini, plano Blaze, publicação das Functions e das regras do Firestore, teste com WhatsApp em aparelho real.
 5. **Testes com pessoas:** idosos e pessoas com menos familiaridade digital, com consentimento dos participantes.
 6. **Logo definitivo:** decisão da equipe (2026-11-04), última etapa.
+7. **Orientação e perfil (plano de 2026-11-12):** tutorial de primeiro uso (RF13) e tela de perfil (RF14), Prompts 9.8 a 9.12. Página inicial com notícias e comunidade ficam para a Fase 10.
 
 ### Prompt 9.1 — Design Leve (concluído no código)
 
@@ -919,12 +921,193 @@ A coleta de mensagens com outras pessoas ficou inviável para a equipe agora. Pl
 > - O conjunto foi escrito com ajuda da IA e não substitui mensagens de outras pessoas. No relatório acadêmico, deixar claro que a medida usa mensagens sintéticas.
 > - O limiar não foi alterado: o conjunto de teste serve para medir, não para ajustar.
 
+### Plano de orientação e perfil (2026-11-12)
+
+A equipe propôs quatro melhorias no app. Duas entram agora, como requisitos do MVP registrados em `docs/requisitos.md`: **RF13** (tutorial de primeiro uso) e **RF14** (perfil e preferências). As tarefas são T47 a T55 do `docs/BACKLOG.md`. As outras duas ficam para a Fase 10:
+
+- **Página inicial com notícias de golpes:** viável com notícias automáticas de fontes oficiais, lidas por RSS numa Function agendada (exige o plano Blaze). Mostrar só título, fonte, data e link; nunca reescrever nem resumir com IA, porque a licença comum do gov.br veda obras derivadas (conferir em cada fonte). Começar com conteúdo próprio, como o "golpe da semana" tirado das fichas da base.
+- **Comunidade:** relato estruturado com mascaramento local, sem imagem no início; links desativados; notícias só como cartão com link; termos de uso; denúncia e moderação desde o primeiro dia (RF11). Comentários só numa segunda etapa.
+
+Ordem: 9.8 e 9.9 (tutorial), depois 9.10 a 9.12 (perfil). Cada prompt é um commit.
+
+### Prompt 9.8 — Tutorial: estrutura, exemplo e análise de link (RF13; T47, T48, T50)
+
+**[CLAUDE CODE]**
+```
+Implemente o RF13 para a análise de link (docs/requisitos.md), tarefas
+T47, T48 e T50 do docs/BACKLOG.md.
+
+Estrutura (em lib/features/analise/presentation/tutorial/, e domain/ se
+houver regra):
+- tutorial em até 4 etapas, com indicador de progresso, botões Voltar,
+  Próximo e "Pular"; animações curtas que respeitam a redução de
+  movimento do sistema
+- marca de tutorial visto em shared_preferences, por usuário e com
+  versão (como o consentimento do Prompt 9.2), para reexibir se o
+  conteúdo mudar; repositório com interface, para testes
+- exibido na primeira abertura de AnalisarLinkPage; botão de ajuda (?)
+  na tela para reabrir
+
+Conteúdo do tutorial do link, em linguagem simples (perfil Dona Neuza):
+1. onde encontrar o link e como colar ou compartilhar com o Phize
+2. o que o Phize confere: endereço parecido com o de empresa
+   conhecida, idade do site e reputação no Google Safe Browsing
+3. exemplo interativo (abaixo)
+4. como ler as três faixas e o aviso de ferramenta de apoio
+
+Exemplo interativo (T50):
+- link fictício, sem domínio real de empresa (use .example ou
+  semelhante) e sem marca de terceiros
+- o resultado sai de CalculadoraScore com sinais fixos do exemplo;
+  nenhum peso ou ponto de corte copiado (fonte única:
+  docs/score-calibracao.md); nada é chamado na rede nem gravado no
+  histórico
+- reaproveite o termômetro e os rótulos oficiais (RotulosRisco); o termo
+  "Seguro" é proibido
+
+Testes: aparece só na primeira vez; "Pular" e concluir gravam a marca;
+o botão de ajuda reabre; o exemplo não chama rede nem histórico e usa os
+rótulos oficiais; funciona com letra ampliada (textScaler 1.6) sem
+estouro de layout; semântica para leitor de tela nos botões.
+```
+
+**Verificação [TERMINAL]:** `flutter analyze` e `flutter test`; abrir a análise de link no emulador duas vezes. Depois commit.
+
+### Prompt 9.9 — Tutorial da análise de print (RF13; T49)
+
+**[CLAUDE CODE]**
+```
+Implemente o tutorial do RF13 para a análise de print, tarefa T49,
+reaproveitando a estrutura do Prompt 9.8.
+
+Conteúdo:
+1. como tirar o print da conversa e enviar ao Phize (compartilhar ou
+   escolher na galeria)
+2. o que acontece com a imagem: lida no próprio aparelho, nunca
+   guardada; só o texto das mensagens recebidas, com CPF, telefone e
+   outros dados escondidos, vai para a análise; nomes não são
+   escondidos (limitação do RNF07)
+3. exemplo interativo com conversa fictícia, como no 9.8
+4. como ler as três faixas e o aviso de ferramenta de apoio
+
+Regras:
+- aparece na primeira abertura de AnalisarPrintPage, antes da escolha
+  da imagem; a tela de consentimento (Prompt 9.2) continua aparecendo
+  ao tocar na galeria, e o tutorial não substitui o consentimento
+- não interrompe a análise iniciada por compartilhamento nativo (RF10);
+  nesse caminho, oferecer "Como funciona?" na tela de resultado
+- imagem ilustrativa desenhada com widgets, sem print real nem logotipo
+  de aplicativo de terceiros
+
+Testes: primeira abertura, compartilhamento sem tutorial, ordem entre
+tutorial e consentimento, letra ampliada e leitor de tela.
+```
+
+**Verificação [TERMINAL]:** `flutter analyze` e `flutter test`; no emulador, abrir a análise de print pela primeira vez e analisar um print compartilhado. Depois commit.
+
+### Prompt 9.10 — Perfil: reorganização e nome de exibição (RF14; T51, T52)
+
+**[CLAUDE CODE]**
+```
+Implemente o RF14, tarefas T51 e T52 do docs/BACKLOG.md.
+
+- a aba Conta passa a abrir a tela de Perfil, com seções: Identificação,
+  Segurança, Acessibilidade, Aprender, Privacidade e dados, Sobre. Nesta
+  etapa, preencha Identificação e Privacidade e dados; as demais ficam
+  para os Prompts 9.11 e 9.12 (sem seção vazia na tela)
+- Privacidade e dados reúne o que hoje está em MeusDadosPage:
+  exportar, excluir, privacidade da análise de print e sair
+- Identificação: nome de exibição opcional (até 40 caracteres, sem
+  validação de nome real), e-mail só para leitura com selo de verificado
+  ou não, e forma de login (e-mail ou Google)
+- o nome vai para users/{uid}.nomeExibicao; inclua-o na exportação do
+  RF12 e confirme que a exclusão o remove
+- restrinja em firestore.rules os campos graváveis de users/{uid} aos
+  previstos (uid, email, createdAt, nomeExibicao), com tipo e tamanho;
+  isso resolve a pendência técnica correspondente
+- nenhum outro dado pessoal novo (sem foto, telefone, CPF, nascimento)
+
+Testes: salvar, limpar e limite do nome; exportação com o nome; regras
+recusando campo extra ou nome longo (teste das regras no emulador do
+Firestore, se o projeto já tiver esse tipo de teste; senão, registre como
+pendência).
+```
+
+**Verificação [TERMINAL]:** `flutter analyze` e `flutter test`; no emulador, editar o nome, exportar e conferir o arquivo. Depois commit; publicar as regras novas junto com o próximo deploy.
+
+### Prompt 9.11 — Perfil: segurança e acessibilidade (RF14; T53, T54)
+
+**[CLAUDE CODE]**
+```
+Implemente as seções Segurança e Acessibilidade do RF14, tarefas T53 e
+T54.
+
+Segurança (só para contas de e-mail e senha):
+- trocar senha: pede a senha atual (nova autenticação no Firebase), a
+  nova com a regra do RF01 e a confirmação; erros em português, sem
+  detalhes técnicos; a troca não conta como tentativa de login do
+  LoginAttemptTracker
+- reenviar e-mail de verificação, com espera mínima entre envios
+- contas do Google não veem a troca de senha
+
+Acessibilidade:
+- tamanho da letra: normal, grande e muito grande (textScaler aplicado
+  no MaterialApp); conferir todas as telas no maior tamanho
+- tema: claro, escuro ou do sistema; criar a variante escura em
+  lib/core/theme/app_theme.dart, mantendo o contraste das cores e dos
+  rótulos das três faixas
+- preferências só no dispositivo (shared_preferences), sem Firestore
+
+Testes: troca de senha com senha errada, fraca e certa; contas Google
+sem a opção; preferências persistidas e aplicadas; telas principais sem
+estouro de layout no maior tamanho e no tema escuro.
+```
+
+**Verificação [TERMINAL]:** `flutter analyze` e `flutter test`; percorrer as telas no emulador com letra muito grande e tema escuro. Depois commit.
+
+### Prompt 9.12 — Perfil: aprender e sobre (RF14; T55)
+
+**[CLAUDE CODE]**
+```
+Implemente as seções Aprender e Sobre do RF14, tarefa T55.
+
+Aprender:
+- "Ver tutorial da análise de link" e "Ver tutorial da análise de
+  print" (reabrem os tutoriais do RF13)
+- "Como o Phize calcula o risco": tela que explica, em linguagem
+  simples, os sinais de texto e de link, que o número vem de uma regra
+  fixa do app e não da IA (RF07), as três faixas com os rótulos
+  oficiais e o que acontece quando uma verificação não é concluída.
+  Sem pesos nem pontos de corte: a fonte única é
+  docs/score-calibracao.md
+
+Sobre:
+- versão do app (package_info_plus ou equivalente)
+- aviso permanente de ferramenta de apoio à decisão
+- contato da equipe e política de privacidade: só se a equipe já tiver
+  o texto aprovado; caso contrário, não exibir e registrar a pendência
+
+Testes: botões dos tutoriais, ausência do termo "Seguro", nenhum número
+de peso na tela de explicação.
+```
+
+**Verificação [TERMINAL]:** `flutter analyze` e `flutter test`. Depois commit.
+
+> **Pontos para a equipe:**
+> - Aprovar o texto dos tutoriais e da tela "Como o Phize calcula o risco" antes dos testes com pessoas.
+> - A política de privacidade e o contato da equipe ainda não existem como texto aprovado.
+> - O nome de exibição só terá uso visível na comunidade (Fase 10); até lá, aparece no perfil e na exportação.
+
 ---
 
 ## FASE 10 — EXPANSÃO (PÓS-MVP)
 
 Comunidade (UC05, UC07–UC10) e moderação (RF11).
 Só depois do MVP validado, como o documento de Requisitos posiciona.
+
+Propostas da equipe de 2026-11-12, ainda sem requisito formal (registrar em `docs/requisitos.md` antes de implementar; desenho em "Plano de orientação e perfil", na Fase 9):
+- página inicial com notícias de golpes de fontes oficiais (RSS por Function agendada; só título, fonte, data e link);
+- discussão na comunidade, além do reporte do RF05: relato estruturado e mascarado; comentários só numa segunda etapa.
 
 ---
 

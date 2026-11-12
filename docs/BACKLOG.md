@@ -1,6 +1,6 @@
 # BACKLOG — Projeto Phize
 
-Tarefas técnicas derivadas dos Requisitos Funcionais (RF01–RF12) e Não Funcionais (RNF01–RNF07) descritos em `docs/requisitos.md`, com apoio dos fluxos detalhados em `docs/casos-de-uso.md`. A classificação MVP/Expansão segue estritamente a Seção 2 (Escopo) de `requisitos.md`.
+Tarefas técnicas derivadas dos Requisitos Funcionais (RF01–RF14) e Não Funcionais (RNF01–RNF07) descritos em `docs/requisitos.md`, com apoio dos fluxos detalhados em `docs/casos-de-uso.md`. A classificação MVP/Expansão segue estritamente a Seção 2 (Escopo) de `requisitos.md`.
 
 | ID | Tarefa | Requisito de origem | MVP ou Expansão | Depende de |
 | --- | --- | --- | --- | --- |
@@ -39,6 +39,15 @@ Tarefas técnicas derivadas dos Requisitos Funcionais (RF01–RF12) e Não Funci
 | T33 | Implementar tela de consentimento informando a limitação do mascaramento local (nomes próprios e conteúdo livre não são mascarados no dispositivo) | RNF07 | MVP | T12 |
 | T34 | Implementar exportação dos dados vinculados à conta em formato legível | RF12 | MVP | T03 |
 | T35 | Implementar exclusão definitiva de conta (remoção dos documentos no Cloud Firestore e da credencial no Firebase Authentication) com confirmação explícita de irreversibilidade | RF12 | MVP | T03 |
+| T47 | Implementar estrutura de tutorial em etapas (até 4), com indicador de progresso, opção de pular e marca de tutorial visto no dispositivo, por usuário e por versão | RF13 | MVP | T01 |
+| T48 | Implementar o tutorial da análise de link, exibido na primeira abertura da tela e reaberto pelo botão de ajuda | RF13 | MVP | T47, T25 |
+| T49 | Implementar o tutorial da análise de print, sem interromper a análise iniciada por compartilhamento nativo | RF13 | MVP | T47, T08 |
+| T50 | Implementar exemplo de resultado fictício no tutorial, calculado pela função determinística do score, sem chamada externa e sem registro no histórico | RF13, RF07 | MVP | T47, T20 |
+| T51 | Reorganizar a aba Conta em tela de perfil com seções, mantendo exportação, exclusão, consentimento e saída | RF14 | MVP | T34, T35 |
+| T52 | Implementar nome de exibição opcional (até 40 caracteres) em `users/{uid}`, incluído na exportação e na exclusão, com regras do Firestore restritas aos campos previstos | RF14, RF12 | MVP | T03, T51 |
+| T53 | Implementar troca de senha com nova autenticação e reenvio do e-mail de verificação, para contas de e-mail e senha | RF14, RF01 | MVP | T51 |
+| T54 | Implementar preferências de tamanho da letra e de tema (claro, escuro, sistema), gravadas no dispositivo e aplicadas a todas as telas | RF14 | MVP | T51 |
+| T55 | Implementar as seções "Como o risco é calculado" (sem pesos nem pontos de corte), reabertura dos tutoriais e "Sobre o Phize" | RF14, RF07 | MVP | T51, T47 |
 | T36 | Implementar fluxo de reporte de golpe (URL, print ou relato), concluído em até 3 cliques | RF05 | Expansão | T01 |
 | T37 | Implementar normalização do endereço reportado (isolamento de domínio, descarte de parâmetros variáveis) e geração de hash SHA-256 | RF05 | Expansão | T36 |
 | T38 | Implementar remoção de metadados EXIF de imagens anexadas ao reporte | RF05 | Expansão | T36 |

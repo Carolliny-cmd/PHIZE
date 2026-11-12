@@ -66,7 +66,7 @@ lib/
       data/          # integração Firebase Auth
       domain/        # modelos e regras da feature
       presentation/  # telas e widgets
-    analise/         # RF03, RF04, RF07, RF10
+    analise/         # RF03, RF04, RF07, RF10, RF13
       data/          # OCR, LLM/RAG, Safe Browsing, RDAP
       domain/        # AnaliseRisco, cálculo de score, mascaramento
       presentation/
@@ -74,7 +74,7 @@ lib/
       data/
       domain/
       presentation/
-    conta/           # RF12
+    conta/           # RF12, RF14
       data/
       domain/
       presentation/
