@@ -5,13 +5,17 @@ import '../../../auth/data/firebase_auth_repository.dart';
 import '../../../auth/domain/auth_repository.dart';
 import '../../data/consentimento_repository_local.dart';
 import '../../data/historico_repository_firestore.dart';
+import '../../data/tutorial_repository_local.dart';
 import '../../domain/analisador_print.dart';
 import '../../domain/analise_risco.dart';
 import '../../domain/captura_imagem.dart';
 import '../../domain/consentimento_repository.dart';
 import '../../domain/historico_repository.dart';
 import '../../domain/resultado_analise_print.dart';
+import '../../domain/tutorial_repository.dart';
 import '../registro_historico.dart';
+import '../tutorial/tutorial_page.dart';
+import '../tutorial/tutorial_print.dart';
 import '../widgets/progresso_analise.dart';
 import 'consentimento_page.dart';
 
@@ -32,6 +36,7 @@ class AnalisarPrintPage extends StatefulWidget {
     this.authRepository,
     this.historicoRepository,
     this.consentimentoRepository,
+    this.tutorialRepository,
   });
 
   final AnalisadorPrint analisadorPrint;
@@ -43,6 +48,7 @@ class AnalisarPrintPage extends StatefulWidget {
 
   final HistoricoRepository? historicoRepository;
   final ConsentimentoRepository? consentimentoRepository;
+  final TutorialRepository? tutorialRepository;
 
   @override
   State<AnalisarPrintPage> createState() => _AnalisarPrintPageState();
@@ -57,9 +63,34 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
       widget.historicoRepository ?? HistoricoRepositoryFirestore();
   late final ConsentimentoRepository _consentimento =
       widget.consentimentoRepository ?? ConsentimentoRepositoryLocal();
+  late final TutorialRepository _tutorial =
+      widget.tutorialRepository ?? TutorialRepositoryLocal();
   bool _carregando = false;
   EtapaAnalisePrint _etapa = EtapaAnalisePrint.lendoTexto;
   MotivoInterrupcaoPrint? _interrupcao;
+
+  @override
+  void initState() {
+    super.initState();
+    // Tutorial de primeiro uso (RF13), antes da escolha do print. A tela de
+    // consentimento continua aparecendo ao tocar em "Escolher print".
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      abrirTutorialNaPrimeiraVez(
+        context,
+        tipo: TipoTutorial.print,
+        repositorio: _tutorial,
+        construir: (_) => const TutorialPrintPage(),
+      );
+    });
+  }
+
+  void _abrirTutorial() => abrirTutorial(
+    context,
+    tipo: TipoTutorial.print,
+    repositorio: _tutorial,
+    construir: (_) => const TutorialPrintPage(),
+  );
 
   Future<void> _entrarDeNovo() async {
     try {
@@ -126,7 +157,17 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
     final interrupcao = _interrupcao;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Analisar print')),
+      appBar: AppBar(
+        title: const Text('Analisar print'),
+        actions: [
+          IconButton(
+            key: const Key('analisar_print_ajuda'),
+            tooltip: 'Como funciona',
+            icon: const Icon(Icons.help_outline),
+            onPressed: _carregando ? null : _abrirTutorial,
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),

@@ -114,6 +114,7 @@ class AppRouter {
             authRepository: authRepository,
             historicoRepository: historicoRepository,
             consentimentoRepository: consentimentoRepository,
+            tutorialRepository: tutorialRepository,
           ),
         );
       case AppRoutes.analiseCompartilhada:
@@ -149,9 +150,11 @@ class AppRouter {
           builder: (_) => switch (settings.arguments) {
             final AnalisePrintConcluida resultado => ResultadoAnalisePage.print(
               resultado: resultado,
+              tutorialRepository: tutorialRepository,
             ),
             final resultado => ResultadoAnalisePage(
               resultado: resultado as ResultadoAnaliseLink,
+              tutorialRepository: tutorialRepository,
             ),
           },
         );

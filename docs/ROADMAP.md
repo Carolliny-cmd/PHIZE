@@ -985,7 +985,7 @@ estouro de layout; semântica para leitor de tela nos botões.
 
 > **Pontos para a equipe:** revisar os textos do tutorial, que estão em `tutorial_link.dart` e `etapas_comuns.dart`. O exemplo fictício imita uma loja inventada, não uma marca real.
 
-### Prompt 9.9 — Tutorial da análise de print (RF13; T49)
+### Prompt 9.9 — Tutorial da análise de print (RF13; T49) (concluído)
 
 **[CLAUDE CODE]**
 ```
@@ -1016,6 +1016,17 @@ tutorial e consentimento, letra ampliada e leitor de tela.
 ```
 
 **Verificação [TERMINAL]:** `flutter analyze` e `flutter test`; no emulador, abrir a análise de print pela primeira vez e analisar um print compartilhado. Depois commit.
+
+**Feito (2026-11-12):**
+- **Simulação, no mesmo estilo do 9.8:** (1) a pessoa "tira o print" de uma conversa fictícia de falso parente, com clarão e aviso "Print salvo na galeria"; (2) toca no Phize no menu de compartilhar; (3) acompanha as etapas reais da análise (`EtapaAnalisePrint`, as mesmas da tela de progresso) e vê **o que sai do celular**: só as mensagens recebidas, com `[TELEFONE]` e `[CPF]` gerados pelo `mascararTextoLocal` real, e o aviso de que a imagem e a resposta da pessoa não saem; (4) lê o resultado e troca entre três exemplos: falso parente, banco fictício e clínica fictícia (faixa verde).
+- **Exemplos:** `ExemploTutorialPrint`, com números que não pertencem a ninguém e nomes de empresa inventados. Os sinais são fixos, porque no app quem os aponta é o modelo; o número sai de `CalculadoraScore`. A etapa 4 explica essa divisão (RF07).
+- **Ordem com o consentimento:** o tutorial abre na primeira entrada em "Analisar print"; a tela de consentimento continua aparecendo ao tocar em "Escolher print". O tutorial não substitui o consentimento.
+- **Compartilhamento (RF10):** o print compartilhado vai direto à análise, sem tutorial. A tela de resultado ganhou o botão "?" ("Como funciona"), que abre o tutorial do tipo analisado. O botão aparece também no resultado de link, que tem o mesmo caminho por compartilhamento.
+- **Reaproveitamento:** os nomes dos sinais saíram da tela de resultado para `SinalTextoPrintTitulo` (domínio), usados pelos dois. As peças das cenas comuns aos dois tutoriais ficaram em `cenas_comuns.dart`.
+- **Testes:** 6 da simulação, 5 dos exemplos e 3 no fluxo de print (primeira abertura antes do consentimento, botão de ajuda, compartilhamento sem tutorial com "Como funciona?" no resultado). Suíte: 580 testes.
+- **Validação visual:** imagens de cada passo geradas por teste, com a fonte do app, em letra normal e 1,6×. Emulador não usado (o app completo exige login).
+
+> **Pontos para a equipe:** revisar os textos do tutorial em `tutorial_print.dart`. A dica de captura de tela ("botão de ligar e de abaixar o volume") vale para a maioria dos Android; o iPhone usa outra combinação.
 
 ### Prompt 9.10 — Perfil: reorganização e nome de exibição (RF14; T51, T52)
 

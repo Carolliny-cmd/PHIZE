@@ -28,6 +28,7 @@ import 'package:phize/features/analise/domain/seletor_imagem.dart';
 import 'package:phize/features/analise/domain/sinais_identificados.dart';
 import 'package:phize/features/analise/domain/sinal_link.dart';
 import 'package:phize/features/analise/domain/sinal_texto_print.dart';
+import 'package:phize/features/analise/domain/tutorial_repository.dart';
 import 'package:phize/features/analise/domain/verificacao_link.dart';
 import 'package:phize/features/analise/presentation/pages/analise_compartilhada_page.dart';
 import 'package:phize/features/analise/presentation/pages/resultado_analise_page.dart';
@@ -36,6 +37,7 @@ import 'package:phize/features/analise/presentation/widgets/progresso_analise.da
 import '../../../support/fake_auth_repository.dart';
 import '../../../support/fake_consentimento_repository.dart';
 import '../../../support/fake_historico_repository.dart';
+import '../../../support/fake_tutorial_repository.dart';
 
 /// Texto de golpe que passa nas duas verificações de volume mínimo.
 const _textoGolpe =
@@ -149,6 +151,7 @@ Future<void> _abrir(
   AnaliseTextoClient? cliente,
   FakeHistoricoRepository? historico,
   FakeConsentimentoRepository? consentimento,
+  FakeTutorialRepository? tutorial,
   String rotaInicial = AppRoutes.analisarPrint,
 }) async {
   await tester.pumpWidget(
@@ -161,6 +164,7 @@ Future<void> _abrir(
         historicoRepository: historico ?? FakeHistoricoRepository(),
         consentimentoRepository:
             consentimento ?? FakeConsentimentoRepository(),
+        tutorialRepository: tutorial ?? FakeTutorialRepository(),
       ),
       initialRoute: rotaInicial,
     ),
@@ -211,6 +215,7 @@ Future<void> _abrirCompartilhado(
   ReconhecedorTexto? reconhecedor,
   FakeHistoricoRepository? historico,
   FakeConsentimentoRepository? consentimento,
+  FakeTutorialRepository? tutorial,
 }) async {
   final caixa = CaixaCompartilhamento()..guardar(conteudo);
   await tester.pumpWidget(
@@ -224,6 +229,7 @@ Future<void> _abrirCompartilhado(
         caixaCompartilhamento: caixa,
         consentimentoRepository:
             consentimento ?? FakeConsentimentoRepository(),
+        tutorialRepository: tutorial ?? FakeTutorialRepository(),
       ),
       initialRoute: AppRoutes.analiseCompartilhada,
     ),
@@ -1164,6 +1170,60 @@ void main() {
       expect(find.textContaining('texto da mensagem'), findsNothing);
       expect(find.textContaining('escondidos'), findsNothing);
       expect(find.textContaining(_termoProibido), findsNothing);
+    });
+  });
+
+  group('tutorial de primeiro uso (RF13)', () {
+    const tituloTutorial = 'Tire o print da conversa';
+
+    testWidgets('aparece na primeira abertura, antes da escolha; o '
+        'consentimento continua aparecendo ao escolher o print', (
+      tester,
+    ) async {
+      final tutorial = FakeTutorialRepository(vistos: {});
+      final seletor = _SeletorFalso(arquivo: _ArquivoFalso());
+      await _abrir(
+        tester,
+        seletor: seletor,
+        tutorial: tutorial,
+        consentimento: FakeConsentimentoRepository(aceitou: false),
+      );
+
+      expect(find.text(tituloTutorial), findsOneWidget);
+      await tester.tap(find.byKey(const Key('tutorial_pular')));
+      await tester.pumpAndSettle();
+      expect(tutorial.vistos, contains(TipoTutorial.print));
+
+      await tester.tap(find.byKey(const Key('analisar_print_botao')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('consentimento_aceitar')), findsOneWidget);
+      expect(seletor.selecoes, 0);
+    });
+
+    testWidgets('o botão de ajuda reabre o tutorial', (tester) async {
+      await _abrir(tester, seletor: _SeletorFalso());
+
+      expect(find.text(tituloTutorial), findsNothing);
+      await tester.tap(find.byKey(const Key('analisar_print_ajuda')));
+      await tester.pumpAndSettle();
+      expect(find.text(tituloTutorial), findsOneWidget);
+    });
+
+    testWidgets('print compartilhado vai à análise sem o tutorial, e o '
+        'resultado oferece "Como funciona?"', (tester) async {
+      final tutorial = FakeTutorialRepository(vistos: {});
+      await _abrirCompartilhado(
+        tester,
+        conteudo: ImagemCompartilhada(_imagemCompartilhada()),
+        tutorial: tutorial,
+      );
+
+      expect(find.byKey(const Key('resultado_aviso_permanente')), findsOneWidget);
+      expect(find.text(tituloTutorial), findsNothing);
+
+      await tester.tap(find.byKey(const Key('resultado_como_funciona')));
+      await tester.pumpAndSettle();
+      expect(find.text(tituloTutorial), findsOneWidget);
     });
   });
 }

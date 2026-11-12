@@ -4,6 +4,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../domain/exemplo_tutorial_link.dart';
 import '../../domain/faixa_risco.dart';
 import '../widgets/termometro_risco.dart';
+import 'cenas_comuns.dart';
 import 'etapas_comuns.dart';
 import 'tutorial_page.dart';
 
@@ -39,7 +40,7 @@ class _TutorialLinkPageState extends State<TutorialLinkPage> {
         EtapaTutorial(
           titulo: 'Copie o link, sem abrir',
           cena: (_, _) => _CenaConversa(copiado: _copiado),
-          explicacao: const _Explicacao(
+          explicacao: const ExplicacaoEtapa(
             texto:
                 'Recebeu um link estranho por mensagem, SMS ou e-mail? Não '
                 'toque para abrir. Toque e segure o link e escolha "Copiar".',
@@ -49,7 +50,7 @@ class _TutorialLinkPageState extends State<TutorialLinkPage> {
         EtapaTutorial(
           titulo: 'Cole no Phize',
           cena: (_, _) => _CenaColar(colado: _colado),
-          explicacao: const _Explicacao(
+          explicacao: const ExplicacaoEtapa(
             texto:
                 'No Phize, toque em "Analisar link", cole o endereço e '
                 'toque em "Verificar link". Você também pode usar o botão '
@@ -62,7 +63,7 @@ class _TutorialLinkPageState extends State<TutorialLinkPage> {
         EtapaTutorial(
           titulo: 'O Phize confere o endereço',
           cena: (_, ativa) => _CenaVerificacoes(ativa: ativa),
-          explicacao: const _Explicacao(
+          explicacao: const ExplicacaoEtapa(
             texto:
                 'São três verificações: se o nome imita uma empresa '
                 'conhecida, há quanto tempo o site existe e se ele está na '
@@ -95,9 +96,9 @@ class _TutorialLinkPageState extends State<TutorialLinkPage> {
                         in ExemploTutorialLink.todos.indexed)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
-                        child: _OpcaoExemplo(
+                        child: OpcaoExemplo(
                           key: Key('tutorial_exemplo_$i'),
-                          endereco: exemplo.endereco,
+                          texto: exemplo.endereco,
                           selecionado: i == escolhido,
                           aoTocar: () => _exemplo.value = i,
                         ),
@@ -113,84 +114,7 @@ class _TutorialLinkPageState extends State<TutorialLinkPage> {
   }
 }
 
-class _Explicacao extends StatelessWidget {
-  const _Explicacao({required this.texto, this.experimente});
-
-  final String texto;
-  final String? experimente;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(texto),
-        if (experimente != null) ...[
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.touch_app_outlined, color: CoresPhize.azul),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  experimente!,
-                  style: const TextStyle(
-                    color: CoresPhize.azulEscuro,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ],
-    );
-  }
-}
-
 // --- Cenas do celular -----------------------------------------------------
-
-/// Transição curta das cenas; nenhuma com a redução de movimento ligada.
-Duration _transicao(BuildContext context) =>
-    MediaQuery.of(context).disableAnimations
-    ? Duration.zero
-    : const Duration(milliseconds: 200);
-
-/// Barra superior das telas simuladas.
-class _BarraCena extends StatelessWidget {
-  const _BarraCena({required this.titulo, this.icone, this.cor});
-
-  final String titulo;
-  final IconData? icone;
-  final Color? cor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: cor ?? Colors.white,
-      padding: const EdgeInsets.fromLTRB(14, 22, 14, 10),
-      child: Row(
-        children: [
-          if (icone != null) ...[
-            CircleAvatar(
-              radius: 14,
-              backgroundColor: CoresPhize.borda,
-              child: Icon(icone, size: 16, color: CoresPhize.textoSecundario),
-            ),
-            const SizedBox(width: 8),
-          ],
-          Expanded(
-            child: Text(
-              titulo,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 /// Etapa 1: conversa com um link fictício, que a pessoa copia.
 class _CenaConversa extends StatelessWidget {
@@ -205,7 +129,7 @@ class _CenaConversa extends StatelessWidget {
       builder: (_, foiCopiado, _) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const _BarraCena(
+          const BarraCena(
             titulo: 'Número desconhecido',
             icone: Icons.person,
             cor: CoresPhize.fundoSuave,
@@ -221,7 +145,7 @@ class _CenaConversa extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 40),
-                        _Balao(
+                        BalaoRecebido(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -240,7 +164,7 @@ class _CenaConversa extends StatelessWidget {
                                   onLongPress: () => copiado.value = true,
                                   onTap: () => copiado.value = true,
                                   child: AnimatedContainer(
-                                    duration: _transicao(context),
+                                    duration: transicaoCena(context),
                                     padding: const EdgeInsets.all(2),
                                     color: foiCopiado
                                         ? CoresPhize.azulClaro
@@ -311,29 +235,6 @@ class _CenaConversa extends StatelessWidget {
   }
 }
 
-class _Balao extends StatelessWidget {
-  const _Balao({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 170),
-      padding: const EdgeInsets.all(10),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(14),
-          bottomLeft: Radius.circular(14),
-          bottomRight: Radius.circular(14),
-        ),
-      ),
-      child: child,
-    );
-  }
-}
-
 /// Etapa 2: tela "Analisar link" simulada, onde a pessoa cola e verifica.
 class _CenaColar extends StatelessWidget {
   const _CenaColar({required this.colado});
@@ -350,7 +251,7 @@ class _CenaColar extends StatelessWidget {
       builder: (_, foiColado, _) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const _BarraCena(titulo: 'Analisar link'),
+          const BarraCena(titulo: 'Analisar link'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(14),
@@ -435,7 +336,7 @@ class _CenaColar extends StatelessWidget {
                           ? ControleTutorial.of(context).avancar
                           : null,
                       child: AnimatedContainer(
-                        duration: _transicao(context),
+                        duration: transicaoCena(context),
                         height: 40,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
@@ -529,7 +430,7 @@ class _CenaVerificacoesState extends State<_CenaVerificacoes>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _BarraCena(titulo: 'Analisando o link…'),
+        const BarraCena(titulo: 'Analisando o link…'),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(14),
@@ -607,7 +508,7 @@ class _CenaVerificacoesState extends State<_CenaVerificacoes>
                 const SizedBox(height: 8),
                 AnimatedOpacity(
                   opacity: terminou ? 1 : 0,
-                  duration: _transicao(context),
+                  duration: transicaoCena(context),
                   child: Semantics(
                     button: true,
                     label: 'Ver resultado',
@@ -659,7 +560,7 @@ class _CenaResultado extends StatelessWidget {
       key: const Key('tutorial_resultado_exemplo'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _BarraCena(titulo: 'Resultado da Análise'),
+        const BarraCena(titulo: 'Resultado da Análise'),
         Expanded(
           // Rola dentro do celular, como a tela de resultado do app.
           child: SingleChildScrollView(
@@ -747,60 +648,6 @@ class _CenaResultado extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// Opção de exemplo que quebra linha com letra grande, em vez de cortar o
-/// endereço.
-class _OpcaoExemplo extends StatelessWidget {
-  const _OpcaoExemplo({
-    super.key,
-    required this.endereco,
-    required this.selecionado,
-    required this.aoTocar,
-  });
-
-  final String endereco;
-  final bool selecionado;
-  final VoidCallback aoTocar;
-
-  @override
-  Widget build(BuildContext context) {
-    final forma = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(14),
-      side: BorderSide(
-        color: selecionado ? CoresPhize.azul : CoresPhize.borda,
-        width: selecionado ? 2 : 1,
-      ),
-    );
-    return Semantics(
-      button: true,
-      selected: selecionado,
-      inMutuallyExclusiveGroup: true,
-      child: Material(
-        shape: forma,
-        color: selecionado ? CoresPhize.azulClaro : Colors.white,
-        child: InkWell(
-          customBorder: forma,
-          onTap: aoTocar,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            child: Row(
-              children: [
-                Icon(
-                  selecionado
-                      ? Icons.radio_button_checked
-                      : Icons.radio_button_unchecked,
-                  color: CoresPhize.azul,
-                ),
-                const SizedBox(width: 12),
-                Expanded(child: Text(endereco)),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

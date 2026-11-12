@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../../data/tutorial_repository_local.dart';
 import '../../domain/resultado_analise_link.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../../domain/resultado_score.dart';
 import '../../domain/rotulos_risco.dart';
 import '../../domain/sinal_texto_print.dart';
+import '../../domain/tutorial_repository.dart';
 import '../../domain/verificacao_link.dart';
+import '../tutorial/tutorial_link.dart';
+import '../tutorial/tutorial_page.dart';
+import '../tutorial/tutorial_print.dart';
 import '../widgets/aviso_card.dart';
 import '../widgets/o_que_fazer_card.dart';
 import '../widgets/termometro_risco.dart';
@@ -25,6 +30,7 @@ class ResultadoAnalisePage extends StatelessWidget {
   const ResultadoAnalisePage({
     super.key,
     required ResultadoAnaliseLink resultado,
+    this.tutorialRepository,
   }) : _link = resultado,
        _print = null;
 
@@ -33,11 +39,27 @@ class ResultadoAnalisePage extends StatelessWidget {
   const ResultadoAnalisePage.print({
     super.key,
     required AnalisePrintConcluida resultado,
+    this.tutorialRepository,
   }) : _link = null,
        _print = resultado;
 
   final ResultadoAnaliseLink? _link;
   final AnalisePrintConcluida? _print;
+
+  /// Marca de tutorial visto (RF13). Quem chega pelo compartilhamento não
+  /// vê o tutorial antes da análise; o botão "Como funciona?" o oferece aqui.
+  final TutorialRepository? tutorialRepository;
+
+  void _abrirTutorial(BuildContext context) {
+    final link = _link != null;
+    abrirTutorial(
+      context,
+      tipo: link ? TipoTutorial.link : TipoTutorial.print,
+      repositorio: tutorialRepository ?? TutorialRepositoryLocal(),
+      construir: (_) =>
+          link ? const TutorialLinkPage() : const TutorialPrintPage(),
+    );
+  }
 
   ResultadoScore get _score => _link?.score ?? _print!.score;
 
@@ -48,7 +70,17 @@ class ResultadoAnalisePage extends StatelessWidget {
     final resultadoPrint = _print;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Resultado da Análise')),
+      appBar: AppBar(
+        title: const Text('Resultado da Análise'),
+        actions: [
+          IconButton(
+            key: const Key('resultado_como_funciona'),
+            tooltip: 'Como funciona',
+            icon: const Icon(Icons.help_outline),
+            onPressed: () => _abrirTutorial(context),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -138,7 +170,7 @@ class ResultadoAnalisePage extends StatelessWidget {
         for (final sinal in SinalTextoPrint.values)
           if (resultado.sinais.contains(sinal))
             _SinalTile(
-              titulo: _tituloSinal(sinal),
+              titulo: sinal.titulo,
               trechos: [
                 for (final trecho in resultado.trechos)
                   if (trecho.sinal == sinal) trecho.texto,
@@ -169,22 +201,6 @@ class ResultadoAnalisePage extends StatelessWidget {
   static const String avisoTrechos =
       'As frases destacadas aparecem só nesta tela e não ficam no seu '
       'histórico.';
-
-  /// Nomes em linguagem não técnica dos sinais do grupo Texto/Print (RF07,
-  /// RNF04).
-  static String _tituloSinal(SinalTextoPrint sinal) => switch (sinal) {
-    SinalTextoPrint.correspondenciaPadraoCatalogado =>
-      'Semelhança com golpe já catalogado',
-    SinalTextoPrint.pedidoFinanceiro => 'Pedido de dinheiro ou pagamento',
-    SinalTextoPrint.alegacaoTrocaContato =>
-      'Alegação de troca de número ou de contato',
-    SinalTextoPrint.solicitacaoDadosPessoais => 'Pedido de dados pessoais',
-    SinalTextoPrint.ameaca => 'Ameaça ou intimidação',
-    SinalTextoPrint.linkSuspeito => 'Link suspeito',
-    SinalTextoPrint.ofertaIncompativelMercado =>
-      'Oferta boa demais para ser verdade',
-    SinalTextoPrint.inducaoUrgencia => 'Pressão para agir com urgência',
-  };
 }
 
 class _SinalTile extends StatelessWidget {
