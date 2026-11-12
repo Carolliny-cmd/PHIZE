@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/phize_bottom_nav.dart';
 import '../../../analise/data/consentimento_repository_local.dart';
 import '../../../analise/data/historico_repository_firestore.dart';
+import '../../../analise/data/tutorial_repository_local.dart';
 import '../../../analise/domain/consentimento_repository.dart';
 import '../../../analise/domain/historico_repository.dart';
+import '../../../analise/domain/rotulos_risco.dart';
+import '../../../analise/domain/tutorial_repository.dart';
+import '../../../analise/presentation/pages/como_calcula_risco_page.dart';
 import '../../../analise/presentation/pages/consentimento_page.dart';
+import '../../../analise/presentation/tutorial/tutorial_link.dart';
+import '../../../analise/presentation/tutorial/tutorial_page.dart';
+import '../../../analise/presentation/tutorial/tutorial_print.dart';
+import '../../../analise/presentation/widgets/aviso_card.dart';
 import '../../../auth/data/firebase_auth_repository.dart';
 import '../../../auth/domain/auth_exception.dart';
 import '../../../auth/domain/auth_repository.dart';
@@ -26,8 +35,9 @@ import '../widgets/trocar_senha_dialog.dart';
 
 /// Tela de Perfil (RF14), aberta pela aba Perfil: identificação da conta,
 /// segurança (senha e verificação do e-mail), acessibilidade (letra e
-/// tema), os direitos do titular do RF12 (exportar e excluir), a
-/// privacidade da análise de print e a saída da conta.
+/// tema), aprendizado (tutoriais e como o risco é calculado), os direitos
+/// do titular do RF12 (exportar e excluir), a privacidade da análise de
+/// print, informações sobre o app e a saída da conta.
 class PerfilPage extends StatefulWidget {
   const PerfilPage({
     super.key,
@@ -37,6 +47,8 @@ class PerfilPage extends StatefulWidget {
     this.authRepository,
     this.consentimentoRepository,
     this.esperaReenvio,
+    this.tutorialRepository,
+    this.lerVersao,
   });
 
   final ContaRepository? contaRepository;
@@ -45,6 +57,10 @@ class PerfilPage extends StatefulWidget {
   final AuthRepository? authRepository;
   final ConsentimentoRepository? consentimentoRepository;
   final EsperaReenvio? esperaReenvio;
+  final TutorialRepository? tutorialRepository;
+
+  /// Versão exibida em "Sobre o Phize"; por padrão, a do pacote instalado.
+  final Future<String> Function()? lerVersao;
 
   static const String mensagemFalhaPreferencia =
       'Não foi possível guardar a preferência neste aparelho. Ela vale até '
@@ -74,6 +90,9 @@ class _PerfilPageState extends State<PerfilPage> {
 
   late final EsperaReenvio _espera =
       widget.esperaReenvio ?? EsperaReenvio.global;
+  late final TutorialRepository _tutorial =
+      widget.tutorialRepository ?? TutorialRepositoryLocal();
+  String? _versao;
 
   late IdentidadeConta? _identidade = _lerIdentidade();
   String? _nome;
@@ -86,6 +105,37 @@ class _PerfilPageState extends State<PerfilPage> {
     super.initState();
     _carregarNome();
     _atualizarIdentidade();
+    _carregarVersao();
+  }
+
+  static Future<String> _versaoInstalada() async {
+    final pacote = await PackageInfo.fromPlatform();
+    return '${pacote.version} (${pacote.buildNumber})';
+  }
+
+  Future<void> _carregarVersao() async {
+    try {
+      final versao = await (widget.lerVersao ?? _versaoInstalada)();
+      if (mounted) setState(() => _versao = versao);
+    } catch (_) {
+      // Sem a versão, o item mostra "Não disponível".
+    }
+  }
+
+  Future<void> _verTutorial(TipoTutorial tipo) => abrirTutorial(
+    context,
+    tipo: tipo,
+    repositorio: _tutorial,
+    construir: (_) => switch (tipo) {
+      TipoTutorial.link => const TutorialLinkPage(),
+      TipoTutorial.print => const TutorialPrintPage(),
+    },
+  );
+
+  void _abrirComoCalcula() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const ComoCalculaRiscoPage()),
+    );
   }
 
   /// O e-mail pode ter sido verificado depois da abertura do app.
@@ -476,6 +526,36 @@ class _PerfilPageState extends State<PerfilPage> {
                   ),
                 ],
                 const SizedBox(height: 24),
+                const _TituloSecao('Aprender'),
+                _Secao(
+                  children: [
+                    ListTile(
+                      key: const Key('perfil_tutorial_link'),
+                      enabled: habilitado,
+                      leading: const Icon(Icons.link),
+                      title: const Text('Ver tutorial da análise de link'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => _verTutorial(TipoTutorial.link),
+                    ),
+                    ListTile(
+                      key: const Key('perfil_tutorial_print'),
+                      enabled: habilitado,
+                      leading: const Icon(Icons.image_outlined),
+                      title: const Text('Ver tutorial da análise de print'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => _verTutorial(TipoTutorial.print),
+                    ),
+                    ListTile(
+                      key: const Key('perfil_como_calcula'),
+                      enabled: habilitado,
+                      leading: const Icon(Icons.speed_outlined),
+                      title: const Text('Como o Phize calcula o risco'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: _abrirComoCalcula,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
                 const _TituloSecao('Privacidade e dados'),
                 _Secao(
                   children: [
@@ -514,6 +594,23 @@ class _PerfilPageState extends State<PerfilPage> {
                       onTap: _excluir,
                     ),
                   ],
+                ),
+                const SizedBox(height: 24),
+                const _TituloSecao('Sobre o Phize'),
+                _Secao(
+                  children: [
+                    ListTile(
+                      key: const Key('perfil_versao'),
+                      leading: const Icon(Icons.info_outline),
+                      title: const Text('Versão do app'),
+                      subtitle: Text(_versao ?? 'Não disponível'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                const AvisoCard(
+                  key: Key('perfil_aviso'),
+                  texto: RotulosRisco.avisoPermanente,
                 ),
                 const SizedBox(height: 24),
                 OutlinedButton.icon(

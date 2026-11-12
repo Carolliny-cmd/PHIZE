@@ -11,6 +11,7 @@ import 'package:phize/features/analise/domain/faixa_risco.dart';
 import 'package:phize/features/analise/domain/resultado_analise_link.dart';
 import 'package:phize/features/analise/domain/resultado_analise_print.dart';
 import 'package:phize/features/analise/domain/verificacao_link.dart';
+import 'package:phize/features/analise/presentation/pages/como_calcula_risco_page.dart';
 import 'package:phize/features/analise/presentation/tutorial/tutorial_link.dart';
 import 'package:phize/features/analise/presentation/tutorial/tutorial_print.dart';
 import 'package:phize/features/conta/domain/preferencias_aparencia.dart';
@@ -152,6 +153,15 @@ void main() {
           expect(tester.takeException(), isNull);
         });
       }
+
+      testWidgets('como o risco é calculado sem estouro de layout', (
+        tester,
+      ) async {
+        await _abrir(tester, tema: tema, tela: const ComoCalculaRiscoPage());
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, -6000));
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+      });
 
       for (final (nome, tela) in [
         ('tutorial do link', const TutorialLinkPage()),

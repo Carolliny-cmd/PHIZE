@@ -8,3 +8,15 @@ enum SinalLink {
   typosquatting,
   dominioRecemCriado,
 }
+
+extension SinalLinkTitulo on SinalLink {
+  /// Nome do sinal em linguagem não técnica (RF07, RNF04), usado na
+  /// explicação de como o risco é calculado (RF14).
+  String get titulo => switch (this) {
+    SinalLink.listadoSafeBrowsing =>
+      'Endereço na lista de sites perigosos do Google',
+    SinalLink.typosquatting =>
+      'Endereço parecido com o de uma empresa conhecida',
+    SinalLink.dominioRecemCriado => 'Site criado há pouco tempo',
+  };
+}

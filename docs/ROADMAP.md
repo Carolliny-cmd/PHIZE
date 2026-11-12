@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-12
-- **Última tarefa concluída:** Prompt 9.11 — segurança e acessibilidade no Perfil (troca de senha, reenvio da verificação, tamanho da letra e tema escuro). 83 testes na Function, 647 no app
+- **Última tarefa concluída:** Prompt 9.12 — seções Aprender e Sobre do Perfil; com ele, o plano de orientação e perfil (RF13, RF14) está completo. 83 testes na Function, 658 no app
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** Prompt 9.12 (aprender e sobre, RF14). No RAG: repetir a medição com 3 repetições para medir a variação entre execuções, depois a etapa 3 (`situacoesLegitimas`, começando pelo pedido de código) e a etapa 4 (ficha do comprovante falso). A coleta de mensagens independentes foi adiada pela equipe
+- **Próximo passo:** revisão dos textos do tutorial e da explicação do risco pela equipe, e testes no emulador com login. No RAG: repetir a medição com 3 repetições para medir a variação entre execuções, depois a etapa 3 (`situacoesLegitimas`, começando pelo pedido de código) e a etapa 4 (ficha do comprovante falso). A coleta de mensagens independentes foi adiada pela equipe
 
 ---
 
@@ -215,6 +215,8 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | ~~Limiar de similaridade para "correspondência com padrão catalogado"~~ — **proposto: v1.0, ver docs/calibracao-recuperacao.md** | ~~Prompt 7.2~~ Resolvida | RF07 / RNF05 |
 | Validação da calibração da recuperação v1.0 (docs/calibracao-recuperacao.md) | Não bloqueante | RF07 / RNF05 |
 | RAG na análise de link (UC03, passo 6 do fluxo principal) — o Prompt 7.2 conectou a base só à análise de print | Revisão do escopo | UC03 / RNF05 |
+| Texto aprovado da política de privacidade e do contato da equipe, para a seção "Sobre o Phize" do perfil (hoje só versão e aviso) | Publicação | RF14 / LGPD |
+| Espera entre reenvios do e-mail de verificação (provisório: 60 s) | Revisão | RF14 |
 | Índice da base dentro da Function: a atualização da base passa a exigir nova publicação das Functions, não nova versão do app (arquitetura, seção 3.2 b, fala em nova versão do aplicativo) | Revisão do documento | Arquitetura 3.2 b |
 
 > Padrão adotado: **não bloquear**, seguindo o UC01.
@@ -1115,7 +1117,7 @@ estouro de layout no maior tamanho e no tema escuro.
 
 > **Pontos para a equipe:** a espera de 60 segundos entre reenvios é provisória, como a do bloqueio de login (RF02). Revisar o tom das cores escuras com a identidade visual.
 
-### Prompt 9.12 — Perfil: aprender e sobre (RF14; T55)
+### Prompt 9.12 — Perfil: aprender e sobre (RF14; T55) (concluído)
 
 **[CLAUDE CODE]**
 ```
@@ -1142,6 +1144,11 @@ de peso na tela de explicação.
 ```
 
 **Verificação [TERMINAL]:** `flutter analyze` e `flutter test`. Depois commit.
+
+**Feito (2026-11-12):**
+- **Aprender:** "Ver tutorial da análise de link" e "da análise de print" reabrem os tutoriais do RF13, mesmo já vistos. "Como o Phize calcula o risco" (`ComoCalculaRiscoPage`, em `analise/presentation/pages/`) explica em linguagem simples os 8 sinais de texto e os 3 de link (títulos vindos dos próprios enums), que a IA aponta os sinais e uma regra fixa do app dá o número, as três faixas com os rótulos oficiais, que basta um sinal para sair do verde, e a regra de verificação não concluída. Nenhum peso nem ponto de corte: só os extremos 0 e 100 aparecem, conferido por teste.
+- **Sobre o Phize:** versão do app (`package_info_plus`, nova dependência) e o aviso permanente de ferramenta de apoio. Contato e política de privacidade **não exibidos**: ainda não há texto aprovado (registrado em Decisões Pendentes).
+- **Testes:** 11 novos (tutoriais reabertos e marcados como vistos, explicação com sinais e faixas, ausência de "Seguro" e de números de peso, versão e falha ao lê-la, explicação sem estouro com letra muito grande nos dois temas). Suíte: 658 testes.
 
 > **Pontos para a equipe:**
 > - Aprovar o texto dos tutoriais e da tela "Como o Phize calcula o risco" antes dos testes com pessoas.

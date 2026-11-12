@@ -136,6 +136,7 @@ class AppRouter {
             compartilhador: compartilhador,
             authRepository: authRepository,
             consentimentoRepository: consentimentoRepository,
+            tutorialRepository: tutorialRepository,
           ),
         );
       case AppRoutes.exclusaoPendente:
