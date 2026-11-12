@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 import '../domain/imagem_em_memoria.dart';
+import '../domain/organizacao_texto_print.dart';
 import '../domain/reconhecedor_texto.dart';
 
 /// Implementação real de [ReconhecedorTexto] com o Google ML Kit Text
@@ -43,7 +44,22 @@ class ReconhecedorTextoMlKit implements ReconhecedorTexto {
           height: quadro.height,
         ),
       );
-      return resultado.text;
+      // O ML Kit devolve os blocos fora da ordem de leitura e com a
+      // interface do aplicativo de conversa; organizarTextoPrint põe em
+      // ordem, tira esse ruído e, quando o print tem cara de conversa,
+      // fica só com as mensagens recebidas (docs/calibracao-recuperacao.md,
+      // "Texto de print"). As linhas são só texto em memória.
+      return organizarTextoPrint([
+        for (final bloco in resultado.blocks)
+          for (final linha in bloco.lines)
+            LinhaReconhecida(
+              texto: linha.text,
+              esquerda: linha.boundingBox.left,
+              topo: linha.boundingBox.top,
+              direita: linha.boundingBox.right,
+              base: linha.boundingBox.bottom,
+            ),
+      ], largura: quadro.width.toDouble());
     } finally {
       pixels?.fillRange(0, pixels.length, 0);
       quadro?.dispose();

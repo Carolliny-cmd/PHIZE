@@ -116,6 +116,80 @@ As três correspondências que faltaram: `leilao-formal` e `amor-formal` (a fich
 
 **Limitações:** uma repetição por mensagem, então a variação entre execuções não foi medida. Um golpe (`sequestro-formal`) caiu de faixa com a base sem relação com a recuperação: foi variação do modelo entre as duas chamadas. Mensagens escritas com ajuda da IA, ainda que sem cópia das fichas.
 
+## Texto de print
+
+O conjunto de teste tem frases limpas. No app, porém, o texto de um print vem do OCR do ML Kit, e isso muda o que chega à busca:
+
+- os blocos vêm **fora da ordem de leitura**;
+- vêm junto com a **interface** do aplicativo de conversa: horários, "online", "Hoje", bateria, a barra de digitação;
+- vêm junto com as **respostas da própria pessoa**, que não fazem parte do golpe e não precisam sair do aparelho.
+
+### Como foi medido, sem coletar conversas
+
+1. `tool/prints_sinteticos/gerar_prints.py` desenha um print de conversa fictício para cada mensagem de `teste.json` (89 prints, 1080×2340, tema claro e escuro, contato e números inventados, resposta da vítima antes ou depois, mensagem dividida em até 3 balões).
+2. `tool/prints_sinteticos/rodar_ocr.sh` instala no emulador Android um teste de integração (`integration_test/ocr_prints_sinteticos_test.dart`) que passa cada print pelo ML Kit **como o app faz** (`InputImage.fromBitmap`, escrita latina) e traz o texto e a posição de cada linha. O resultado fica em `avaliacao/ocr-teste.json`; daí em diante o emulador não é mais necessário.
+3. `flutter test test/avaliacao/conjuntos_ocr_test.dart --dart-define=GERAR_OCR=true` monta três conjuntos de teste, todos com o mascaramento local do app:
+   - `teste-ocr-bruto.json`: o texto como o ML Kit devolve, que era o que o app enviava;
+   - `teste-ocr-ordenado.json`: em ordem de leitura e sem a interface;
+   - `teste-ocr-recebidas.json`: além disso, só as mensagens recebidas (lado esquerdo).
+
+A organização é feita por `organizarTextoPrint` (`lib/features/analise/domain/organizacao_texto_print.dart`), função pura usada pelo próprio app desde esta medição.
+
+### Resultado da busca (2026-11-11)
+
+`npm run avaliar-recuperacao -- --arquivo teste-ocr-<variante>.json`. Relatórios: `avaliacao/relatorios/2026-11-11-recuperacao-teste-ocr-*.json`.
+
+| Texto | Ficha certa em 1º lugar | Legítimas que chegam ao modelo com fichas |
+| --- | --- | --- |
+| Frase limpa (`teste.json`) | 52 de 54 | 14 de 26 |
+| OCR bruto | 45 de 54 | 21 de 26 |
+| OCR ordenado, sem interface | 49 de 54 | 24 de 26 |
+| OCR só com as recebidas | 52 de 54 | 20 de 26 |
+
+- **O texto bruto custa 7 acertos.** A ordem embaralhada e a resposta da vítima ("Oi, quem fala?", "Pode mandar") afastam o embedding do pretexto.
+- **Ordenar e tirar a interface recupera parte**; ficar só com as recebidas recupera a qualidade do texto limpo.
+- Com OCR, mais legítimas passam do limiar do que com frase limpa. Ver a medição do modelo abaixo.
+
+### Resultado do modelo e das faixas (2026-11-11)
+
+`npm run avaliar-analise -- --arquivo teste-ocr-<variante>.json --repeticoes 1`, depois `relatorio_faixas_test.dart` com o relatório. Relatórios: `2026-11-11-teste-ocr-bruto.json` e `2026-11-12-teste-ocr-recebidas.json`, com os respectivos `-faixas.json`.
+
+Modelo `gemini-3.5-flash-lite`, uma repetição, nenhuma chamada com falha nos dois relatórios (a variante "recebidas" foi concluída em 2026-11-12 com `--retomar`, depois de a cota gratuita esgotar).
+
+| | OCR bruto | OCR só com as recebidas |
+| --- | --- | --- |
+| Golpes detectados, com a base | 62 de 63 | 62 de 63 |
+| Correspondências certas | 50 | 53 |
+| Correspondências erradas | `codigo-informal`, `consignado-informal` | `consignado-informal` |
+| Correspondência apontada em legítima | `legit-leilao-judicial` → `falso-leilao-de-veiculos` | `legit-codigo-proprio` → `whatsapp-pedido-de-codigo` |
+| Golpes da base (58), com a base | amarelo 4, vermelho 54 | amarelo 4, vermelho 54 |
+| Golpes que subiram de faixa com a base | 31 | 31 |
+| Golpes fora da base (5), com a base | verde 1, amarelo 4 | verde 1, amarelo 3, vermelho 1 |
+| Legítimas (26), com a base | verde 25, **vermelho 1** | verde 25, **amarelo 1** |
+| Legítimas que subiram de faixa com a base | 1 (`legit-leilao-judicial`, verde → vermelho) | 1 (`legit-codigo-proprio`, verde → amarelo) |
+
+- **Ficar só com as recebidas melhora a correspondência:** 53 certas contra 50. O `codigo-informal` passou a apontar a ficha certa (`whatsapp-pedido-de-codigo`); no bruto, a resposta da vítima levava ao `falso-premio-sorteio`.
+- **O falso vermelho do leilão judicial desaparece.** No bruto, o texto da interface e a resposta da vítima fizeram o modelo ligar o aviso legítimo de leilão ao `falso-leilao-de-veiculos`. Só com as recebidas, a mensagem fica verde com e sem a base.
+- **Ainda há uma legítima que sobe:** `legit-codigo-proprio` (a própria pessoa avisando que vai receber um código) foi ligada a `whatsapp-pedido-de-codigo` e subiu de verde para amarelo. É menos grave que o vermelho do bruto, mas mostra que o pedido de código é o gatilho mais sensível a contexto. Candidato a `situacoesLegitimas` na etapa 3.
+- **`consignado-informal` continua apontando `devolucao-de-emprestimo`** nas duas variantes. As duas fichas tratam de empréstimo; a faixa final (vermelho) não muda, mas a explicação cita o golpe vizinho.
+- **Golpes da base:** a mesma distribuição nas duas variantes; a base continua elevando 31 golpes de amarelo para vermelho, mais que os 28 da frase limpa.
+- **O comprovante falso de pagamento segue sem sinal** (`fora-comprovante-falso`, verde), como na frase limpa: confirma a ficha nova da etapa 4.
+- Diferenças de uma mensagem entre variantes (`legit-presente-professora`, `legit-mae-pix`, `sequestro-formal`, que desceu de vermelho para amarelo) estão dentro do que uma única repetição permite distinguir. A medição com 3 repetições, já prevista, dirá se são variação do modelo.
+
+**Conclusão:** o app passa a enviar só as mensagens recebidas, em ordem de leitura, como já faz `organizarTextoPrint`. Com print, o desempenho com a base fica próximo ao da frase limpa, e o único falso vermelho medido some.
+
+**Limitações:** prints sintéticos com um único layout de aplicativo de conversa, desenhados sem fotos, figurinhas, áudio, citação de mensagem ou link com prévia; OCR medido em emulador, não em aparelho; uma repetição por mensagem. O fluxo completo do app (compartilhar o print e ver o resultado) não foi refeito no emulador com a organização ligada. A regra de "lado esquerdo" supõe o layout comum dos aplicativos de conversa; prints de SMS, e-mail ou página, sem balão à direita, são analisados inteiros.
+
+### Como refazer
+
+```
+python -I tool/prints_sinteticos/gerar_prints.py
+bash tool/prints_sinteticos/rodar_ocr.sh
+flutter test test/avaliacao/conjuntos_ocr_test.dart --dart-define=GERAR_OCR=true
+```
+
+O primeiro passo só é necessário ao mudar `teste.json`; os dois primeiros, ao mudar o desenho dos prints ou a versão do ML Kit. `npm run avaliar-analise` aceita `--retomar <relatório>` para refazer só as chamadas que falharam por limite da API.
+
 ## Quando recalibrar
 
 - A cada lote novo de fichas: mais fichas aumentam a chance de uma conversa comum ficar perto de alguma delas.

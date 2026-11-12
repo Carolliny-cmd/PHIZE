@@ -14,6 +14,8 @@ A curadoria é humana: nenhum conteúdo entra na base de forma automática. A IA
 | `indice.json` | Índice gerado pelo script. Não editar à mão. |
 | `avaliacao/mensagens.json` | Mensagens inventadas, rotuladas, para medir a recuperação (`npm run avaliar-recuperacao`; ver `docs/calibracao-recuperacao.md`). |
 | `avaliacao/teste.json` | Conjunto de **teste** (`"tipo": "teste"`): mensagens inventadas que não repetem frases das fichas, em três estilos, com golpes fora da base e mensagens legítimas difíceis. Só para medir, nunca para ajustar. `npm run conferir-teste` confere a trava contra cópia sem chamar a API; `npm run avaliar-recuperacao -- --arquivo teste.json` mede a busca. |
+| `avaliacao/ocr-teste.json` | OCR (ML Kit, emulador Android) dos prints sintéticos desenhados a partir de `teste.json`, com o texto e a posição de cada linha. Conteúdo fictício. Ver `docs/calibracao-recuperacao.md`, "Texto de print". |
+| `avaliacao/teste-ocr-{bruto,ordenado,recebidas}.json` | Conjuntos de teste com o texto como o app o envia, gerados de `ocr-teste.json` por `test/avaliacao/conjuntos_ocr_test.dart`. Não editar à mão. |
 | `avaliacao/independente.json` | Mensagens escritas por pessoas de fora, usadas na comparação com e sem a base (`npm run avaliar-analise`). Mesmo formato de `mensagens.json`, com `id` e `esperado` nulo quando nenhuma ficha cobre o golpe. Ainda não existe. |
 | `avaliacao/relatorios/` | Resultados de `avaliar-analise`: identificadores e sinais, nunca o texto das mensagens. |
 

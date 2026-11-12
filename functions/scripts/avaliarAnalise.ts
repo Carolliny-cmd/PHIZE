@@ -6,7 +6,12 @@
  *
  * Opções: --arquivo (em base-conhecimento/avaliacao/, padrão independente.json),
  * --repeticoes (padrão 3), --limite (mensagens de cada grupo), --espera (ms
- * entre chamadas, padrão 4000).
+ * entre chamadas, padrão 4000), --retomar (relatório em avaliacao/relatorios/
+ * cujas chamadas que falharam serão refeitas; as rodadas já obtidas são
+ * mantidas e o mesmo relatório é regravado).
+ *
+ * Depois de 3 falhas seguidas (limite da API, em geral), a rodada para e grava
+ * o que conseguiu; dá para continuar depois com --retomar.
  *
  * Só aceita mensagens fictícias ou públicas: a chave em uso está no nível
  * gratuito (exceção temporária ao RNF07). O relatório grava só identificadores
@@ -127,7 +132,18 @@ async function principal(): Promise<void> {
   });
   if (!indice) throw new Error("Índice da base indisponível.");
 
-  const rodadas: Rodada[] = [];
+  const pasta = path.join(BASE, "avaliacao", "relatorios");
+  const retomar = opcao("retomar", "");
+  const anterior = retomar
+    ? (JSON.parse(readFileSync(path.join(pasta, retomar), "utf8")) as {
+        repeticoes: number;
+        falhas: string[];
+        rodadas: Rodada[];
+      })
+    : null;
+  const pendentes = anterior ? new Set(anterior.falhas) : null;
+
+  const rodadas: Rodada[] = anterior ? [...anterior.rodadas] : [];
   const falhas: string[] = [];
 
   const analisar = async (m: Mensagem, modo: ModoAvaliacao) => {
@@ -154,29 +170,38 @@ async function principal(): Promise<void> {
     }
   };
 
-  const total = mensagens.length * repeticoes * 2;
+  const vezes = anterior ? 1 : repeticoes;
+  const chamadas = mensagens.flatMap((m) =>
+    (["com_base", "sem_base"] as const)
+      .filter((modo) => !pendentes || pendentes.has(`${m.id} (${modo})`))
+      .flatMap((modo) => Array.from({ length: vezes }, () => ({ m, modo }))),
+  );
+  const total = chamadas.length;
   let feitas = 0;
-  for (const m of mensagens) {
-    for (const modo of ["com_base", "sem_base"] as const) {
-      for (let i = 0; i < repeticoes; i++) {
-        const analise = await analisar(m, modo);
-        feitas++;
-        if (analise) {
-          rodadas.push({
-            mensagem: m.id,
-            grupo: m.grupo,
-            modo,
-            sinais: analise.sinais,
-            padrao: analise.padraoCorrespondente,
-            esperado: m.esperado,
-          });
-        } else {
-          falhas.push(`${m.id} (${modo})`);
-        }
-        console.log(`${feitas}/${total}`);
-        await new Promise((ok) => setTimeout(ok, espera));
-      }
+  let falhasSeguidas = 0;
+  for (const [n, { m, modo }] of chamadas.entries()) {
+    if (falhasSeguidas >= 3) {
+      falhas.push(...chamadas.slice(n).map((c) => `${c.m.id} (${c.modo})`));
+      console.log("3 falhas seguidas: parando. Continue depois com --retomar.");
+      break;
     }
+    const analise = await analisar(m, modo);
+    feitas++;
+    falhasSeguidas = analise ? 0 : falhasSeguidas + 1;
+    if (analise) {
+      rodadas.push({
+        mensagem: m.id,
+        grupo: m.grupo,
+        modo,
+        sinais: analise.sinais,
+        padrao: analise.padraoCorrespondente,
+        esperado: m.esperado,
+      });
+    } else {
+      falhas.push(`${m.id} (${modo})`);
+    }
+    console.log(`${feitas}/${total}`);
+    await new Promise((ok) => setTimeout(ok, espera));
   }
 
   const comBase = resumirRodadas(rodadas, "com_base");
@@ -185,13 +210,18 @@ async function principal(): Promise<void> {
   imprimir("sem_base", semBase);
   if (falhas.length > 0) console.log(`\nFalhas após as novas tentativas: ${falhas.length}`);
 
-  const pasta = path.join(BASE, "avaliacao", "relatorios");
   mkdirSync(pasta, { recursive: true });
-  const nome = `${new Date().toISOString().slice(0, 10)}-${path.parse(nomeArquivo).name}.json`;
-  writeFileSync(
-    path.join(pasta, nome),
-    `${JSON.stringify({ modelo, repeticoes, comBase, semBase, falhas, rodadas }, null, 2)}\n`,
-  );
+  const nome =
+    retomar || `${new Date().toISOString().slice(0, 10)}-${path.parse(nomeArquivo).name}.json`;
+  const relatorio = {
+    modelo,
+    repeticoes: anterior ? anterior.repeticoes : repeticoes,
+    comBase,
+    semBase,
+    falhas,
+    rodadas,
+  };
+  writeFileSync(path.join(pasta, nome), `${JSON.stringify(relatorio, null, 2)}\n`);
   console.log(`\nRelatório: avaliacao/relatorios/${nome}`);
 }
 

@@ -8,10 +8,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-12
-- **Última tarefa concluída:** Prompt 9.10 — tela de Perfil e nome de exibição (83 testes na Function, 593 no app)
+- **Última tarefa concluída:** etapa 2 do plano do RAG (Prompt 9.7, OCR de prints sintéticos; só as mensagens recebidas vão ao modelo) e Prompt 9.10 (tela de Perfil). 83 testes na Function, 593 no app
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 18 fichas revisadas e indexadas; 2 rascunhos corrigidos na auditoria de 2026-11-03 (`falso-sequestro`, `falso-consignado-inss`) aguardando nova revisão em `functions/base-conhecimento/rascunhos/`
-- **Próximo passo:** fechar a etapa 2 do plano do RAG (texto com cara de print real, Prompt 9.7) e seguir com os Prompts 9.11 e 9.12 (perfil, RF14). Em seguida, repetir a medição com 3 repetições para medir a variação entre execuções. A coleta de mensagens independentes foi adiada pela equipe
+- **Próximo passo:** Prompts 9.11 e 9.12 (perfil, RF14). No RAG: repetir a medição com 3 repetições para medir a variação entre execuções, depois a etapa 3 (`situacoesLegitimas`, começando pelo pedido de código) e a etapa 4 (ficha do comprovante falso). A coleta de mensagens independentes foi adiada pela equipe
 
 ---
 
@@ -251,7 +251,9 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - O modelo é instruído a nunca afirmar que a mensagem é segura, mas o código não verifica a explicação devolvida.
 - ~~Os trechos destacados do RF04 não são devolvidos pelo pipeline do UC04~~ — **resolvida no Prompt 9.3**.
 - O streaming do RNF03 não foi implementado: a medição do Prompt 9.4 mostrou ganho de só 0,5 s. Reavaliar com o faturamento ativo.
+- **O build de release do Android falha** (encontrado em 2026-11-11): o R8 acusa classes ausentes do ML Kit (`com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions$Builder` e outros scripts opcionais), referenciadas pelo plugin `google_mlkit_text_recognition`. Corrigir antes de gerar APK ou AAB de publicação: adicionar regras `-dontwarn` para esses pacotes em `android/app/proguard-rules.pro` (o próprio build sugere as regras em `build/app/outputs/mapping/release/missing_rules.txt`) ou incluir as dependências desses scripts.
 - Sincronizar `docs/relatorio-completo.md` e os .docx acadêmicos com os RF13 e RF14 (2026-11-12); `docs/requisitos.md` prevalece até lá. O diagrama de classes de `docs/uml.md` (imagem) precisa do atributo `nomeExibicao` em Usuário depois do Prompt 9.10.
+- `ReconhecedorTextoMlKit` passou a organizar o texto do print (ordem de leitura, sem interface, só mensagens recebidas; Prompt 9.7). A arquitetura (seção 3.1) descreve só a extração do texto; avaliar se esse passo merece registro no documento.
 
 ---
 
@@ -916,6 +918,9 @@ A coleta de mensagens com outras pessoas ficou inviável para a equipe agora. Pl
 
 - **Feito (etapa 5):** faixas com e sem a base calculadas pelo motor do app (`test/avaliacao/`), a partir dos sinais gravados por `avaliar-analise`. Os pesos continuam só em `ScoreConfig`.
 - **Resultado do modelo:** nenhuma correspondência errada em 14 legítimas e 5 golpes fora da base que receberam fichas; 51 de 54 correspondências certas. Com a base, 28 golpes subiram de amarelo para vermelho, e nenhuma mensagem legítima subiu de faixa. O comprovante falso de pagamento passou sem sinal: candidato a ficha nova (etapa 4).
+
+- **Feito (etapa 2):** 89 prints sintéticos (`tool/prints_sinteticos/`) passados pelo ML Kit no emulador, como o app faz. `organizarTextoPrint` (`lib/features/analise/domain/organizacao_texto_print.dart`) põe o texto em ordem de leitura, tira a interface e fica só com as mensagens recebidas; `ReconhecedorTextoMlKit` passou a usá-la. Detalhes em `docs/calibracao-recuperacao.md`, seção sobre texto de print.
+- **Resultado:** na busca, a ficha certa em 1º lugar cai de 52 para 45 de 54 com o texto bruto e volta a 52 só com as recebidas. No modelo, só com as recebidas: 53 correspondências certas (50 no bruto) e o falso vermelho do bruto (`legit-leilao-judicial` ligado a `falso-leilao-de-veiculos`) some. Resta `legit-codigo-proprio`, que subiu de verde para amarelo, ligado a `whatsapp-pedido-de-codigo` (candidato à etapa 3), e `consignado-informal`, que aponta a ficha vizinha `devolucao-de-emprestimo` sem mudar a faixa.
 
 > **Pontos para a equipe:**
 > - O conjunto foi escrito com ajuda da IA e não substitui mensagens de outras pessoas. No relatório acadêmico, deixar claro que a medida usa mensagens sintéticas.

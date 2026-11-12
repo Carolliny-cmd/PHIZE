@@ -1,0 +1,490 @@
+{
+  "descricao": "Gerado por test/avaliacao/conjuntos_ocr_test.dart a partir de ocr-teste.json (variante \"ordenado\"). Não editar à mão.",
+  "tipo": "teste",
+  "golpes": [
+    {
+      "id": "ipva-formal",
+      "esperado": "boleto-falso-ipva-licenciamento",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quem fala?\nSecretaria Estadual da Fazenda\ninforma:o imposto anual do seu\nautomóvel consta em atraso.\nQuitação à vista com abatimento de\n20% somente até as 18h, pelo\nendereço sefaz-quitacao.net."
+    },
+    {
+      "id": "ipva-informal",
+      "esperado": "boleto-falso-ipva-licenciamento",
+      "estilo": "informal",
+      "texto": "Atendimento\ndetran avisa: seu carro ta com\ndocumento atrasado, se pegar blitz\nvai pro guincho.\npaga a taxa anual aqui com 30% off:\ndetran-regulariza.com\nComo assim? Não entendi"
+    },
+    {
+      "id": "ipva-parafrase",
+      "esperado": "boleto-falso-ipva-licenciamento",
+      "estilo": "parafrase",
+      "texto": "[TELEFONE]\nOlá!\nNotamos que a taxa obrigatória do\nseu automóvel deste ano ainda não\nfoi quitada.\nGere o código copia e cola com\nabatimento exclusivo e evite que o\ncarro seja apreendido.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "emprestimo-formal",
+      "esperado": "devolucao-de-emprestimo",
+      "estilo": "formal",
+      "texto": "Mãe\nBoa tarde\nPrezado(a), constatamos que um\ncrédito pessoal de R$ 4.000 foi\ndepositado indevidamente em sua\nConta corrente.\nPara anular a operação e evitar a\ncobrança de parcelas, transfira a\nquantia para a conta de regularização\ninformada abaixo."
+    },
+    {
+      "id": "emprestimo-informal",
+      "esperado": "devolucao-de-emprestimo",
+      "estilo": "informal",
+      "texto": "[TELEFONE]\noi sr, aqui é da financeira.\no dinheiro q apareceu ai na sua conta\nfoi erro do sistema, se nao mandar de\nvolta hj vai começar a descontar juros\ntodo mes\nSério? Me explica melhor"
+    },
+    {
+      "id": "emprestimo-parafrase",
+      "esperado": "devolucao-de-emprestimo",
+      "estilo": "parafrase",
+      "texto": "Loja Ofertas\nBom dia.\nUm financiamento foi liberado no seu\nCPF sem autorização.\nPara desfazer, basta retornar o\nmontante recebido pelo código\nabaixo, assim as parcelas não serão\ngeradas.\nOk"
+    },
+    {
+      "id": "central-formal",
+      "esperado": "falsa-central-falso-funcionario",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quem fala?\nBanco Horizonte, Departamento de\nPrevenção a Fraudes.\nUma compra de R$ 2.349,90 em loja\nde eletronicos foi registrada no seu\ncartão.\nCaso não a reconheça, responda com\na senha de quatro dígitos para que o\natendente efetue o bloqueio."
+    },
+    {
+      "id": "central-informal",
+      "esperado": "falsa-central-falso-funcionario",
+      "estilo": "informal",
+      "texto": "Júlia\nSr, sou o gerente da sua agencia, to\nvendo uma transação estranha aqui\nde madrugada.\npra eu travar preciso que o sr me\npasse a senha do app rapidinho\nComo assim? Não entendi"
+    },
+    {
+      "id": "central-parafrase",
+      "esperado": "falsa-central-falso-funcionario",
+      "estilo": "parafrase",
+      "texto": "[TELEFONE]\nOlá, tudo bem? Falo do setor\nantifraude.\nHouve uma tentativa de saque de\n1.500 reais com o seu plástico. Para\nreverter, mova seu saldo para uma\nconta protegida que vou te passar.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "pgfn-formal",
+      "esperado": "falsa-cobranca-divida-ativa",
+      "estilo": "formal",
+      "texto": "Atendimento\nBoa tarde\nProcuradoria da Fazenda Nacional,\ncomunicado. Consta débito inscrito\nem seu CPF [CPFJ.\nPrograma de transação tributária com\nredução de 70% dos encargos válido\naté sexta. Para aderir, efetue o\nrecolhimento da primeira parcela via\nchave (CHAVE_PIX]."
+    },
+    {
+      "id": "pgfn-informal",
+      "esperado": "falsa-cobranca-divida-ativa",
+      "estilo": "informal",
+      "texto": "[TELEFONE]\nOi, aqui é do escritório de advocacia\nque cuida dos débitos federais.\nSeu nome tá protestado, mas consigo\ntirar com 80% de abatimento se o sr\nfechar acordo hoje\nSério? Me explica melhor"
+    },
+    {
+      "id": "pgfn-parafrase",
+      "esperado": "falsa-cobranca-divida-ativa",
+      "estilo": "parafrase",
+      "texto": "Mãe\nAviso: há pendência fiscal federal\nvinculada ao seu documento.\nInstale o app Acordo Fácil Gov pelo\nendereço abaixo e negocie o saldo\ndevedor sem juros.\nOk"
+    },
+    {
+      "id": "emprego-formal",
+      "esperado": "falsa-vaga-de-emprego",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quenm fala?\nPrezado candidato, seu currículo foi\nselecionado parao cargo de auxiliar\nadministrativo, remuneração de R$\n4.800 em home office.\nPara dar continuidade, é necessário\nquitar a taxa de treinamento de R$ 89\naté amanhā."
+    },
+    {
+      "id": "emprego-informal",
+      "esperado": "falsa-vaga-de-emprego",
+      "estilo": "informal",
+      "texto": "Loja Ofertas\noii td bem?\nto recrutando pra trabalho em casa,\nso Curtir video e ganha 300 por dia.\nPra entrar no grupo paqga so 50 de\ncadastro\nComo assim? Não entendi"
+    },
+    {
+      "id": "emprego-parafrase",
+      "esperado": "falsa-vaga-de-emprego",
+      "estilo": "parafrase",
+      "texto": "[TELEFONE]\nParabéns, você foi aprovado na\nseleção!\nAgora envie RG, CPF frente e verso e\no número da sua agência e conta para\ncadastrarmos sua folha.\nA clínica conveniada cobra 120 reais\npelo atestado de saúde.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "venda-formal",
+      "esperado": "falsa-venda",
+      "estilo": "formal",
+      "texto": "Júlia\nBoa tarde\nLoja Oficial Eletro Prime: queima total!\nSmart TV 65 polegadas de R$ 5.999\npor R$ 1.299.\nAceitamos apenas transferência\ninstantânea. Restam 4 aparelhos."
+    },
+    {
+      "id": "venda-informal",
+      "esperado": "falsa-venda",
+      "estilo": "informal",
+      "texto": "[TELEFONE]\nvendo ps5 novinho na caixa 1500, to\nprecisando de grana.\nso faço com pix adiantado e mando\npelos correios\nSério? Me explica melhor"
+    },
+    {
+      "id": "venda-parafrase",
+      "esperado": "falsa-venda",
+      "estilo": "parafrase",
+      "texto": "Atendimento\nOlá! Vi seu interesse no anúncio da\ngeladeira.\nEla sai por 700, sem retirada, só com\nentrega. Me manda o valor e já\ndespacho amanhã cedo.\nOk"
+    },
+    {
+      "id": "boleto-formal",
+      "esperado": "falso-boleto",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quem fala?\nEscola Pequeno Saber informa: houve\nalteração em nossa conta bancária.\nA cobrança da mensalidade de\nnovembro deve ser feita pelo\ndocumento em anexo; desconsidere o\nenviado anteriormente."
+    },
+    {
+      "id": "boleto-informal",
+      "esperado": "falso-boleto",
+      "estilo": "informal",
+      "texto": "Mãe\nOi aqui é da sua operadora de\ninternet, mudamos de banco e o\ncódigo de barras da sua fatura\nmudou.\nusa esse novo aqui [BOLETO] senãoo\nsinal corta amanhã\nComo assim? Não entendi"
+    },
+    {
+      "id": "boleto-parafrase",
+      "esperado": "falso-boleto",
+      "estilo": "parafrase",
+      "texto": "[TELEFONE]\nOlá, é do financeiro do condomínio.\nO título de cobrança deste mês saiu\nCom erro no valor.\nGerei outro com data nova, por favor\ndesconsidere o primeiro e quite pelo\nCódigo abaixo.\nTá bomn, vou ver aqui"
+    },
+    {
+      "id": "investimento-formal",
+      "esperado": "falso-investimento",
+      "estilo": "formal",
+      "texto": "Loja Ofertas\nBoa tarde\nGestora Alfa Capital: carteira em\ncriptoativos com retorno de 12% ao\nmês, assegurado em contrato.\nAporte inicial a partir de R$ 300.\nFale com nosso consultor."
+    },
+    {
+      "id": "investimento-informal",
+      "esperado": "falso-investimento",
+      "estilo": "informal",
+      "texto": "[TELEFONE]\nmano entrei num robô de trade que\nmultiplica a banca sozinho, já tirei 2\nmil essa semana.\nquer entrar?\nte passoo link, coloca 100 e ve\nSério? Me explica melhor"
+    },
+    {
+      "id": "investimento-parafrase",
+      "esperado": "falso-investimento",
+      "estilo": "parafrase",
+      "texto": "Júlia\nSua aplicação já rendeu R$ 3.200!\nPara resgatar, é necessário depositar a\ntaxa de retirada de 15% do saldo.\nApós a confirmação, o valor cai na sua\nconta em minutos.\nOk"
+    },
+    {
+      "id": "leilao-formal",
+      "esperado": "falso-leilao-de-veiculos",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quem fala?\nComunicado do pátio estadual: motos\nrecolhidas por falta de documentação\nserão vendidas por oferta online, a\npartir de R$ 1.200.\nConfira os itens no portal e envie sua\nproposta."
+    },
+    {
+      "id": "leilao-informal",
+      "esperado": "falso-leilao-de-veiculos",
+      "estilo": "informal",
+      "texto": "Atendimento\nParabéns!\nsua oferta foi a vencedora, o Corolla\n2019 é seu por 18 mil.\nFaz o pagamento até as 17h pra\nliberar a nota e a retirada no pátio.\nComo assim? Nāão entendi"
+    },
+    {
+      "id": "leilao-parafrase",
+      "esperado": "falso-leilao-de-veiculos",
+      "estilo": "parafrase",
+      "texto": "[TELEFONE]\nVenda pública de automóveis\nretirados de circulação, com preços\naté 60% menores que a Fipe.\nInscrições encerram hoje; sinal de\n10% via chave [CHAVE_PIX].\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "motoboy-formal",
+      "esperado": "falso-motoboy",
+      "estilo": "formal",
+      "texto": "Mãe\nBoa tarde\nCentral do Cartão: detectamos uso\nindevido do seu plástico em outra\ncidade.\nUm funcionário credenciado pas\nem sua residência ainda hoje para\nrecolher o cartãoe encaminhá-lo à\nanálise."
+    },
+    {
+      "id": "motoboy-informal",
+      "esperado": "falso-motoboy",
+      "estilo": "informal",
+      "texto": "[TELEFONE]\ndona maria, alguem copiou seu\ncartao.\npode fazer um risco nele com tesoura,\ndeixa o chip inteiro, que nosso\nentregador passa ai em 1 hora pegar\nSério? Me explica melhor"
+    },
+    {
+      "id": "motoboy-parafrase",
+      "esperado": "falso-motoboy",
+      "estilo": "parafrase",
+      "texto": "Loja Ofertas\nPara sua proteção, inutilize o cartão\ndobrando-o, guarde num envelope\ncom a senha anotada e entregue ao\nnosso colaborador, que vai levá-lo ao\nlaboratório.\nOk"
+    },
+    {
+      "id": "parente-formal",
+      "esperado": "falso-parente-numero-novo",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quem fala?\nOlá, tia. Aqui é a Júlia, este é meu\ncontato atual, perdi o aparelho\nantigo.\nEstou com um problema no app do\nbanco e preciso quitar uma fatura até\nas 16h. Consegue transferir 950 reais?\nAmanhā reponho."
+    },
+    {
+      "id": "parente-informal",
+      "esperado": "falso-parente-numero-novo",
+      "estilo": "informal",
+      "texto": "Júlia\npai, salva ai esse zap noVo, O outro\ndeu pau. to enrolado aqui, consegue\nmandar 600 pro meu amigo?\namanha te dou. nao da pra atender\nagr\nComo assim? Não entendi"
+    },
+    {
+      "id": "parente-parafrase",
+      "esperado": "falso-parente-numero-novo",
+      "estilo": "parafrase",
+      "texto": "[TELEFONE]\nMãe, mudei de chip. Surgiu uma\ndespesa e minha conta travou.\nTransfere 1.200 para a conta de um\ncolega que eu acerto contigo semana\nque vem? Tô numa reunião, não\nconsigo ligar.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "premio-formal",
+      "esperado": "falso-premio-sorteio",
+      "estilo": "formal",
+      "texto": "Atendimento\nBoa tarde\nPrograma Cliente Premiado: seu CPF\n[CPF] foi contemplado com uma moto\n0 km na apuração de outubro.\nPara emissão da documentação,\nrecolha o tributo de transferência de\nR$ 480."
+    },
+    {
+      "id": "premio-informal",
+      "esperado": "falso-premio-sorteio",
+      "estilo": "informal",
+      "texto": "[TELEFONE]\nooi vc foi escolhida no nosso\ngiveaway de aniversário da loja!!\nganhou um iphone, so falta pagar o\nfrete de 39,90 pra gente mandar\nSério? Me explica melhor"
+    },
+    {
+      "id": "premio-parafrase",
+      "esperado": "falso-premio-sorteio",
+      "estilo": "parafrase",
+      "texto": "Mãe\nSeu número saiu na promoção de fim\nde ano do supermercado: R$ 10.000\nem compras.\nQuite o imposto de 5% hoje para a\nquantia ser creditada.\nOk"
+    },
+    {
+      "id": "amor-formal",
+      "esperado": "golpe-do-amor",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quem fala?\nMeu amor, desde que te conheci\nminha vida mudou.\nEstou retido na alfândega com uma\nencomenda de presentes para você e\npreciso de 3 mil para liberar.\nAssim que chegar ao Brasil, reponho\ntudo."
+    },
+    {
+      "id": "amor-informal",
+      "esperado": "golpe-do-amor",
+      "estilo": "informal",
+      "texto": "Loja Ofertas\nbom dia minha princesa sonhei com\nVC. to num navio aqui sem sinal pra\nvideo, a camera quebrou.\nme ajuda com o hospital da minha\nfilha? so vC pode\nComo assim? Não entendi\n10:31 Vy"
+    },
+    {
+      "id": "amor-parafrase",
+      "esperado": "golpe-do-amor",
+      "estilo": "parafrase",
+      "texto": "[TELEFONE]\nQuerida, você é a pessoa mais\nespecial que já conheci. Esseé um\nsegredo nosso, ok?\nMinha conta no exterior foi congelada\ne preciso de uma força para pagar o\nadvogado. Juro que reponho.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "maofantasma-formal",
+      "esperado": "mao-fantasma",
+      "estilo": "formal",
+      "texto": "Júlia\nBoa tarde\nBanco Horizonte, Segurança Digital.\nAlguém acessou seu internet banking\nde um aparelho desconhecido.\nPara que nosso técnico corrija a falha,\nbaixe o programa AnyAjuda na loja e\ninforme o código exibido na tela."
+    },
+    {
+      "id": "maofantasma-informal",
+      "esperado": "mao-fantasma",
+      "estilo": "informal",
+      "texto": "[TELEFONE]\nSenhora, o celular da senhora tá com\nvírus e tão mexendo na conta.\nVou te mandar um app de suporte,\ninstala e deixa a tela aberta que eu\narrumo daqui\nSério? Me explica melhor"
+    },
+    {
+      "id": "maofantasma-parafrase",
+      "esperado": "mao-fantasma",
+      "estilo": "parafrase",
+      "texto": "Atendimento\nNotamos atividade estranha na sua\nconta digital.\nPara blindar seu aparelho, faça o\ndownload da ferramenta de proteção\ne conceda as permissões solicitadas\nenquanto nosso atendente\nacompanha.\nOk"
+    },
+    {
+      "id": "phishing-formal",
+      "esperado": "phishing-link-falso",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quem fala?\nPrezado cliente, seu token de\nsegurança expira hoje.\nPara não perdero acesso ao internet\nbanking, revalide-o em\nbancohorizonte-token.com\ninformando agência, conta e senha."
+    },
+    {
+      "id": "phishing-informal",
+      "esperado": "phishing-link-falso",
+      "estilo": "informal",
+      "texto": "Mãe\nNetflix: nao conseguimos cobrar sua\nassinatura\natualiza o cartao em\nnetflx-pagamento.com ou a contae\nSUspensa em 24h\nComo assim? Não entendi"
+    },
+    {
+      "id": "phishing-parafrase",
+      "esperado": "phishing-link-falso",
+      "estilo": "parafrase",
+      "texto": "[TELEFONE]\nGov: existe quantia esquecida em seu\nnome no sistema federal.\nPara solicitar o resgate, informe\nagência, conta e senha em\nresgate-gov-br.site.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "pixerrado-formal",
+      "esperado": "pix-enviado-por-engano",
+      "estilo": "formal",
+      "texto": "Loja Ofertas\nBoa tarde\nBoa tarde. Transferi R$ 850 para sua\nconta indevidamente, digitei um dado\nerrado.\nPoderia gentilmente restituir? Como\nminha conta está bloqueada, peço\nque envie para a chave [CHAVE_PIX]\nda minha esposa."
+    },
+    {
+      "id": "pixerrado-informal",
+      "esperado": "pix-enviado-por-engano",
+      "estilo": "informal",
+      "texto": "[TELEFONE]\nmoça mandei 300 pra vc sem querer\nera pro meu irmao.\nmanda de volta pfv mas manda nesse\noutro pixX aqui pq o meu ta travado\nSério? Me explica melhor"
+    },
+    {
+      "id": "pixerrado-parafrase",
+      "esperado": "pix-enviado-por-engano",
+      "estilo": "parafrase",
+      "texto": "Júlia\nOi, desculpa incomodar. Acabei de ver\nque um pagamento meu caiu na sua\nconta, confundi os dados.\nConsegue retornar? Mas usa esta\nchave aqui: [CHAVE_PIX], a anterior foi\nencerrada.\nOk"
+    },
+    {
+      "id": "encomenda-formal",
+      "esperado": "taxa-falsa-encomenda-internacional",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quenm fala?\nCorreios: seu pacote vindo da China\naguarda fiscalização aduaneira.\nTributo de importação devido: R$\n67,42.\nQuite em até 48 horas para não\nretornar ao remetente."
+    },
+    {
+      "id": "encomenda-informal",
+      "esperado": "taxa-falsa-encomenda-internacional",
+      "estilo": "informal",
+      "texto": "Atendimento\nseu pedido da shopee ta parado na\nalfandega, falta pagar 39 reais de\nimposto.\npaga pelo codigo q a gente manda\nque sai pra entrega amanha\nComo assim? Não entendi"
+    },
+    {
+      "id": "encomenda-parafrase",
+      "esperado": "taxa-falsa-encomenda-internacional",
+      "estilo": "parafrase",
+      "texto": "[TELEFONE]\nObjeto LX-2291-BR em fiscalização.\nHá valores alfandegários em aberto.\nEfetue a quitação pelo código copia e\ncola abaixo; apóso prazo, o item será\ndestruído.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "codigo-formal",
+      "esperado": "whatsapp-pedido-de-codigo",
+      "estilo": "formal",
+      "texto": "Mãe\nBoa tarde\nOlá, sou da equipe da Clínica Bem\nViver, confirmando seu agendamento\nde amanhã.\nO sistema enviou uma sequência\nnumérica para o seu telefone; por\ngentileza, repita-a aqui para\nvalidarmos a consulta."
+    },
+    {
+      "id": "codigo-informal",
+      "esperado": "whatsapp-pedido-de-codigo",
+      "estilo": "informal",
+      "texto": "[TELEFONE]\noi!\nsou do sorteio da rádio, vc ganhou.\nvai chegar um Sms com uns numeros\nai, manda pra mim que eu libero o\npremio\nSério? Me explica melhor"
+    },
+    {
+      "id": "codigo-parafrase",
+      "esperado": "whatsapp-pedido-de-codigo",
+      "estilo": "parafrase",
+      "texto": "Loja Ofertas\nOi, aquié do mercado do bairro,\nestamos renovando os dados dos\nclientes do programa de pontos.\nChegou uma mensagem com 6\nnúmeros no seu aparelho, pode me\ndizer quais são?\nOk"
+    },
+    {
+      "id": "consignado-formal",
+      "esperado": "falso-consignado-inss",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nOi, quem fala?\nSr.\naposentado, a Previdência aprovor\ncrédito com desconto em folha no\nseu benefício.\nPara concluir, envie uma selfie\nsegurando o documento e a agência\ne conta onde recebe."
+    },
+    {
+      "id": "consignado-informal",
+      "esperado": "falso-consignado-inss",
+      "estilo": "informal",
+      "texto": "Júlia\ndona, o crédito que caiu no seu\nbenefício foi engano, pra desfazer\ntem que mandar o valor de volta pra\nconta da correspondente bancária\nque eu passo\nComo assim? Não entendi"
+    },
+    {
+      "id": "sequestro-formal",
+      "esperado": "falso-sequestro",
+      "estilo": "formal",
+      "texto": "[TELEFONE]\nDelegacia informa: seu neto foi\ndetido após um atropelamento\nprecisa de fiança imediata.\nNão comente com a família para não\nprejudicar o processo.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "sequestro-informal",
+      "esperado": "falso-sequestro",
+      "estilo": "informal",
+      "texto": "Atendimento\nBoa tarde\nSua filha tá aqui com a gente.\nSe chamar os homi ou contar pra\nalguém, nunca mais về ela.\nFica na linha e espera as instruções."
+    },
+    {
+      "id": "fora-aluguel-temporada",
+      "esperado": null,
+      "estilo": "fora-da-base",
+      "texto": "[TELEFONE]\nOi! A casa na praia ainda está livre\npara o réveillon, 5 diárias por 1.800.\nComo tem muita procura, só seguro a\ndata com sinal de 50% hoje. Depois\nmando o endereço.\nSério? Me explica melhor"
+    },
+    {
+      "id": "fora-vaquinha-falsa",
+      "esperado": null,
+      "estilo": "fora-da-base",
+      "texto": "Mãe\nGente, o Pedrinho de 6 anos precisa\nde uma cirurgia urgente que o plano\nnão cobre. Qualquer ajuda conta!\nDoações pela chave [CHAVE_PIX].\nCompartilhem!\nOk"
+    },
+    {
+      "id": "fora-comprovante-falso",
+      "esperado": null,
+      "estilo": "fora-da-base",
+      "texto": "[TELEFONE]\nOi, quem fala?\nOi, já fiz a transferência da bicicleta,\nsegue o comprovante.\nPode mandar o motoboy entregar?\nÅs vezes demora um pouco pra cair,\nmas já saiu daqui."
+    },
+    {
+      "id": "fora-falso-advogado",
+      "esperado": null,
+      "estilo": "fora-da-base",
+      "texto": "Loja Ofertas\nDr. Ricardo Alves, escritório Alves e\nAssociados.\nInformamos que a ação trabalhista\nem seu nome foi julgada procedente,\nCom R$ 38.000 a receber. Para\nexpedição do alvará, é necessário\nrecolher as custas de R$ 1.150.\nComo assim? Não entendi"
+    },
+    {
+      "id": "fora-emprestimo-taxa",
+      "esperado": null,
+      "estilo": "fora-da-base",
+      "texto": "[TELEFONE]\nCrédito fácil sem consulta ao SPC!\nLiberamos até 20 mil para\nnegativados em 1 hora.\nBasta pagar a tarifa de abertura de\ncadastro de R$ 250 e o dinheiro cai na\nhora.\nTá bom, vou ver aqui"
+    }
+  ],
+  "semGolpe": [
+    {
+      "id": "legit-aviso-compra",
+      "texto": "Júlia\nBoa tarde\nBanco Horizonte: compra aprovada\nde R$ 89,90 em Padaria Pão Quente\nno cartão final 4321.\nNão reconhece?\nUse o app oficial do banco."
+    },
+    {
+      "id": "legit-alerta-banco",
+      "texto": "[TELEFONE]\nBanco Horizonte nunca pede senha,\ncódigo ou transferência por telefone\nOu mensagem.\nEm caso de dúvida, ligue para a\ncentral no verso do cartão.\nSério? Me explica melhor\n13:20 /y"
+    },
+    {
+      "id": "legit-rastreio",
+      "texto": "Atendimento\nCorreios: seu objeto foi postado e\nestá emn trânsito para a unidade de\ndistribuição.\nAcompanhe no app oficial.\nOk"
+    },
+    {
+      "id": "legit-pedido-entrega",
+      "texto": "[TELEFONE]\nOi, quem fala?\nSeu pedido 48213 da Loja Casa Bela\nsaiu para entrega hoje.\nO entregador não pedirá nenhum\npagamento."
+    },
+    {
+      "id": "legit-codigo-proprio",
+      "texto": "Mãe\nSeu código de acesso a app\nFarmácia Mais é 482913.\nNão compartilhe com ninguém.\nComo assim? Não entendi"
+    },
+    {
+      "id": "legit-mae-pix",
+      "texto": "[TELEFONE]\nFilho, mandei o dinheiro do material\nda escola pro seu Pix agora.\nConfere aí e me avisa se chegou, beijo\nda mãe.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "legit-condominio-reajuste",
+      "texto": "Loja Ofertas\nBoa tarde\nPrezados condôminos, conforme\naprovado em assembleia, a taxa\ncondominial de dezembro terá\nreajuste de 6%.\nO documento de cobrança estará\ndisponível no portal da\nadministradora."
+    },
+    {
+      "id": "legit-escola-mensalidade",
+      "texto": "[TELEFONE]\nColégio Pequeno Saber: lembramos\nque a mensalidade de novembro\nvence dia 10.\nPagamentos podem ser feitos pelo\naplicativo da escola ou na secretaria.\nSério? Me explica melhor"
+    },
+    {
+      "id": "legit-fatura-internet",
+      "texto": "Júlia\nSua fatura de internet de novembro,\nno valor de R$ 119,90, já está\ndisponível no app Conecta.\nVencimento em 15/11.\nOk"
+    },
+    {
+      "id": "legit-entrevista",
+      "texto": "[TELEFONE]\nOi, quem fala?\nOlá, Mariana! Recebemos sua\ncandidatura para analista de RH.\nGostaríamos de agendar uma\nentrevista por vídeo na quinta às 15h.\nPode confirmar?"
+    },
+    {
+      "id": "legit-admissao",
+      "texto": "Atendimento\nBem-vinda à equipe!\nPara a admissão, traga na\nsegunda-feira carteira de trabalho, RG\ne comprovante de residência ao setor\nde RH, 2° andar.\nComo assim? Não entendi"
+    },
+    {
+      "id": "legit-rifa-escola",
+      "texto": "[TELEFONE]\nResultado do sorteio da festa junina\nda escola: a rifa número 237 ganhou a\ncesta de chocolates!\nRetirar na secretaria até sexta.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "legit-rendimento-cdb",
+      "texto": "Mãe\nBoa tarde\nSeu CDB rendeu R$ 12,30 em\noutubro.\nConsulte o extrato completo no\naplicativo."
+    },
+    {
+      "id": "legit-noticia-restituicao",
+      "texto": "[TELEFONE]\nA Receita Federal libera hoje o lote de\nrestituição.\nConsulte no site oficial ou no app\nMeu Imposto de Renda.\nSério? Me explica melhor"
+    },
+    {
+      "id": "legit-alerta-familia",
+      "texto": "Loja Ofertas\nPessoal, cuidado: tão mandando\nmensagem se passando pela tia Rosa\npedindo dinheiro.\nEla não mudou de número!\nOk"
+    },
+    {
+      "id": "legit-clinica",
+      "texto": "[TELEFONE]\noi, quem fala?\nClínica Bem Viver: sua consulta está\nmarcada para 12/11 às 9h.\nResponda 1 para confirmar ou 2 para\nremarcar."
+    },
+    {
+      "id": "legit-mercado-entrega",
+      "texto": "Júlia\nSeu pedido do Mercado Bom Preço\nchega entre 18h e 19h.\nPagamento na entrega por cartão ou\ndinheiro.\nComo assim? Não entendi"
+    },
+    {
+      "id": "legit-bicicleta",
+      "texto": "[TELEFONE]\nOi!\nA bicicleta ainda está disponível sim.\nPode vir ver pessoalmente sábado de\nmanhã e paga quando retirar.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "legit-leilao-judicial",
+      "texto": "Atendimento\nBoa tarde\nO leilão judicial do apartamento será\nrealizado pelo site do leiloeiro oficial\nno dia 20.\nO edital está disponível no Diário\nOficial."
+    },
+    {
+      "id": "legit-cartao-novo",
+      "texto": "[TELEFONE]\nSeu novo cartão Banco Horizonte foi\nenviado e chega em até 7 dias úteis.\nDesbloqueie pelo aplicativo.\nSério? Me explica melhor"
+    },
+    {
+      "id": "legit-calendario-ipva",
+      "texto": "Mãe\nDetran informa: o calendário do |PVA\n2027 será divulgado em dezembro.\nPague somente pelos canais oficiais.\nOk"
+    },
+    {
+      "id": "legit-namorado",
+      "texto": "[TELEFONE]\nOi, quem fala?\nAmor, tô com saudade.\nChego no sábado e a gente vai\nnaquele restaurante que você gosta.\nTe ligo à noite por vídeo."
+    },
+    {
+      "id": "legit-estorno-loja",
+      "texto": "Loja Ofertas\nSeu estorno de R$ 199,90 referente à\ndevolução do pedido 7781 foi\nprocessado e aparece na próxima\nfatura.\nComo assim? Nāão entendi"
+    },
+    {
+      "id": "legit-presente-professora",
+      "texto": "[TELEFONE]\nGalera, o presente da professora\nfechou em 25 por pessoa.\nQuem ainda não mandou, meu Pix é\no celular de sempre.\nTá bom, vou ver aqui"
+    },
+    {
+      "id": "legit-suporte",
+      "texto": "Júlia\nBoa tarde\nRecebemos sua solicitação de suporte\n5523.\nNossa equipe responde em até 48h\npelo e-mail cadastrado.\nNunca pedimos senha."
+    },
+    {
+      "id": "legit-ofertas-mercado",
+      "texto": "[TELEFONE]\nOfertas da semana no Mercado Bom\nPreço: arroz 5 kg por 22,90 e café 500\ng por 15,49.\nVálido até domingo nas lojas fisicas.\nSério? Me explica melhor"
+    }
+  ]
+}

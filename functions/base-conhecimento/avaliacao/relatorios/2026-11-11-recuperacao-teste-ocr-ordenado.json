@@ -1,0 +1,1091 @@
+{
+  "modeloEmbedding": "gemini-embedding-2",
+  "quantidade": 3,
+  "limiar": 0.7,
+  "resumo": {
+    "golpesAvaliados": 54,
+    "primeiroLugar": 49,
+    "entreEnviadas": 53,
+    "menorNotaCerta": 0.676,
+    "maiorNotaSemGolpe": 0.814,
+    "legitimasQueChegamAoModelo": 24,
+    "legitimas": 26,
+    "foraDaBaseQueChegamAoModelo": 5,
+    "foraDaBase": 5,
+    "porEstilo": {
+      "formal": {
+        "total": 18,
+        "primeiro": 17,
+        "recuperado": 18
+      },
+      "informal": {
+        "total": 18,
+        "primeiro": 16,
+        "recuperado": 18
+      },
+      "parafrase": {
+        "total": 18,
+        "primeiro": 16,
+        "recuperado": 17
+      }
+    },
+    "ignoradas": [
+      "consignado-formal",
+      "consignado-informal",
+      "sequestro-formal",
+      "sequestro-informal"
+    ]
+  },
+  "golpes": [
+    {
+      "id": "ipva-formal",
+      "esperado": "boleto-falso-ipva-licenciamento",
+      "estilo": "formal",
+      "notaEsperada": 0.816,
+      "posicao": 1,
+      "primeiro": {
+        "id": "boleto-falso-ipva-licenciamento",
+        "nota": 0.816
+      },
+      "enviadas": [
+        "boleto-falso-ipva-licenciamento",
+        "taxa-falsa-encomenda-internacional",
+        "falso-leilao-de-veiculos"
+      ]
+    },
+    {
+      "id": "ipva-informal",
+      "esperado": "boleto-falso-ipva-licenciamento",
+      "estilo": "informal",
+      "notaEsperada": 0.822,
+      "posicao": 1,
+      "primeiro": {
+        "id": "boleto-falso-ipva-licenciamento",
+        "nota": 0.822
+      },
+      "enviadas": [
+        "boleto-falso-ipva-licenciamento",
+        "falso-leilao-de-veiculos",
+        "phishing-link-falso"
+      ]
+    },
+    {
+      "id": "ipva-parafrase",
+      "esperado": "boleto-falso-ipva-licenciamento",
+      "estilo": "parafrase",
+      "notaEsperada": 0.811,
+      "posicao": 1,
+      "primeiro": {
+        "id": "boleto-falso-ipva-licenciamento",
+        "nota": 0.811
+      },
+      "enviadas": [
+        "boleto-falso-ipva-licenciamento",
+        "taxa-falsa-encomenda-internacional",
+        "falso-premio-sorteio"
+      ]
+    },
+    {
+      "id": "emprestimo-formal",
+      "esperado": "devolucao-de-emprestimo",
+      "estilo": "formal",
+      "notaEsperada": 0.851,
+      "posicao": 1,
+      "primeiro": {
+        "id": "devolucao-de-emprestimo",
+        "nota": 0.851
+      },
+      "enviadas": [
+        "devolucao-de-emprestimo",
+        "falsa-central-falso-funcionario",
+        "mao-fantasma"
+      ]
+    },
+    {
+      "id": "emprestimo-informal",
+      "esperado": "devolucao-de-emprestimo",
+      "estilo": "informal",
+      "notaEsperada": 0.804,
+      "posicao": 1,
+      "primeiro": {
+        "id": "devolucao-de-emprestimo",
+        "nota": 0.804
+      },
+      "enviadas": [
+        "devolucao-de-emprestimo",
+        "pix-enviado-por-engano",
+        "falsa-central-falso-funcionario"
+      ]
+    },
+    {
+      "id": "emprestimo-parafrase",
+      "esperado": "devolucao-de-emprestimo",
+      "estilo": "parafrase",
+      "notaEsperada": 0.823,
+      "posicao": 1,
+      "primeiro": {
+        "id": "devolucao-de-emprestimo",
+        "nota": 0.823
+      },
+      "enviadas": [
+        "devolucao-de-emprestimo",
+        "whatsapp-pedido-de-codigo",
+        "falsa-venda"
+      ]
+    },
+    {
+      "id": "central-formal",
+      "esperado": "falsa-central-falso-funcionario",
+      "estilo": "formal",
+      "notaEsperada": 0.82,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-central-falso-funcionario",
+        "nota": 0.82
+      },
+      "enviadas": [
+        "falsa-central-falso-funcionario",
+        "mao-fantasma",
+        "falso-motoboy"
+      ]
+    },
+    {
+      "id": "central-informal",
+      "esperado": "falsa-central-falso-funcionario",
+      "estilo": "informal",
+      "notaEsperada": 0.792,
+      "posicao": 2,
+      "primeiro": {
+        "id": "mao-fantasma",
+        "nota": 0.794
+      },
+      "enviadas": [
+        "mao-fantasma",
+        "falsa-central-falso-funcionario",
+        "falso-parente-numero-novo"
+      ]
+    },
+    {
+      "id": "central-parafrase",
+      "esperado": "falsa-central-falso-funcionario",
+      "estilo": "parafrase",
+      "notaEsperada": 0.845,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-central-falso-funcionario",
+        "nota": 0.845
+      },
+      "enviadas": [
+        "falsa-central-falso-funcionario",
+        "mao-fantasma",
+        "falso-motoboy"
+      ]
+    },
+    {
+      "id": "pgfn-formal",
+      "esperado": "falsa-cobranca-divida-ativa",
+      "estilo": "formal",
+      "notaEsperada": 0.853,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-cobranca-divida-ativa",
+        "nota": 0.853
+      },
+      "enviadas": [
+        "falsa-cobranca-divida-ativa",
+        "boleto-falso-ipva-licenciamento",
+        "falso-premio-sorteio"
+      ]
+    },
+    {
+      "id": "pgfn-informal",
+      "esperado": "falsa-cobranca-divida-ativa",
+      "estilo": "informal",
+      "notaEsperada": 0.824,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-cobranca-divida-ativa",
+        "nota": 0.824
+      },
+      "enviadas": [
+        "falsa-cobranca-divida-ativa",
+        "devolucao-de-emprestimo",
+        "falsa-central-falso-funcionario"
+      ]
+    },
+    {
+      "id": "pgfn-parafrase",
+      "esperado": "falsa-cobranca-divida-ativa",
+      "estilo": "parafrase",
+      "notaEsperada": 0.793,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-cobranca-divida-ativa",
+        "nota": 0.793
+      },
+      "enviadas": [
+        "falsa-cobranca-divida-ativa",
+        "taxa-falsa-encomenda-internacional",
+        "falso-premio-sorteio"
+      ]
+    },
+    {
+      "id": "emprego-formal",
+      "esperado": "falsa-vaga-de-emprego",
+      "estilo": "formal",
+      "notaEsperada": 0.846,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-vaga-de-emprego",
+        "nota": 0.846
+      },
+      "enviadas": [
+        "falsa-vaga-de-emprego",
+        "devolucao-de-emprestimo",
+        "falsa-central-falso-funcionario"
+      ]
+    },
+    {
+      "id": "emprego-informal",
+      "esperado": "falsa-vaga-de-emprego",
+      "estilo": "informal",
+      "notaEsperada": 0.774,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-vaga-de-emprego",
+        "nota": 0.774
+      },
+      "enviadas": [
+        "falsa-vaga-de-emprego",
+        "falsa-venda",
+        "whatsapp-pedido-de-codigo"
+      ]
+    },
+    {
+      "id": "emprego-parafrase",
+      "esperado": "falsa-vaga-de-emprego",
+      "estilo": "parafrase",
+      "notaEsperada": 0.818,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-vaga-de-emprego",
+        "nota": 0.818
+      },
+      "enviadas": [
+        "falsa-vaga-de-emprego",
+        "whatsapp-pedido-de-codigo",
+        "mao-fantasma"
+      ]
+    },
+    {
+      "id": "venda-formal",
+      "esperado": "falsa-venda",
+      "estilo": "formal",
+      "notaEsperada": 0.79,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-venda",
+        "nota": 0.79
+      },
+      "enviadas": [
+        "falsa-venda",
+        "whatsapp-pedido-de-codigo",
+        "devolucao-de-emprestimo"
+      ]
+    },
+    {
+      "id": "venda-informal",
+      "esperado": "falsa-venda",
+      "estilo": "informal",
+      "notaEsperada": 0.794,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-venda",
+        "nota": 0.794
+      },
+      "enviadas": [
+        "falsa-venda",
+        "falsa-central-falso-funcionario",
+        "falso-parente-numero-novo"
+      ]
+    },
+    {
+      "id": "venda-parafrase",
+      "esperado": "falsa-venda",
+      "estilo": "parafrase",
+      "notaEsperada": 0.754,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falsa-venda",
+        "nota": 0.754
+      },
+      "enviadas": [
+        "falsa-venda",
+        "falsa-vaga-de-emprego",
+        "whatsapp-pedido-de-codigo"
+      ]
+    },
+    {
+      "id": "boleto-formal",
+      "esperado": "falso-boleto",
+      "estilo": "formal",
+      "notaEsperada": 0.764,
+      "posicao": 3,
+      "primeiro": {
+        "id": "falso-parente-numero-novo",
+        "nota": 0.772
+      },
+      "enviadas": [
+        "falso-parente-numero-novo",
+        "falsa-central-falso-funcionario",
+        "falso-boleto"
+      ]
+    },
+    {
+      "id": "boleto-informal",
+      "esperado": "falso-boleto",
+      "estilo": "informal",
+      "notaEsperada": 0.791,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-boleto",
+        "nota": 0.791
+      },
+      "enviadas": [
+        "falso-boleto",
+        "falso-parente-numero-novo",
+        "devolucao-de-emprestimo"
+      ]
+    },
+    {
+      "id": "boleto-parafrase",
+      "esperado": "falso-boleto",
+      "estilo": "parafrase",
+      "notaEsperada": 0.794,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-boleto",
+        "nota": 0.794
+      },
+      "enviadas": [
+        "falso-boleto",
+        "devolucao-de-emprestimo",
+        "falsa-central-falso-funcionario"
+      ]
+    },
+    {
+      "id": "investimento-formal",
+      "esperado": "falso-investimento",
+      "estilo": "formal",
+      "notaEsperada": 0.759,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-investimento",
+        "nota": 0.759
+      },
+      "enviadas": [
+        "falso-investimento",
+        "falsa-venda",
+        "falsa-vaga-de-emprego"
+      ]
+    },
+    {
+      "id": "investimento-informal",
+      "esperado": "falso-investimento",
+      "estilo": "informal",
+      "notaEsperada": 0.798,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-investimento",
+        "nota": 0.798
+      },
+      "enviadas": [
+        "falso-investimento",
+        "mao-fantasma",
+        "falso-parente-numero-novo"
+      ]
+    },
+    {
+      "id": "investimento-parafrase",
+      "esperado": "falso-investimento",
+      "estilo": "parafrase",
+      "notaEsperada": 0.822,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-investimento",
+        "nota": 0.822
+      },
+      "enviadas": [
+        "falso-investimento",
+        "falsa-vaga-de-emprego",
+        "falso-premio-sorteio"
+      ]
+    },
+    {
+      "id": "leilao-formal",
+      "esperado": "falso-leilao-de-veiculos",
+      "estilo": "formal",
+      "notaEsperada": 0.769,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-leilao-de-veiculos",
+        "nota": 0.769
+      },
+      "enviadas": [
+        "falso-leilao-de-veiculos",
+        "boleto-falso-ipva-licenciamento",
+        "falso-motoboy"
+      ]
+    },
+    {
+      "id": "leilao-informal",
+      "esperado": "falso-leilao-de-veiculos",
+      "estilo": "informal",
+      "notaEsperada": 0.803,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-leilao-de-veiculos",
+        "nota": 0.803
+      },
+      "enviadas": [
+        "falso-leilao-de-veiculos",
+        "falso-premio-sorteio",
+        "boleto-falso-ipva-licenciamento"
+      ]
+    },
+    {
+      "id": "leilao-parafrase",
+      "esperado": "falso-leilao-de-veiculos",
+      "estilo": "parafrase",
+      "notaEsperada": 0.804,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-leilao-de-veiculos",
+        "nota": 0.804
+      },
+      "enviadas": [
+        "falso-leilao-de-veiculos",
+        "boleto-falso-ipva-licenciamento",
+        "falso-premio-sorteio"
+      ]
+    },
+    {
+      "id": "motoboy-formal",
+      "esperado": "falso-motoboy",
+      "estilo": "formal",
+      "notaEsperada": 0.804,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-motoboy",
+        "nota": 0.804
+      },
+      "enviadas": [
+        "falso-motoboy",
+        "falsa-central-falso-funcionario",
+        "mao-fantasma"
+      ]
+    },
+    {
+      "id": "motoboy-informal",
+      "esperado": "falso-motoboy",
+      "estilo": "informal",
+      "notaEsperada": 0.827,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-motoboy",
+        "nota": 0.827
+      },
+      "enviadas": [
+        "falso-motoboy",
+        "falsa-central-falso-funcionario",
+        "mao-fantasma"
+      ]
+    },
+    {
+      "id": "motoboy-parafrase",
+      "esperado": "falso-motoboy",
+      "estilo": "parafrase",
+      "notaEsperada": 0.676,
+      "posicao": 2,
+      "primeiro": {
+        "id": "whatsapp-pedido-de-codigo",
+        "nota": 0.68
+      },
+      "enviadas": []
+    },
+    {
+      "id": "parente-formal",
+      "esperado": "falso-parente-numero-novo",
+      "estilo": "formal",
+      "notaEsperada": 0.854,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-parente-numero-novo",
+        "nota": 0.854
+      },
+      "enviadas": [
+        "falso-parente-numero-novo",
+        "mao-fantasma",
+        "devolucao-de-emprestimo"
+      ]
+    },
+    {
+      "id": "parente-informal",
+      "esperado": "falso-parente-numero-novo",
+      "estilo": "informal",
+      "notaEsperada": 0.819,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-parente-numero-novo",
+        "nota": 0.819
+      },
+      "enviadas": [
+        "falso-parente-numero-novo",
+        "whatsapp-pedido-de-codigo",
+        "mao-fantasma"
+      ]
+    },
+    {
+      "id": "parente-parafrase",
+      "esperado": "falso-parente-numero-novo",
+      "estilo": "parafrase",
+      "notaEsperada": 0.84,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-parente-numero-novo",
+        "nota": 0.84
+      },
+      "enviadas": [
+        "falso-parente-numero-novo",
+        "mao-fantasma",
+        "falsa-central-falso-funcionario"
+      ]
+    },
+    {
+      "id": "premio-formal",
+      "esperado": "falso-premio-sorteio",
+      "estilo": "formal",
+      "notaEsperada": 0.872,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-premio-sorteio",
+        "nota": 0.872
+      },
+      "enviadas": [
+        "falso-premio-sorteio",
+        "boleto-falso-ipva-licenciamento",
+        "whatsapp-pedido-de-codigo"
+      ]
+    },
+    {
+      "id": "premio-informal",
+      "esperado": "falso-premio-sorteio",
+      "estilo": "informal",
+      "notaEsperada": 0.808,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-premio-sorteio",
+        "nota": 0.808
+      },
+      "enviadas": [
+        "falso-premio-sorteio",
+        "whatsapp-pedido-de-codigo",
+        "falsa-venda"
+      ]
+    },
+    {
+      "id": "premio-parafrase",
+      "esperado": "falso-premio-sorteio",
+      "estilo": "parafrase",
+      "notaEsperada": 0.811,
+      "posicao": 1,
+      "primeiro": {
+        "id": "falso-premio-sorteio",
+        "nota": 0.811
+      },
+      "enviadas": [
+        "falso-premio-sorteio",
+        "falso-parente-numero-novo",
+        "whatsapp-pedido-de-codigo"
+      ]
+    },
+    {
+      "id": "amor-formal",
+      "esperado": "golpe-do-amor",
+      "estilo": "formal",
+      "notaEsperada": 0.828,
+      "posicao": 1,
+      "primeiro": {
+        "id": "golpe-do-amor",
+        "nota": 0.828
+      },
+      "enviadas": [
+        "golpe-do-amor",
+        "taxa-falsa-encomenda-internacional",
+        "falso-parente-numero-novo"
+      ]
+    },
+    {
+      "id": "amor-informal",
+      "esperado": "golpe-do-amor",
+      "estilo": "informal",
+      "notaEsperada": 0.772,
+      "posicao": 1,
+      "primeiro": {
+        "id": "golpe-do-amor",
+        "nota": 0.772
+      },
+      "enviadas": [
+        "golpe-do-amor",
+        "falso-parente-numero-novo",
+        "whatsapp-pedido-de-codigo"
+      ]
+    },
+    {
+      "id": "amor-parafrase",
+      "esperado": "golpe-do-amor",
+      "estilo": "parafrase",
+      "notaEsperada": 0.824,
+      "posicao": 1,
+      "primeiro": {
+        "id": "golpe-do-amor",
+        "nota": 0.824
+      },
+      "enviadas": [
+        "golpe-do-amor",
+        "falso-parente-numero-novo",
+        "falsa-central-falso-funcionario"
+      ]
+    },
+    {
+      "id": "maofantasma-formal",
+      "esperado": "mao-fantasma",
+      "estilo": "formal",
+      "notaEsperada": 0.835,
+      "posicao": 1,
+      "primeiro": {
+        "id": "mao-fantasma",
+        "nota": 0.835
+      },
+      "enviadas": [
+        "mao-fantasma",
+        "falsa-central-falso-funcionario",
+        "phishing-link-falso"
+      ]
+    },
+    {
+      "id": "maofantasma-informal",
+      "esperado": "mao-fantasma",
+      "estilo": "informal",
+      "notaEsperada": 0.877,
+      "posicao": 1,
+      "primeiro": {
+        "id": "mao-fantasma",
+        "nota": 0.877
+      },
+      "enviadas": [
+        "mao-fantasma",
+        "falsa-central-falso-funcionario",
+        "falso-parente-numero-novo"
+      ]
+    },
+    {
+      "id": "maofantasma-parafrase",
+      "esperado": "mao-fantasma",
+      "estilo": "parafrase",
+      "notaEsperada": 0.84,
+      "posicao": 1,
+      "primeiro": {
+        "id": "mao-fantasma",
+        "nota": 0.84
+      },
+      "enviadas": [
+        "mao-fantasma",
+        "falsa-central-falso-funcionario",
+        "phishing-link-falso"
+      ]
+    },
+    {
+      "id": "phishing-formal",
+      "esperado": "phishing-link-falso",
+      "estilo": "formal",
+      "notaEsperada": 0.811,
+      "posicao": 1,
+      "primeiro": {
+        "id": "phishing-link-falso",
+        "nota": 0.811
+      },
+      "enviadas": [
+        "phishing-link-falso",
+        "mao-fantasma",
+        "falsa-central-falso-funcionario"
+      ]
+    },
+    {
+      "id": "phishing-informal",
+      "esperado": "phishing-link-falso",
+      "estilo": "informal",
+      "notaEsperada": 0.752,
+      "posicao": 1,
+      "primeiro": {
+        "id": "phishing-link-falso",
+        "nota": 0.752
+      },
+      "enviadas": [
+        "phishing-link-falso",
+        "falso-parente-numero-novo",
+        "mao-fantasma"
+      ]
+    },
+    {
+      "id": "phishing-parafrase",
+      "esperado": "phishing-link-falso",
+      "estilo": "parafrase",
+      "notaEsperada": 0.807,
+      "posicao": 2,
+      "primeiro": {
+        "id": "mao-fantasma",
+        "nota": 0.807
+      },
+      "enviadas": [
+        "mao-fantasma",
+        "phishing-link-falso",
+        "falsa-central-falso-funcionario"
+      ]
+    },
+    {
+      "id": "pixerrado-formal",
+      "esperado": "pix-enviado-por-engano",
+      "estilo": "formal",
+      "notaEsperada": 0.843,
+      "posicao": 1,
+      "primeiro": {
+        "id": "pix-enviado-por-engano",
+        "nota": 0.843
+      },
+      "enviadas": [
+        "pix-enviado-por-engano",
+        "devolucao-de-emprestimo",
+        "falso-parente-numero-novo"
+      ]
+    },
+    {
+      "id": "pixerrado-informal",
+      "esperado": "pix-enviado-por-engano",
+      "estilo": "informal",
+      "notaEsperada": 0.82,
+      "posicao": 1,
+      "primeiro": {
+        "id": "pix-enviado-por-engano",
+        "nota": 0.82
+      },
+      "enviadas": [
+        "pix-enviado-por-engano",
+        "devolucao-de-emprestimo",
+        "falso-parente-numero-novo"
+      ]
+    },
+    {
+      "id": "pixerrado-parafrase",
+      "esperado": "pix-enviado-por-engano",
+      "estilo": "parafrase",
+      "notaEsperada": 0.823,
+      "posicao": 1,
+      "primeiro": {
+        "id": "pix-enviado-por-engano",
+        "nota": 0.823
+      },
+      "enviadas": [
+        "pix-enviado-por-engano",
+        "devolucao-de-emprestimo",
+        "falso-parente-numero-novo"
+      ]
+    },
+    {
+      "id": "encomenda-formal",
+      "esperado": "taxa-falsa-encomenda-internacional",
+      "estilo": "formal",
+      "notaEsperada": 0.845,
+      "posicao": 1,
+      "primeiro": {
+        "id": "taxa-falsa-encomenda-internacional",
+        "nota": 0.845
+      },
+      "enviadas": [
+        "taxa-falsa-encomenda-internacional",
+        "falsa-cobranca-divida-ativa",
+        "falso-premio-sorteio"
+      ]
+    },
+    {
+      "id": "encomenda-informal",
+      "esperado": "taxa-falsa-encomenda-internacional",
+      "estilo": "informal",
+      "notaEsperada": 0.837,
+      "posicao": 1,
+      "primeiro": {
+        "id": "taxa-falsa-encomenda-internacional",
+        "nota": 0.837
+      },
+      "enviadas": [
+        "taxa-falsa-encomenda-internacional",
+        "whatsapp-pedido-de-codigo",
+        "falsa-venda"
+      ]
+    },
+    {
+      "id": "encomenda-parafrase",
+      "esperado": "taxa-falsa-encomenda-internacional",
+      "estilo": "parafrase",
+      "notaEsperada": 0.829,
+      "posicao": 1,
+      "primeiro": {
+        "id": "taxa-falsa-encomenda-internacional",
+        "nota": 0.829
+      },
+      "enviadas": [
+        "taxa-falsa-encomenda-internacional",
+        "whatsapp-pedido-de-codigo",
+        "falsa-cobranca-divida-ativa"
+      ]
+    },
+    {
+      "id": "codigo-formal",
+      "esperado": "whatsapp-pedido-de-codigo",
+      "estilo": "formal",
+      "notaEsperada": 0.82,
+      "posicao": 1,
+      "primeiro": {
+        "id": "whatsapp-pedido-de-codigo",
+        "nota": 0.82
+      },
+      "enviadas": [
+        "whatsapp-pedido-de-codigo",
+        "mao-fantasma",
+        "falso-parente-numero-novo"
+      ]
+    },
+    {
+      "id": "codigo-informal",
+      "esperado": "whatsapp-pedido-de-codigo",
+      "estilo": "informal",
+      "notaEsperada": 0.807,
+      "posicao": 2,
+      "primeiro": {
+        "id": "falso-premio-sorteio",
+        "nota": 0.838
+      },
+      "enviadas": [
+        "falso-premio-sorteio",
+        "whatsapp-pedido-de-codigo",
+        "falsa-central-falso-funcionario"
+      ]
+    },
+    {
+      "id": "codigo-parafrase",
+      "esperado": "whatsapp-pedido-de-codigo",
+      "estilo": "parafrase",
+      "notaEsperada": 0.848,
+      "posicao": 1,
+      "primeiro": {
+        "id": "whatsapp-pedido-de-codigo",
+        "nota": 0.848
+      },
+      "enviadas": [
+        "whatsapp-pedido-de-codigo",
+        "phishing-link-falso",
+        "falsa-central-falso-funcionario"
+      ]
+    }
+  ],
+  "foraDaBase": [
+    {
+      "id": "fora-aluguel-temporada",
+      "melhor": "falso-parente-numero-novo",
+      "nota": 0.751,
+      "vai": true
+    },
+    {
+      "id": "fora-vaquinha-falsa",
+      "melhor": "falso-parente-numero-novo",
+      "nota": 0.761,
+      "vai": true
+    },
+    {
+      "id": "fora-comprovante-falso",
+      "melhor": "falso-motoboy",
+      "nota": 0.772,
+      "vai": true
+    },
+    {
+      "id": "fora-falso-advogado",
+      "melhor": "falso-premio-sorteio",
+      "nota": 0.79,
+      "vai": true
+    },
+    {
+      "id": "fora-emprestimo-taxa",
+      "melhor": "devolucao-de-emprestimo",
+      "nota": 0.795,
+      "vai": true
+    }
+  ],
+  "semGolpe": [
+    {
+      "id": "legit-aviso-compra",
+      "melhor": "mao-fantasma",
+      "nota": 0.713,
+      "vai": true
+    },
+    {
+      "id": "legit-alerta-banco",
+      "melhor": "falsa-central-falso-funcionario",
+      "nota": 0.768,
+      "vai": true
+    },
+    {
+      "id": "legit-rastreio",
+      "melhor": "taxa-falsa-encomenda-internacional",
+      "nota": 0.714,
+      "vai": true
+    },
+    {
+      "id": "legit-pedido-entrega",
+      "melhor": "whatsapp-pedido-de-codigo",
+      "nota": 0.733,
+      "vai": true
+    },
+    {
+      "id": "legit-codigo-proprio",
+      "melhor": "whatsapp-pedido-de-codigo",
+      "nota": 0.759,
+      "vai": true
+    },
+    {
+      "id": "legit-mae-pix",
+      "melhor": "falso-parente-numero-novo",
+      "nota": 0.752,
+      "vai": true
+    },
+    {
+      "id": "legit-condominio-reajuste",
+      "melhor": "whatsapp-pedido-de-codigo",
+      "nota": 0.711,
+      "vai": true
+    },
+    {
+      "id": "legit-escola-mensalidade",
+      "melhor": "falso-parente-numero-novo",
+      "nota": 0.719,
+      "vai": true
+    },
+    {
+      "id": "legit-fatura-internet",
+      "melhor": "falso-boleto",
+      "nota": 0.699,
+      "vai": false
+    },
+    {
+      "id": "legit-entrevista",
+      "melhor": "falsa-vaga-de-emprego",
+      "nota": 0.736,
+      "vai": true
+    },
+    {
+      "id": "legit-admissao",
+      "melhor": "falsa-vaga-de-emprego",
+      "nota": 0.745,
+      "vai": true
+    },
+    {
+      "id": "legit-rifa-escola",
+      "melhor": "falso-premio-sorteio",
+      "nota": 0.743,
+      "vai": true
+    },
+    {
+      "id": "legit-rendimento-cdb",
+      "melhor": "falso-investimento",
+      "nota": 0.729,
+      "vai": true
+    },
+    {
+      "id": "legit-noticia-restituicao",
+      "melhor": "falsa-cobranca-divida-ativa",
+      "nota": 0.764,
+      "vai": true
+    },
+    {
+      "id": "legit-alerta-familia",
+      "melhor": "falso-parente-numero-novo",
+      "nota": 0.814,
+      "vai": true
+    },
+    {
+      "id": "legit-clinica",
+      "melhor": "whatsapp-pedido-de-codigo",
+      "nota": 0.721,
+      "vai": true
+    },
+    {
+      "id": "legit-mercado-entrega",
+      "melhor": "whatsapp-pedido-de-codigo",
+      "nota": 0.687,
+      "vai": false
+    },
+    {
+      "id": "legit-bicicleta",
+      "melhor": "whatsapp-pedido-de-codigo",
+      "nota": 0.715,
+      "vai": true
+    },
+    {
+      "id": "legit-leilao-judicial",
+      "melhor": "falso-leilao-de-veiculos",
+      "nota": 0.738,
+      "vai": true
+    },
+    {
+      "id": "legit-cartao-novo",
+      "melhor": "mao-fantasma",
+      "nota": 0.735,
+      "vai": true
+    },
+    {
+      "id": "legit-calendario-ipva",
+      "melhor": "boleto-falso-ipva-licenciamento",
+      "nota": 0.772,
+      "vai": true
+    },
+    {
+      "id": "legit-namorado",
+      "melhor": "golpe-do-amor",
+      "nota": 0.746,
+      "vai": true
+    },
+    {
+      "id": "legit-estorno-loja",
+      "melhor": "devolucao-de-emprestimo",
+      "nota": 0.744,
+      "vai": true
+    },
+    {
+      "id": "legit-presente-professora",
+      "melhor": "falso-parente-numero-novo",
+      "nota": 0.731,
+      "vai": true
+    },
+    {
+      "id": "legit-suporte",
+      "melhor": "whatsapp-pedido-de-codigo",
+      "nota": 0.721,
+      "vai": true
+    },
+    {
+      "id": "legit-ofertas-mercado",
+      "melhor": "whatsapp-pedido-de-codigo",
+      "nota": 0.71,
+      "vai": true
+    }
+  ]
+}
