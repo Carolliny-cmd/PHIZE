@@ -1,0 +1,1906 @@
+{
+  "modelo": "gemini-3.5-flash-lite",
+  "repeticoes": 1,
+  "semBaseReaproveitadaDe": "2026-11-12-teste-ocr-recebidas.json",
+  "comBase": {
+    "mensagensGolpe": 63,
+    "golpesDetectados": 63,
+    "golpesPerdidos": [],
+    "mensagensLegitimas": 26,
+    "falsosAlarmes": [],
+    "correspondenciasCertas": 55,
+    "correspondenciasErradas": [
+      "consignado-informal",
+      "fora-comprovante-falso"
+    ],
+    "instaveis": []
+  },
+  "semBase": {
+    "mensagensGolpe": 63,
+    "golpesDetectados": 62,
+    "golpesPerdidos": [
+      "fora-comprovante-falso"
+    ],
+    "mensagensLegitimas": 26,
+    "falsosAlarmes": [
+      "legit-presente-professora"
+    ],
+    "correspondenciasCertas": 0,
+    "correspondenciasErradas": [],
+    "instaveis": []
+  },
+  "falhas": [],
+  "rodadas": [
+    {
+      "mensagem": "ipva-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "boleto-falso-ipva-licenciamento"
+    },
+    {
+      "mensagem": "ipva-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "inducao_urgencia",
+        "link_suspeito",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "boleto-falso-ipva-licenciamento"
+    },
+    {
+      "mensagem": "ipva-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "ameaca"
+      ],
+      "padrao": null,
+      "esperado": "boleto-falso-ipva-licenciamento"
+    },
+    {
+      "mensagem": "emprestimo-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "emprestimo-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "ameaca"
+      ],
+      "padrao": null,
+      "esperado": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "emprestimo-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "central-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "central-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "central-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "pgfn-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falsa-cobranca-divida-ativa"
+    },
+    {
+      "mensagem": "pgfn-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falsa-cobranca-divida-ativa"
+    },
+    {
+      "mensagem": "pgfn-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "falsa-cobranca-divida-ativa"
+    },
+    {
+      "mensagem": "emprego-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "emprego-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "emprego-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "venda-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falsa-venda"
+    },
+    {
+      "mensagem": "venda-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falsa-venda"
+    },
+    {
+      "mensagem": "venda-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falsa-venda"
+    },
+    {
+      "mensagem": "boleto-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "falso-boleto"
+    },
+    {
+      "mensagem": "investimento-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "oferta_incompativel_mercado",
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "falso-investimento"
+    },
+    {
+      "mensagem": "investimento-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "link_suspeito",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falso-investimento"
+    },
+    {
+      "mensagem": "investimento-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falso-investimento"
+    },
+    {
+      "mensagem": "leilao-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "oferta_incompativel_mercado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "leilao-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "oferta_incompativel_mercado",
+        "inducao_urgencia",
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "motoboy-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais"
+      ],
+      "padrao": null,
+      "esperado": "falso-motoboy"
+    },
+    {
+      "mensagem": "parente-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "alegacao_troca_contato",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "parente-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "alegacao_troca_contato",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "premio-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "oferta_incompativel_mercado",
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "premio-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "oferta_incompativel_mercado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "amor-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "maofantasma-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "link_suspeito",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "mao-fantasma"
+    },
+    {
+      "mensagem": "fora-comprovante-falso",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "fora-emprestimo-taxa",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "boleto-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "ameaca"
+      ],
+      "padrao": null,
+      "esperado": "falso-boleto"
+    },
+    {
+      "mensagem": "boleto-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falso-boleto"
+    },
+    {
+      "mensagem": "leilao-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "link_suspeito",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "motoboy-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falso-motoboy"
+    },
+    {
+      "mensagem": "motoboy-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "inducao_urgencia",
+        "solicitacao_dados_pessoais"
+      ],
+      "padrao": null,
+      "esperado": "falso-motoboy"
+    },
+    {
+      "mensagem": "parente-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "alegacao_troca_contato",
+        "inducao_urgencia",
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "premio-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "amor-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "amor-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "maofantasma-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "mao-fantasma"
+    },
+    {
+      "mensagem": "maofantasma-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "mao-fantasma"
+    },
+    {
+      "mensagem": "phishing-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "phishing-link-falso"
+    },
+    {
+      "mensagem": "phishing-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "phishing-link-falso"
+    },
+    {
+      "mensagem": "phishing-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "phishing-link-falso"
+    },
+    {
+      "mensagem": "pixerrado-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "pix-enviado-por-engano"
+    },
+    {
+      "mensagem": "pixerrado-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "alegacao_troca_contato"
+      ],
+      "padrao": null,
+      "esperado": "pix-enviado-por-engano"
+    },
+    {
+      "mensagem": "pixerrado-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "pix-enviado-por-engano"
+    },
+    {
+      "mensagem": "encomenda-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "taxa-falsa-encomenda-internacional"
+    },
+    {
+      "mensagem": "encomenda-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "taxa-falsa-encomenda-internacional"
+    },
+    {
+      "mensagem": "encomenda-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "ameaca"
+      ],
+      "padrao": null,
+      "esperado": "taxa-falsa-encomenda-internacional"
+    },
+    {
+      "mensagem": "codigo-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais"
+      ],
+      "padrao": null,
+      "esperado": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "codigo-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "alegacao_troca_contato"
+      ],
+      "padrao": null,
+      "esperado": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "codigo-parafrase",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "consignado-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falso-consignado-inss"
+    },
+    {
+      "mensagem": "consignado-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falso-consignado-inss"
+    },
+    {
+      "mensagem": "sequestro-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "ameaca"
+      ],
+      "padrao": null,
+      "esperado": "falso-sequestro"
+    },
+    {
+      "mensagem": "sequestro-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "ameaca",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falso-sequestro"
+    },
+    {
+      "mensagem": "fora-aluguel-temporada",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "fora-vaquinha-falsa",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "fora-falso-advogado",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-aviso-compra",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-alerta-banco",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-rastreio",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-pedido-entrega",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-codigo-proprio",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-mae-pix",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-condominio-reajuste",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-escola-mensalidade",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-fatura-internet",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-entrevista",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-admissao",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-rifa-escola",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-rendimento-cdb",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-noticia-restituicao",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-alerta-familia",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-clinica",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-mercado-entrega",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-bicicleta",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-leilao-judicial",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-cartao-novo",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-calendario-ipva",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-namorado",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-estorno-loja",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-presente-professora",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-suporte",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-ofertas-mercado",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "ipva-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": "boleto-falso-ipva-licenciamento",
+      "esperado": "boleto-falso-ipva-licenciamento"
+    },
+    {
+      "mensagem": "ipva-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia",
+        "link_suspeito",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": "boleto-falso-ipva-licenciamento",
+      "esperado": "boleto-falso-ipva-licenciamento"
+    },
+    {
+      "mensagem": "ipva-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "ameaca",
+        "link_suspeito"
+      ],
+      "padrao": "boleto-falso-ipva-licenciamento",
+      "esperado": "boleto-falso-ipva-licenciamento"
+    },
+    {
+      "mensagem": "emprestimo-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "devolucao-de-emprestimo",
+      "esperado": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "emprestimo-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "devolucao-de-emprestimo",
+      "esperado": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "emprestimo-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "devolucao-de-emprestimo",
+      "esperado": "devolucao-de-emprestimo"
+    },
+    {
+      "mensagem": "central-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "solicitacao_dados_pessoais"
+      ],
+      "padrao": "falsa-central-falso-funcionario",
+      "esperado": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "central-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": "falsa-central-falso-funcionario",
+      "esperado": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "central-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "falsa-central-falso-funcionario",
+      "esperado": "falsa-central-falso-funcionario"
+    },
+    {
+      "mensagem": "pgfn-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "falsa-cobranca-divida-ativa",
+      "esperado": "falsa-cobranca-divida-ativa"
+    },
+    {
+      "mensagem": "pgfn-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia"
+      ],
+      "padrao": "falsa-cobranca-divida-ativa",
+      "esperado": "falsa-cobranca-divida-ativa"
+    },
+    {
+      "mensagem": "pgfn-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "link_suspeito"
+      ],
+      "padrao": "falsa-cobranca-divida-ativa",
+      "esperado": "falsa-cobranca-divida-ativa"
+    },
+    {
+      "mensagem": "emprego-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": "falsa-vaga-de-emprego",
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "emprego-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": "falsa-vaga-de-emprego",
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "emprego-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "solicitacao_dados_pessoais"
+      ],
+      "padrao": "falsa-vaga-de-emprego",
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "venda-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "oferta_incompativel_mercado",
+        "inducao_urgencia"
+      ],
+      "padrao": "falsa-venda",
+      "esperado": "falsa-venda"
+    },
+    {
+      "mensagem": "venda-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": "falsa-venda",
+      "esperado": "falsa-venda"
+    },
+    {
+      "mensagem": "venda-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "oferta_incompativel_mercado",
+        "pedido_financeiro"
+      ],
+      "padrao": "falsa-venda",
+      "esperado": "falsa-venda"
+    },
+    {
+      "mensagem": "boleto-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado"
+      ],
+      "padrao": "falso-boleto",
+      "esperado": "falso-boleto"
+    },
+    {
+      "mensagem": "boleto-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "ameaca"
+      ],
+      "padrao": "falso-boleto",
+      "esperado": "falso-boleto"
+    },
+    {
+      "mensagem": "boleto-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "falso-boleto",
+      "esperado": "falso-boleto"
+    },
+    {
+      "mensagem": "investimento-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "oferta_incompativel_mercado",
+        "inducao_urgencia"
+      ],
+      "padrao": "falso-investimento",
+      "esperado": "falso-investimento"
+    },
+    {
+      "mensagem": "investimento-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "link_suspeito",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": "falso-investimento",
+      "esperado": "falso-investimento"
+    },
+    {
+      "mensagem": "investimento-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": "falso-investimento",
+      "esperado": "falso-investimento"
+    },
+    {
+      "mensagem": "leilao-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "oferta_incompativel_mercado",
+        "link_suspeito"
+      ],
+      "padrao": "falso-leilao-de-veiculos",
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "leilao-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "oferta_incompativel_mercado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "falso-leilao-de-veiculos",
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "leilao-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": "falso-leilao-de-veiculos",
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "motoboy-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia"
+      ],
+      "padrao": "falso-motoboy",
+      "esperado": "falso-motoboy"
+    },
+    {
+      "mensagem": "motoboy-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "falso-motoboy",
+      "esperado": "falso-motoboy"
+    },
+    {
+      "mensagem": "motoboy-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "solicitacao_dados_pessoais"
+      ],
+      "padrao": null,
+      "esperado": "falso-motoboy"
+    },
+    {
+      "mensagem": "parente-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "alegacao_troca_contato",
+        "inducao_urgencia",
+        "pedido_financeiro"
+      ],
+      "padrao": "falso-parente-numero-novo",
+      "esperado": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "parente-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "alegacao_troca_contato",
+        "inducao_urgencia"
+      ],
+      "padrao": "falso-parente-numero-novo",
+      "esperado": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "parente-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "alegacao_troca_contato"
+      ],
+      "padrao": "falso-parente-numero-novo",
+      "esperado": "falso-parente-numero-novo"
+    },
+    {
+      "mensagem": "premio-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro"
+      ],
+      "padrao": "falso-premio-sorteio",
+      "esperado": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "premio-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": "falso-premio-sorteio",
+      "esperado": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "premio-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "falso-premio-sorteio",
+      "esperado": "falso-premio-sorteio"
+    },
+    {
+      "mensagem": "amor-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro"
+      ],
+      "padrao": "golpe-do-amor",
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "amor-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "golpe-do-amor",
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "amor-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "golpe-do-amor",
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "maofantasma-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia"
+      ],
+      "padrao": "mao-fantasma",
+      "esperado": "mao-fantasma"
+    },
+    {
+      "mensagem": "maofantasma-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia"
+      ],
+      "padrao": "mao-fantasma",
+      "esperado": "mao-fantasma"
+    },
+    {
+      "mensagem": "maofantasma-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia"
+      ],
+      "padrao": "mao-fantasma",
+      "esperado": "mao-fantasma"
+    },
+    {
+      "mensagem": "phishing-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": "phishing-link-falso",
+      "esperado": "phishing-link-falso"
+    },
+    {
+      "mensagem": "phishing-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia",
+        "link_suspeito"
+      ],
+      "padrao": "phishing-link-falso",
+      "esperado": "phishing-link-falso"
+    },
+    {
+      "mensagem": "phishing-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "solicitacao_dados_pessoais",
+        "link_suspeito"
+      ],
+      "padrao": "phishing-link-falso",
+      "esperado": "phishing-link-falso"
+    },
+    {
+      "mensagem": "pixerrado-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro"
+      ],
+      "padrao": "pix-enviado-por-engano",
+      "esperado": "pix-enviado-por-engano"
+    },
+    {
+      "mensagem": "pixerrado-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "pix-enviado-por-engano",
+      "esperado": "pix-enviado-por-engano"
+    },
+    {
+      "mensagem": "pixerrado-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro"
+      ],
+      "padrao": "pix-enviado-por-engano",
+      "esperado": "pix-enviado-por-engano"
+    },
+    {
+      "mensagem": "encomenda-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "taxa-falsa-encomenda-internacional",
+      "esperado": "taxa-falsa-encomenda-internacional"
+    },
+    {
+      "mensagem": "encomenda-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "taxa-falsa-encomenda-internacional",
+      "esperado": "taxa-falsa-encomenda-internacional"
+    },
+    {
+      "mensagem": "encomenda-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "taxa-falsa-encomenda-internacional",
+      "esperado": "taxa-falsa-encomenda-internacional"
+    },
+    {
+      "mensagem": "codigo-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": "whatsapp-pedido-de-codigo",
+      "esperado": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "codigo-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": "whatsapp-pedido-de-codigo",
+      "esperado": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "codigo-parafrase",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": "whatsapp-pedido-de-codigo",
+      "esperado": "whatsapp-pedido-de-codigo"
+    },
+    {
+      "mensagem": "consignado-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "solicitacao_dados_pessoais",
+        "inducao_urgencia"
+      ],
+      "padrao": "falso-consignado-inss",
+      "esperado": "falso-consignado-inss"
+    },
+    {
+      "mensagem": "consignado-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro"
+      ],
+      "padrao": "devolucao-de-emprestimo",
+      "esperado": "falso-consignado-inss"
+    },
+    {
+      "mensagem": "sequestro-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "inducao_urgencia",
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "falso-sequestro"
+    },
+    {
+      "mensagem": "sequestro-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia",
+        "ameaca"
+      ],
+      "padrao": "falso-sequestro",
+      "esperado": "falso-sequestro"
+    },
+    {
+      "mensagem": "fora-aluguel-temporada",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "fora-vaquinha-falsa",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "fora-comprovante-falso",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "inducao_urgencia"
+      ],
+      "padrao": "comprovante-pix-falso",
+      "esperado": null
+    },
+    {
+      "mensagem": "fora-falso-advogado",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "fora-emprestimo-taxa",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-aviso-compra",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-alerta-banco",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-rastreio",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-pedido-entrega",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-codigo-proprio",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-mae-pix",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-condominio-reajuste",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-escola-mensalidade",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-fatura-internet",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-entrevista",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-admissao",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-rifa-escola",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-rendimento-cdb",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-noticia-restituicao",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-alerta-familia",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-clinica",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-mercado-entrega",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-bicicleta",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-leilao-judicial",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-cartao-novo",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-calendario-ipva",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-namorado",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-estorno-loja",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-presente-professora",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-suporte",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-ofertas-mercado",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    }
+  ]
+}

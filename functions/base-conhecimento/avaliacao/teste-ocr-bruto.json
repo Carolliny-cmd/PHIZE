@@ -364,8 +364,8 @@
     },
     {
       "id": "fora-comprovante-falso",
-      "esperado": null,
-      "estilo": "fora-da-base",
+      "esperado": "comprovante-pix-falso",
+      "estilo": "ficha-posterior",
       "texto": "09:39\n[TELEFONE]\nonline\nHoje\nOi, já fiz a transferência da bicicleta,\nsegue o comprovante.\nOi, quem fala?\nMensagem\n09:31\nPode mandar o motoboy entregar?\n09:32\nÅs vezes demora um pouco pra cair,\nmas já saiu daqui.\n87%\n09:33\n09:30 /"
     },
     {

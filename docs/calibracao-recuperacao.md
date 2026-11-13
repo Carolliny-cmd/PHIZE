@@ -226,6 +226,29 @@ Medição: `npm run avaliar-analise -- --arquivo teste-ocr-recebidas.json --repe
 
 **Pendente:** as situações legítimas foram escritas com ajuda da IA e precisam da revisão de quem assina a curadoria de cada ficha. **Decisão (2026-11-12):** com o ganho não confirmado e uma perda confirmada, as situações legítimas saíram do prompt; o conteúdo enviado ao modelo voltou a ser o de antes da etapa 3. O campo continua nas fichas (validado e comparado pela trava contra cópia) para uma nova tentativa com outra formulação.
 
+## Fichas novas (etapa 4, 2026-11-12)
+
+Três rascunhos revisados pela curadoria entraram na base: `comprovante-pix-falso` (escrito com ajuda da IA a partir de páginas da Cielo, da Serasa e do Neon), `falso-sequestro` e `falso-consignado-inss` (rascunhos de 2026-11-03). A base passou a 21 fichas; a indexação gerou só os 3 embeddings novos. A trava contra cópia segue sem achados nas 89 mensagens.
+
+Medição: `npm run avaliar-analise -- --arquivo teste-ocr-recebidas.json --repeticoes 1 --sufixo -fichas-novas --sem-base-de 2026-11-12-teste-ocr-recebidas.json` (89 chamadas; o relatório saiu com a data de 2026-11-13 porque o script usa o horário UTC). Comparação com `2026-11-12-teste-ocr-recebidas.json`.
+
+| Com a base, só as mensagens recebidas | Antes (18 fichas) | Depois (21 fichas) |
+| --- | --- | --- |
+| Golpes detectados | 62 de 63 | **63 de 63** |
+| Correspondências certas | 53 | 55, mais o comprovante falso ligado à ficha nova |
+| Correspondência errada | `consignado-informal` | `consignado-informal` |
+| Golpes da base (58) | amarelo 4, vermelho 54 | amarelo 3, vermelho 55 |
+| Golpes fora da base (5) | verde 1, amarelo 3, vermelho 1 | **verde 0**, amarelo 3, vermelho 2 |
+| Legítimas (26) | verde 25, amarelo 1 | verde 26 |
+
+- **O comprovante falso deixou de passar em verde:** com a ficha nova, a mensagem foi ligada a ela e ficou vermelha. Era o único golpe do conjunto que o Phize não detectava.
+- `consignado-formal` e `sequestro-informal` passaram a ser ligados às fichas certas. `consignado-informal` continua ligado à ficha vizinha `devolucao-de-emprestimo`, sem mudar de faixa.
+- Nenhuma legítima saiu do verde com a base.
+- O relatório conta o comprovante como "correspondência errada" só porque a mensagem ainda está rotulada como golpe fora da base no conjunto de teste; a ficha apontada é a certa.
+- Uma repetição só: as diferenças de uma mensagem seguem sujeitas à variação do modelo vista na etapa 3.
+
+**Rótulo trocado (2026-11-12, decisão da equipe):** `fora-comprovante-falso` passou a golpe da base em `avaliacao/teste.json`, com `esperado` igual a `comprovante-pix-falso` e o estilo novo `ficha-posterior`; os conjuntos de OCR foram gerados de novo a partir dele e só esse rótulo mudou. O identificador foi mantido para comparar com os relatórios anteriores. **Ressalva:** a ficha foi escrita depois de esta mensagem revelar a lacuna, então o resultado dela tende a ser otimista e deve ser lido à parte; o estilo próprio a separa nas estatísticas por estilo de `avaliar-recuperacao`. Daqui em diante o conjunto tem 59 golpes da base e 4 fora da base. Os relatórios já gravados mantêm o rótulo antigo.
+
 ## Quando recalibrar
 
 - A cada lote novo de fichas: mais fichas aumentam a chance de uma conversa comum ficar perto de alguma delas.

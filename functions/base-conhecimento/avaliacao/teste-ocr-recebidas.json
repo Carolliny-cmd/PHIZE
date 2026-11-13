@@ -364,8 +364,8 @@
     },
     {
       "id": "fora-comprovante-falso",
-      "esperado": null,
-      "estilo": "fora-da-base",
+      "esperado": "comprovante-pix-falso",
+      "estilo": "ficha-posterior",
       "texto": "Oi, já fiz a transferência da bicicleta,\nsegue o comprovante.\nPode mandar o motoboy entregar?\nÅs vezes demora um pouco pra cair,\nmas já saiu daqui."
     },
     {
