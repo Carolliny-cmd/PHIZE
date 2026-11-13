@@ -33,7 +33,7 @@ Os cinco primeiros vêm da seção 3.2 (a) da arquitetura. Os demais garantem a 
 | `modalidade` | sim | Nome do golpe, como as fontes o chamam. |
 | `canais` | sim | Lista de canais em que o golpe chega (WhatsApp, SMS, e-mail, ligação...). |
 | `gatilhosLinguisticos` | sim | Lista de frases e expressões típicas do golpista. É o campo que mais pesa na comparação com a mensagem recebida. Até 30 itens de até 300 caracteres. |
-| `situacoesLegitimas` | não | Lista de situações reais parecidas com o golpe, descritas a partir da orientação das fontes (ex.: o SMS automático do serviço com o código que a própria pessoa pediu). Vai ao modelo junto com a ficha, para ele não apontar o golpe numa mensagem legítima. Não entra no embedding. Até 30 itens de até 300 caracteres. Nunca escreva a partir das mensagens de `avaliacao/`: a trava contra cópia também compara este campo. |
+| `situacoesLegitimas` | não | Lista de situações reais parecidas com o golpe, descritas a partir da orientação das fontes (ex.: o SMS automático do serviço com o código que a própria pessoa pediu). Hoje não vai ao modelo nem entra no embedding: enviado ao modelo, deixou-o cauteloso demais sem ganho confirmado (ver `docs/calibracao-recuperacao.md`). Fica guardado para uma nova tentativa. Até 30 itens de até 300 caracteres. Nunca escreva a partir das mensagens de `avaliacao/`: a trava contra cópia também compara este campo. |
 | `padraoSolicitacaoFinanceira` | sim | O que o golpista pede (Pix, boleto, dados do cartão, código de verificação), ou "não há pedido financeiro direto". |
 | `orientacaoPreventiva` | sim | O que a pessoa deve fazer, segundo as fontes. |
 | `categoria` | sim | Uma das categorias de `docs/categorias-ameaca.md`, exceto `sem_indicios`. |

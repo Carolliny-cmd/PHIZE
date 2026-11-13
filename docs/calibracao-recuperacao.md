@@ -210,7 +210,21 @@ Medição: `npm run avaliar-analise -- --arquivo teste-ocr-recebidas.json --repe
 - O golpe do falso advogado, que não tem ficha, foi ligado ao falso prêmio: a faixa (vermelho) é adequada, mas a explicação cita o golpe vizinho.
 - **Uma repetição não basta para concluir.** Entre esta execução e a anterior, o sinal de urgência apareceu e sumiu em mensagens que a etapa 3 não afeta (as três do código, por exemplo). As diferenças de uma ou duas correspondências estão dentro dessa variação; a medição com 3 repetições, só com a base, dirá se as perdas são da etapa 3.
 
-**Pendente:** as situações legítimas foram escritas com ajuda da IA e precisam da revisão de quem assina a curadoria de cada ficha.
+**Repetição das mensagens que mudaram (2026-11-12).** As 5 mensagens em que a correspondência mudou foram analisadas 3 vezes com as situações legítimas e 3 vezes sem elas (`--ids`, `--sem-situacoes`; relatórios `-etapa3-com-situacoes.json` e `-etapa3-sem-situacoes.json`, 30 chamadas). Ficha apontada em cada repetição:
+
+| Mensagem | Com situações | Sem situações | Leitura |
+| --- | --- | --- | --- |
+| `emprego-informal` (golpe) | nenhuma nas 3 | `falsa-vaga-de-emprego` nas 3 | perda causada pela etapa 3 |
+| `leilao-formal` (golpe) | nenhuma nas 3 | certa em 1 de 3 | ficha já instável sem a etapa 3 |
+| `amor-formal` (golpe) | certa em 2 de 3 | nenhuma nas 3 | variação do modelo, não perda |
+| `legit-codigo-proprio` (legítima) | nenhuma nas 3 | nenhuma nas 3 | o alarme falso da primeira medição foi variação |
+| `fora-falso-advogado` (sem ficha) | falso prêmio em 1 de 2 (1 falha) | nenhuma nas 3 | possível efeito, pouco frequente |
+
+- **O ganho não se confirmou:** sem as situações, a mensagem do código próprio também não foi ligada ao golpe nas 3 repetições. O alarme falso que motivou a etapa 3 apareceu numa única execução.
+- **Uma perda se confirmou:** o golpe de "curtir vídeos e ganhar" com taxa de cadastro deixou de ser ligado à falsa vaga de emprego nas 3 repetições. Nenhuma situação legítima da ficha descreve essa mensagem (ambas excluem cobrança); a leitura mais provável é que a instrução nova torna o modelo mais cauteloso em correspondências limítrofes. A faixa não muda (vermelho pelos outros sinais), mas a explicação deixa de citar o golpe.
+- As situações não foram reescritas a partir deste resultado: ajustar a ficha à mensagem de teste viciaria a medição. A revisão da curadoria deve partir das fontes.
+
+**Pendente:** as situações legítimas foram escritas com ajuda da IA e precisam da revisão de quem assina a curadoria de cada ficha. **Decisão (2026-11-12):** com o ganho não confirmado e uma perda confirmada, as situações legítimas saíram do prompt; o conteúdo enviado ao modelo voltou a ser o de antes da etapa 3. O campo continua nas fichas (validado e comparado pela trava contra cópia) para uma nova tentativa com outra formulação.
 
 ## Quando recalibrar
 

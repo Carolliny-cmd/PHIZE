@@ -28,8 +28,6 @@ export interface PadraoRecuperado {
   id: string;
   modalidade: string;
   gatilhosLinguisticos: string[];
-  /** Situações legítimas parecidas; lista vazia quando a ficha não tem. */
-  situacoesLegitimas: string[];
   padraoSolicitacaoFinanceira: string;
   orientacaoPreventiva: string;
   similaridade: number;
@@ -103,7 +101,6 @@ export function recuperarPadroes(
       id: entrada.id,
       modalidade: entrada.ficha.modalidade,
       gatilhosLinguisticos: entrada.ficha.gatilhosLinguisticos,
-      situacoesLegitimas: entrada.ficha.situacoesLegitimas ?? [],
       padraoSolicitacaoFinanceira: entrada.ficha.padraoSolicitacaoFinanceira,
       orientacaoPreventiva: entrada.ficha.orientacaoPreventiva,
       similaridade: Math.round(s * 1000) / 1000,

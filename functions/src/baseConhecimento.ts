@@ -44,8 +44,8 @@ export interface Ficha {
   gatilhosLinguisticos: string[];
   /**
    * Situações legítimas parecidas com o golpe (etapa 3 do plano do RAG).
-   * Opcional. Vai ao prompt para o modelo não apontar correspondência em
-   * mensagem real; não entra no embedding.
+   * Opcional. Hoje não vai ao prompt nem entra no embedding: guardado nas
+   * fichas para uma nova tentativa (docs/calibracao-recuperacao.md).
    */
   situacoesLegitimas?: string[];
   padraoSolicitacaoFinanceira: string;

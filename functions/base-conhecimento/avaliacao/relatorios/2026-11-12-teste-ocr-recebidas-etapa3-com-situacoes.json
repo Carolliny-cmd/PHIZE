@@ -1,0 +1,236 @@
+{
+  "modelo": "gemini-3.5-flash-lite",
+  "repeticoes": 3,
+  "semBaseReaproveitadaDe": "2026-11-12-teste-ocr-recebidas.json",
+  "comBase": {
+    "mensagensGolpe": 4,
+    "golpesDetectados": 4,
+    "golpesPerdidos": [],
+    "mensagensLegitimas": 1,
+    "falsosAlarmes": [],
+    "correspondenciasCertas": 1,
+    "correspondenciasErradas": [
+      "fora-falso-advogado"
+    ],
+    "instaveis": [
+      "emprego-informal",
+      "amor-formal",
+      "fora-falso-advogado"
+    ]
+  },
+  "semBase": {
+    "mensagensGolpe": 4,
+    "golpesDetectados": 4,
+    "golpesPerdidos": [],
+    "mensagensLegitimas": 1,
+    "falsosAlarmes": [],
+    "correspondenciasCertas": 0,
+    "correspondenciasErradas": [],
+    "instaveis": []
+  },
+  "falhas": [
+    "fora-falso-advogado (com_base)"
+  ],
+  "rodadas": [
+    {
+      "mensagem": "emprego-informal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "leilao-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "link_suspeito",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "amor-formal",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro"
+      ],
+      "padrao": null,
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "fora-falso-advogado",
+      "grupo": "golpe",
+      "modo": "sem_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-codigo-proprio",
+      "grupo": "legitima",
+      "modo": "sem_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "emprego-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "emprego-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "emprego-informal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "pedido_financeiro",
+        "oferta_incompativel_mercado"
+      ],
+      "padrao": null,
+      "esperado": "falsa-vaga-de-emprego"
+    },
+    {
+      "mensagem": "leilao-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "oferta_incompativel_mercado",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "leilao-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "oferta_incompativel_mercado",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "leilao-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "oferta_incompativel_mercado",
+        "link_suspeito"
+      ],
+      "padrao": null,
+      "esperado": "falso-leilao-de-veiculos"
+    },
+    {
+      "mensagem": "amor-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "golpe-do-amor",
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "amor-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "golpe-do-amor",
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "amor-formal",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": "golpe-do-amor"
+    },
+    {
+      "mensagem": "fora-falso-advogado",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "fora-falso-advogado",
+      "grupo": "golpe",
+      "modo": "com_base",
+      "sinais": [
+        "correspondencia_padrao_catalogado",
+        "pedido_financeiro",
+        "inducao_urgencia"
+      ],
+      "padrao": "falso-premio-sorteio",
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-codigo-proprio",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-codigo-proprio",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    },
+    {
+      "mensagem": "legit-codigo-proprio",
+      "grupo": "legitima",
+      "modo": "com_base",
+      "sinais": [],
+      "padrao": null,
+      "esperado": null
+    }
+  ]
+}

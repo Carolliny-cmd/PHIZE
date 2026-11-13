@@ -1,0 +1,48 @@
+{
+  "id": "comprovante-pix-falso",
+  "modalidade": "Golpe do comprovante de Pix falso ou agendado",
+  "categoria": "outro_golpe",
+  "canais": [
+    "WhatsApp",
+    "Marketplace e anúncios de venda",
+    "Compra presencial"
+  ],
+  "gatilhosLinguisticos": [
+    "quero levar o produto, já paguei, olha o print do Pix",
+    "o pagamento foi feito, mas o banco leva umas horas para liberar",
+    "agendei a transferência para amanhã cedo, pode separar a mercadoria",
+    "o comprovante está aqui, pode entregar para o meu portador",
+    "mandei a imagem do Pix, não precisa conferir no aplicativo",
+    "o valor já saiu da minha conta, deve aparecer daqui a pouco"
+  ],
+  "situacoesLegitimas": [
+    "comprador que envia o comprovante e espera o vendedor confirmar no extrato antes de receber o produto",
+    "pagamento agendado combinado abertamente entre as partes, com a entrega marcada só depois de o valor cair na conta"
+  ],
+  "padraoSolicitacaoFinanceira": "O golpista não paga: apresenta um comprovante de Pix editado, de valor alterado ou de um agendamento que depois cancela, para receber o produto ou o serviço antes de o dinheiro entrar na conta do vendedor.",
+  "orientacaoPreventiva": "Só entregue o produto depois de ver o valor no saldo ou no extrato da sua conta; o comprovante sozinho não prova o pagamento. Desconfie de comprovante com as palavras agendado, agendamento ou programado, de print cortado e de pagador com nome diferente do comprador. Na dúvida, suspenda a venda.",
+  "fontes": [
+    {
+      "titulo": "Golpe do Pix agendado: como funciona e como se proteger?",
+      "publicador": "Cielo",
+      "url": "https://blog.cielo.com.br/produtos-e-servicos/golpe-pix-agendado/",
+      "consultadoEm": "2026-11-12"
+    },
+    {
+      "titulo": "Como se proteger contra o golpe do Pix agendado",
+      "publicador": "Serasa",
+      "url": "https://www.serasa.com.br/premium/blog/como-se-proteger-contra-o-golpe-do-pix-agendado/",
+      "consultadoEm": "2026-11-12"
+    },
+    {
+      "titulo": "Golpe do comprovante de Pix falso: como identificar um?",
+      "publicador": "Neon",
+      "url": "https://neon.com.br/aprenda/seguranca-digital/comprovante-de-pix-falso/",
+      "consultadoEm": "2026-11-12"
+    }
+  ],
+  "curadoria": {
+    "revisadoPor": "",
+    "revisadoEm": ""
+  }
+}

@@ -12,7 +12,7 @@
  * do relatório, para não sobrescrever o do mesmo dia), --sem-base-de (relatório
  * anterior do mesmo arquivo cujas rodadas sem a base são reaproveitadas: só a
  * análise com a base é refeita, o que poupa metade das chamadas quando só a
- * base mudou).
+ * base mudou) e --ids (só estas mensagens, separadas por vírgula).
  *
  * Depois de 3 falhas seguidas (limite da API, em geral), a rodada para e grava
  * o que conseguiu; dá para continuar depois com --retomar.
@@ -124,7 +124,11 @@ async function principal(): Promise<void> {
     throw new Error("Conjunto de teste recusado pela trava contra cópia.");
   }
 
-  const mensagens = carregarMensagens(arquivo, limite);
+  const ids = opcao("ids", "");
+  const mensagens = carregarMensagens(arquivo, limite).filter(
+    (m) => !ids || ids.split(",").includes(m.id),
+  );
+  if (mensagens.length === 0) throw new Error("Nenhuma mensagem com esses ids.");
   for (const m of mensagens) {
     const dado = encontrarDadoSemMarcador(m.texto);
     if (dado) throw new Error(`Mensagem ${m.id} tem ${dado} sem marcador. Nada foi enviado.`);

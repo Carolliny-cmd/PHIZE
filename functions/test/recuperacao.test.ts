@@ -51,15 +51,6 @@ test("recupera os mais parecidos em ordem, até a quantidade", () => {
   assert.equal(r[1].similaridade, 0.8);
 });
 
-test("leva as situações legítimas da ficha; sem elas, lista vazia", () => {
-  const comSituacoes = indice({ a: [1, 0, 0] });
-  comSituacoes.fichas[0].ficha.situacoesLegitimas = ["aviso real"];
-  const [com] = recuperarPadroes([1, 0, 0], comSituacoes, { quantidade: 1, limiar: -1 });
-  assert.deepEqual(com.situacoesLegitimas, ["aviso real"]);
-  const [sem] = recuperarPadroes([1, 0, 0], INDICE, { quantidade: 1, limiar: -1 });
-  assert.deepEqual(sem.situacoesLegitimas, []);
-});
-
 test("o limiar descarta os pouco parecidos, mesmo dentro da quantidade", () => {
   const r = recuperarPadroes([1, 0, 0], INDICE, { quantidade: 3, limiar: 0.7 });
   assert.deepEqual(r.map((p) => p.id), ["a", "b"]);
@@ -84,7 +75,6 @@ test("o padrão recuperado não leva fontes nem curadoria", () => {
     "orientacaoPreventiva",
     "padraoSolicitacaoFinanceira",
     "similaridade",
-    "situacoesLegitimas",
   ]);
 });
 
