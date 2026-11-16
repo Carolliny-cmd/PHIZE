@@ -8,8 +8,17 @@ import '../../domain/analisador_print.dart';
 /// Mostra a etapa real da análise de print e avisa quando ela demora, para a
 /// pessoa não achar que o aplicativo travou (RNF03). A etapa vem do pipeline:
 /// não há barra nem tempo estimado, porque a demora do provedor varia muito.
+///
+/// O tempo do aviso só começa a contar quando [contandoDemora] é `true`. Na
+/// tela "Analisar print", isso acontece depois que a pessoa escolhe a
+/// imagem: o tempo gasto na galeria não é demora da análise (no ensaio de
+/// 2026-11-16, o aviso aparecia cerca de 2 segundos depois da escolha).
 class ProgressoAnalise extends StatefulWidget {
-  const ProgressoAnalise({super.key, required this.etapa});
+  const ProgressoAnalise({
+    super.key,
+    required this.etapa,
+    this.contandoDemora = true,
+  });
 
   static const Duration tempoParaAviso = Duration(seconds: 10);
   static const String avisoDemora =
@@ -17,6 +26,7 @@ class ProgressoAnalise extends StatefulWidget {
       'continua.';
 
   final EtapaAnalisePrint etapa;
+  final bool contandoDemora;
 
   @override
   State<ProgressoAnalise> createState() => _ProgressoAnaliseState();
@@ -29,6 +39,16 @@ class _ProgressoAnaliseState extends State<ProgressoAnalise> {
   @override
   void initState() {
     super.initState();
+    if (widget.contandoDemora) _comecarContagem();
+  }
+
+  @override
+  void didUpdateWidget(ProgressoAnalise antigo) {
+    super.didUpdateWidget(antigo);
+    if (widget.contandoDemora && _temporizador == null) _comecarContagem();
+  }
+
+  void _comecarContagem() {
     _temporizador = Timer(ProgressoAnalise.tempoParaAviso, () {
       if (mounted) setState(() => _demorando = true);
     });

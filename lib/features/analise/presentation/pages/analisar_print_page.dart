@@ -67,6 +67,9 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
       widget.tutorialRepository ?? TutorialRepositoryLocal();
   bool _carregando = false;
   EtapaAnalisePrint _etapa = EtapaAnalisePrint.lendoTexto;
+  // A primeira etapa só é avisada depois que a imagem foi escolhida na
+  // galeria; até lá, a demora não conta (ver `ProgressoAnalise`).
+  bool _imagemEscolhida = false;
   MotivoInterrupcaoPrint? _interrupcao;
 
   @override
@@ -111,6 +114,7 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
     setState(() {
       _carregando = true;
       _etapa = EtapaAnalisePrint.lendoTexto;
+      _imagemEscolhida = false;
       _interrupcao = null;
     });
 
@@ -119,7 +123,12 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
       resultado = await widget.analisadorPrint.analisarCaptura(
         widget.captura,
         aoAvancar: (etapa) {
-          if (mounted) setState(() => _etapa = etapa);
+          if (mounted) {
+            setState(() {
+              _etapa = etapa;
+              _imagemEscolhida = true;
+            });
+          }
         },
       );
     } catch (_) {
@@ -213,6 +222,7 @@ class _AnalisarPrintPageState extends State<AnalisarPrintPage> {
                 ProgressoAnalise(
                   key: const Key('analisar_print_carregando'),
                   etapa: _etapa,
+                  contandoDemora: _imagemEscolhida,
                 ),
               ],
             ],

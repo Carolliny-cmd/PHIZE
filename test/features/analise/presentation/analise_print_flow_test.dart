@@ -91,15 +91,20 @@ class _ArquivoFalso implements ArquivoSelecionado {
 }
 
 class _SeletorFalso implements SeletorImagem {
-  _SeletorFalso({this.arquivo});
+  _SeletorFalso({this.arquivo, this.escolha});
 
   /// `null` simula o cancelamento pelo usuário.
   final ArquivoSelecionado? arquivo;
+
+  /// Quando presente, a galeria só "devolve" a imagem quando ele for
+  /// completado: simula o tempo que a pessoa passa escolhendo.
+  final Completer<void>? escolha;
   int selecoes = 0;
 
   @override
   Future<ArquivoSelecionado?> selecionar() async {
     selecoes++;
+    await escolha?.future;
     return arquivo;
   }
 
@@ -266,6 +271,74 @@ void main() {
     completer.complete(_concluida());
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('resultado_aviso_permanente')), findsOneWidget);
+  });
+
+  testWidgets('o tempo gasto escolhendo na galeria não conta como demora', (
+    tester,
+  ) async {
+    final escolha = Completer<void>();
+    final completer = Completer<Map<String, dynamic>>();
+    await _abrir(
+      tester,
+      seletor: _SeletorFalso(arquivo: _ArquivoFalso(), escolha: escolha),
+      cliente: _ClienteFalso(completer: completer),
+    );
+
+    await tester.tap(find.byKey(const Key('analisar_print_botao')));
+    await tester.pump();
+    // A pessoa passa 30 segundos na galeria.
+    await tester.pump(const Duration(seconds: 30));
+    expect(find.byKey(const Key('progresso_aviso_demora')), findsNothing);
+
+    escolha.complete();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(
+      ProgressoAnalise.tempoParaAviso - const Duration(seconds: 1),
+    );
+    expect(find.byKey(const Key('progresso_aviso_demora')), findsNothing);
+
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const Key('progresso_aviso_demora')), findsOneWidget);
+
+    completer.complete(_concluida());
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('duas frases do mesmo sinal aparecem sem erro na tela', (
+    tester,
+  ) async {
+    await _abrir(
+      tester,
+      seletor: _SeletorFalso(arquivo: _ArquivoFalso()),
+      cliente: _ClienteFalso(
+        respostas: [
+          {
+            'status': 'concluida',
+            'baseConsultada': true,
+            'analise': {
+              'sinais': ['pedido_financeiro'],
+              'categoria': 'falso_contato',
+              'explicacao': 'Golpistas pedem dinheiro com pressa.',
+              'trechos': [
+                {'sinal': 'pedido_financeiro', 'trecho': 'Faz um Pix agora'},
+                {'sinal': 'pedido_financeiro', 'trecho': 'Manda o dinheiro'},
+              ],
+            },
+          },
+        ],
+      ),
+    );
+
+    await tester.tap(find.byKey(const Key('analisar_print_botao')));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(
+      find.byKey(const Key('resultado_print_trecho'), skipOffstage: false),
+      findsNWidgets(2),
+    );
   });
 
   testWidgets('frases destacadas aparecem no resultado e não vão ao histórico', (
