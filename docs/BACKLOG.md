@@ -5,7 +5,7 @@ Tarefas técnicas derivadas dos Requisitos Funcionais (RF01–RF14) e Não Funci
 | ID | Tarefa | Requisito de origem | MVP ou Expansão | Depende de |
 | --- | --- | --- | --- | --- |
 | T01 | Configurar projeto Flutter multiplataforma (Android/iOS) integrado ao Firebase (Authentication + Firestore) | RNF02 | MVP | |
-| T02 | Implementar cadastro de usuário (e-mail/senha e provedores sociais Google/Apple), com validação de senha (mínimo 8 caracteres) e envio de e-mail de verificação | RF01 | MVP | T01 |
+| T02 | Implementar cadastro de usuário (e-mail/senha e provedor social Google; Apple fora do escopo acadêmico, decisão de 2026-11-16), com validação de senha (mínimo 8 caracteres) e envio de e-mail de verificação | RF01 | MVP | T01 |
 | T03 | Inicializar o documento do usuário no Cloud Firestore no momento do cadastro | RF01 | MVP | T02 |
 | T04 | Implementar login (e-mail/senha e social) com persistência de sessão no dispositivo | RF02 | MVP | T01 |
 | T05 | Implementar bloqueio temporário de login após 5 tentativas falhas consecutivas | RF02 | MVP | T04 |

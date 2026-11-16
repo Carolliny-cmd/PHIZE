@@ -94,7 +94,7 @@ O cenário de atuação do software é pautado pela crise de segurança digital 
 
 **Prioridade: **Alta
 
-**Descrição: **O sistema deve permitir que novos usuários criem uma conta fornecendo e-mail e senha, ou através de integração com provedores sociais (Google/Apple), para que possam salvar seu histórico de alertas e interagir com a comunidade.
+**Descrição: **O sistema deve permitir que novos usuários criem uma conta fornecendo e-mail e senha, ou através de integração com provedor social (Google), para que possam salvar seu histórico de alertas e interagir com a comunidade. O login com a Apple ficou fora do escopo acadêmico (decisão da equipe de 16/11/2026), por exigir conta paga de desenvolvedor Apple e ambiente de compilação para iOS.
 
 **Critérios de Aceitação: **O cadastro deve validar a força da senha (mínimo de 8 caracteres) e enviar um e-mail de verificação para contas não vinculadas a redes sociais.
 
@@ -337,6 +337,8 @@ O cenário de atuação do software é pautado pela crise de segurança digital 
 **Descrição: **O processamento da análise deve iniciar o feedback visual de carregamento imediatamente, devendo a primeira porção do resultado ser apresentada em até 5 segundos, mediante streaming progressivo do texto gerado. A cadeia de processamento envolve a extração de caracteres, executada no próprio dispositivo (RNF06), a recuperação na base de conhecimento e a inferência do modelo de linguagem, única etapa remota, realizada via API de LLM. A geração completa da resposta raramente se conclui abaixo desse patamar; o requisito prioriza, portanto, a percepção contínua de atividade do sistema sobre a redução do tempo total.
 
 **Justificativa: **Prevenir que o usuário abandone o aplicativo achando que travou durante o processamento de modelos de inteligência artificial. Reavaliação (2026-10-07): com a extração de caracteres no dispositivo, a cadeia perde a etapa de rede de maior volume de dados, o envio da imagem, mas o tempo até a primeira porção do resultado continua dominado pela inferência remota do modelo de linguagem, cuja geração completa permanece acima do patamar. O valor de 5 segundos e a priorização do streaming permanecem coerentes e são mantidos. Em contrapartida, o reconhecimento embarcado passa a consumir parte desse intervalo no próprio aparelho, com duração dependente do hardware, o que deve ser aferido em dispositivo de entrada durante a validação do RNF06.
+
+**Limitação declarada (escopo acadêmico): **na versão acadêmica, que acessa o modelo de linguagem pela camada gratuita do Google Gemini (RNF07, limitação declarada de escopo acadêmico), o patamar de 5 segundos não é atendido na análise de print. Em medição de 04/11/2026 com mensagens fictícias, a primeira porção da resposta do modelo levou de 4,3 a 21 segundos, e o restante chegou cerca de meio segundo depois. Como a espera ocorre antes da primeira porção, o streaming progressivo não foi implementado, por trazer ganho desprezível. A percepção contínua de atividade é assegurada pela exibição imediata das etapas reais da análise (leitura do texto, mascaramento e comparação com golpes conhecidos) e por aviso de que a análise continua quando a espera se prolonga. A análise de link, que não envolve o modelo de linguagem, não é afetada. A reavaliação do patamar depende de plano pago do provedor, fora do escopo acadêmico.
 
 ### **RNF04 — Coesão Contextual da IA**
 

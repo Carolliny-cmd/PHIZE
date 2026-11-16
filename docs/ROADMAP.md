@@ -224,11 +224,11 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | **Catalogar as modalidades iniciais da base de conhecimento** — trabalho manual da equipe (RDEV04), uma ficha por modalidade | Prompt 7.2 (validação com fichas reais) | RNF05 / RDEV04 |
 | ~~Limiar de similaridade para "correspondência com padrão catalogado"~~ — **proposto: v1.0, ver docs/calibracao-recuperacao.md** | ~~Prompt 7.2~~ Resolvida | RF07 / RNF05 |
 | Validação da calibração da recuperação v1.0 (docs/calibracao-recuperacao.md) | Não bloqueante | RF07 / RNF05 |
-| RAG na análise de link (UC03, passo 6 do fluxo principal) — o Prompt 7.2 conectou a base só à análise de print | Fechamento da Fase 9 | UC03 / RNF05 |
-| Declarar a limitação do RNF03 (5 s) no nível gratuito do Gemini | Fechamento da Fase 9 | RNF03 |
+| ~~RAG na análise de link (UC03, passo 6 do fluxo principal)~~ — **decidido (2026-11-16): sem RAG no link;** UC03 ajustado | ~~Fechamento da Fase 9~~ Resolvida | UC03 / RNF05 |
+| ~~Declarar a limitação do RNF03 (5 s) no nível gratuito do Gemini~~ — **feito (2026-11-16)** | ~~Fechamento da Fase 9~~ Resolvida | RNF03 |
 | Teste em Android real (WhatsApp e OCR com prints reais, RNF06): fazer pelo cabo USB ou declarar como não feito | Fechamento da Fase 9 | RNF06 / RF10 |
-| Login com Apple fora do escopo acadêmico? | Fechamento da Fase 9 | T02/T04 |
-| Ícone provisório ("p") passa a definitivo? | Fechamento da Fase 9 | Design |
+| ~~Login com Apple fora do escopo acadêmico?~~ — **decidido (2026-11-16): não haverá** | ~~Fechamento da Fase 9~~ Resolvida | RF01 / T02/T04 |
+| Ícone provisório ("p") passa a definitivo? — fica para o fim (2026-11-16) | Última etapa | Design |
 | Texto da tela "Como o Phize calcula o risco" | Fechamento da Fase 9 | RF14 |
 | ~~Tratamento do próprio `gov.br` no RDAP~~ — **decidido (2026-11-16):** verificação concluída, sem sinal | ~~Achado do ensaio~~ Resolvida | RF07 / UC03 |
 | ~~Testes com pessoas e logo definitivo~~ — **decidido (2026-11-16): não serão feitos** | ~~Fase 9~~ Resolvida | Fase 9, itens 5 e 6 |
@@ -271,7 +271,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - O mascaramento local não cobre todas as grafias dos dados listados; os formatos não cobertos estão registrados na limitação declarada do RNF07 (`docs/requisitos.md`).
 - O modelo é instruído a nunca afirmar que a mensagem é segura, mas o código não verifica a explicação devolvida.
 - ~~Os trechos destacados do RF04 não são devolvidos pelo pipeline do UC04~~ — **resolvida no Prompt 9.3**.
-- O streaming do RNF03 não foi implementado: a medição do Prompt 9.4 mostrou ganho de só 0,5 s. Reavaliar com o faturamento ativo.
+- O streaming do RNF03 não foi implementado: a medição do Prompt 9.4 mostrou ganho de só 0,5 s. Limitação declarada no RNF03 (2026-11-16); reavaliar só com plano pago.
 - ~~O build de release do Android falha (R8: classes ausentes do ML Kit)~~ — **resolvida em 2026-11-12**: `android/app/proguard-rules.pro` com `-dontwarn` para as escritas chinesa, devanágari, japonesa e coreana, que o app não usa. `flutter build apk --release` gera o APK (83,3 MB). O APK de release não fala com os emuladores do Firebase (sem exceção de HTTP); os testes de fluxo usam o build de debug.
 - A limitação acadêmica do RNF07 (nível gratuito do Gemini, só conteúdo fictício; 2026-11-12) foi declarada em `docs/requisitos.md` e `docs/relatorio-completo.md` e alinhada em `docs/arquitetura.md` (custos e transmissão a terceiros), `docs/viabilidade.md`, na tarefa T13 do `docs/BACKLOG.md` e na Seção 3 do `CLAUDE.md`. Falta levar o texto aos .docx acadêmicos, que ficam fora do repositório.
 - Sincronizar os .docx acadêmicos com os RF13 e RF14 (2026-11-12); `docs/relatorio-completo.md` já os traz (2026-11-16). O diagrama de classes de `docs/uml.md` (imagem) precisa do atributo `nomeExibicao` em Usuário depois do Prompt 9.10.
@@ -920,7 +920,7 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 - **Validação no emulador Android, com conta Google real e Auth emulado:** login, criação do perfil sem senha, confirmação da exclusão pelo Google e remoção da conta e do perfil. Sair, desistir na escolha de conta e a tela de bloqueio dessas contas têm só testes automáticos.
 
 > **Pontos para a equipe:**
-> - **Apple não implementado:** exige conta de desenvolvedor Apple, projeto iOS e um Mac. Vale lembrar que a App Store costuma exigir login da Apple em app com login social.
+> - **Apple não implementado** — fora do escopo acadêmico (decisão de 2026-11-16): exige conta de desenvolvedor Apple, projeto iOS e um Mac. Vale lembrar que a App Store costuma exigir login da Apple em app com login social.
 > - O botão usa um ícone genérico; as diretrizes do Google pedem o logo oficial antes da publicação.
 > - O SHA-1 de produção precisará ser cadastrado ao criar a chave de assinatura definitiva.
 
@@ -1216,11 +1216,11 @@ Build de debug no emulador Android (API 37), com Functions, Auth e Firestore emu
 **Falta decidir para fechar a fase:**
 
 1. Aprovar o texto da tela "Como o Phize calcula o risco" (Perfil → Aprender).
-2. **RNF03 (5 segundos):** a primeira porção do resultado não aparece em 5 s no nível gratuito do Gemini (de 4 a 21 s, Prompt 9.4), e a medição com faturamento não vai acontecer. Proposta: declarar a limitação no RNF03, como no RNF07.
-3. **RAG na análise de link:** o UC03 (passo 6) prevê consulta à base também no link; o app consulta só no print. Implementar ou ajustar o UC03 (recomendado: ajustar, porque um link sozinho tem pouco texto para comparar com as fichas).
+2. ~~**RNF03 (5 segundos)**~~ — **feito (2026-11-16):** limitação de escopo acadêmico declarada no RNF03 de `docs/requisitos.md` e de `docs/relatorio-completo.md`, e citada na seção 6 de `docs/arquitetura.md`.
+3. ~~**RAG na análise de link**~~ — **feito (2026-11-16):** UC03 ajustado (`docs/casos-de-uso.md`, passo 6): a explicação do link vem de textos da aplicação, sem base de conhecimento nem modelo de linguagem. A equipe deve conferir se a imagem do diagrama de sequência (`docs/uml.md`, "Print ou Link") mostra o link passando pelo modelo.
 4. **Teste em Android real** (item 4, o que sobra sem Blaze e sem faturamento): compartilhamento pelo WhatsApp e OCR com prints reais em tema claro e escuro (validação do RNF06). Possível de graça, com o celular no cabo USB ligado aos emuladores do computador. Fazer ou declarar como não feito.
-5. **Login com Apple:** exige Mac e conta paga de desenvolvedor Apple. Proposta: declarar fora do escopo acadêmico.
-6. **Ícone do app:** sem logo, o provisório com a letra "p" passa a ser o definitivo? Hoje só o Android tem o ícone.
+5. ~~**Login com Apple**~~ — **decidido (2026-11-16): não haverá.** RF01 de `docs/requisitos.md` e de `docs/relatorio-completo.md` e a tarefa T02 do `docs/BACKLOG.md` ajustados.
+6. **Ícone do app:** decisão da equipe (2026-11-16): fica para o fim. Hoje só o Android tem o ícone provisório, com a letra "p".
 
 **Documentos sincronizados (2026-11-16):** RF13 e RF14 em `docs/relatorio-completo.md`; em `docs/arquitetura.md`, a organização do texto do print (seção 3.1) e a atualização da base por nova publicação das Functions (seção 3.2 b). **Falta, fora do repositório, com a equipe:** .docx acadêmicos (RNF07, RF13, RF14) e a imagem do diagrama de classes (`nomeExibicao`).
 

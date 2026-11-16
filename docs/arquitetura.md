@@ -146,7 +146,7 @@ A base comunitária admite conteúdo submetido por terceiros e, por essa razão,
 
 Para assegurar a viabilidade operacional e evitar o abandono do usuário (RNF03), o sistema estabelece limites técnicos de desempenho:
 
-- **Latência de Resposta:** o feedback visual de carregamento é exibido imediatamente após a submissão. A primeira porção do resultado deve ser apresentada em até 5 segundos, mediante streaming progressivo do texto, valor referenciado no RNF03.
+- **Latência de Resposta:** o feedback visual de carregamento é exibido imediatamente após a submissão. A primeira porção do resultado deve ser apresentada em até 5 segundos, mediante streaming progressivo do texto, valor referenciado no RNF03. Na versão acadêmica, que usa a camada gratuita do modelo de linguagem, o patamar não é atendido na análise de print, e a atividade do sistema é indicada pelas etapas da análise e por aviso de espera prolongada (RNF03, limitação declarada de escopo acadêmico).
 
 - **Feedback de Interface:** implementação de Skeleton Screens e indicadores de carregamento durante o processamento assíncrono para garantir a percepção de atividade do sistema.
 
