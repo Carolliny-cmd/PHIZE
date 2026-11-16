@@ -44,6 +44,33 @@ void main() {
     });
   });
 
+  group('Categorias do Registro.br', () {
+    test('o próprio gov.br é categoria, sem parte registrável nem '
+        'typosquatting', () {
+      final resultado = AnalisadorTyposquatting.analisar('www.gov.br/inss');
+      expect(resultado.entradaValida, isTrue);
+      expect(resultado.dominioEhCategoria, isTrue);
+      expect(resultado.dominioRegistravel, isNull);
+      expect(resultado.typosquattingDetectado, isFalse);
+    });
+
+    test('órgão sob jus.br tem o nome do órgão como parte registrável', () {
+      final resultado = AnalisadorTyposquatting.analisar('www.tse.jus.br');
+      expect(resultado.dominioEhCategoria, isFalse);
+      expect(resultado.dominioRegistravel, 'tse.jus.br');
+    });
+
+    test('marca embutida em subdomínio de outra categoria continua '
+        'detectada', () {
+      final resultado = AnalisadorTyposquatting.analisar(
+        'itau.atendimento.blog.br',
+      );
+      expect(resultado.dominioRegistravel, 'atendimento.blog.br');
+      expect(resultado.typosquattingDetectado, isTrue);
+      expect(resultado.marcaImitada, 'itau');
+    });
+  });
+
   group('Domínio não relacionado', () {
     test('domínio sem relação com a lista não é marcado', () {
       final resultado = AnalisadorTyposquatting.analisar(

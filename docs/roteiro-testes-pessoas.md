@@ -84,7 +84,7 @@ As Cloud Functions só rodam no emulador local (decisão de 2026-11-12), então 
 | "Sua encomenda está retida. Regularize em http://testsafebrowsing.appspot.com/s/phishing.html" | vermelho: endereço de teste oficial do Google, sempre apontado como perigoso |
 | "Consulte o rastreio em https://www.correios.com.br" | verde (confirmado no ensaio) |
 
-Os resultados esperados foram confirmados no ensaio de 2026-11-16 (seção 11). Links oficiais no formato `www.gov.br/...` não servem como exemplo de verde: dão amarelo por verificação incompleta.
+Os resultados esperados foram confirmados no ensaio de 2026-11-16 (seção 11). No ensaio, links no formato `www.gov.br/...` deram amarelo por verificação incompleta; isso foi corrigido no mesmo dia (achado 1 do ROADMAP), mas o roteiro mantém o link dos Correios, já confirmado.
 
 ## 6. Sessão (cerca de 40 minutos)
 

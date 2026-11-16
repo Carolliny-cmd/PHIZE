@@ -34,6 +34,9 @@ class AnalisadorLink {
       'de bancos e serviços conhecidos';
   static const String _fonteRdap =
       'Cadastro público de domínios na internet (RDAP)';
+  static const String _fonteRegistroBr =
+      'Phize, comparando o endereço com as categorias de domínio do '
+      'Registro.br';
   static const String _fonteReputacao =
       'Google Safe Browsing, serviço do Google';
 
@@ -48,15 +51,22 @@ class AnalisadorLink {
     // RDAP opera só sobre o domínio; a reputação recebe a entrada original
     // e a normaliza (domínio e caminho, sem query nem fragmento) antes de
     // transmitir (arquitetura, seção 4, etapa 2). As duas consultas são
-    // independentes e correm em paralelo.
+    // independentes e correm em paralelo. Quando o endereço é a própria
+    // categoria (ex.: "gov.br"), não há nome registrado para consultar.
+    final registravel = anatomia.dominioRegistravel;
     final (idade, reputacao) = await (
-      _consultaIdadeDominio.consultar(anatomia.dominioRegistravel!),
+      registravel == null
+          ? Future<ResultadoConsultaDominio?>.value()
+          : _consultaIdadeDominio.consultar(registravel),
       _consultaReputacao.consultar(entrada),
     ).wait;
 
     final verificacoes = [
       _verificacaoAnatomia(anatomia),
-      _verificacaoIdade(idade),
+      if (idade == null)
+        _verificacaoIdadeCategoria(anatomia.dominioNormalizado!)
+      else
+        _verificacaoIdade(idade),
       _verificacaoReputacao(reputacao),
     ];
 
@@ -65,7 +75,7 @@ class AnalisadorLink {
         if (reputacao.status == StatusConsultaReputacao.listado)
           SinalLink.listadoSafeBrowsing,
         if (anatomia.typosquattingDetectado) SinalLink.typosquatting,
-        if (idade.dominioRecente) SinalLink.dominioRecemCriado,
+        if (idade?.dominioRecente ?? false) SinalLink.dominioRecemCriado,
       },
       verificacaoIncompleta: verificacoes.any(
         (v) => v.status == StatusVerificacao.naoConcluida,
@@ -106,8 +116,27 @@ class AnalisadorLink {
     );
   }
 
+  static const String _tituloIdade = 'Tempo de existência do endereço';
+
+  /// Endereço que é a própria categoria do Registro.br (ex.: "gov.br"): a
+  /// verificação está concluída sem consulta, porque o risco que ela mede,
+  /// um endereço registrado há poucos dias, não existe para algo que ninguém
+  /// consegue registrar.
+  static VerificacaoLink _verificacaoIdadeCategoria(String dominio) {
+    return VerificacaoLink(
+      titulo: _tituloIdade,
+      descricao:
+          'O endereço é o próprio $dominio, uma categoria controlada pelo '
+          'registro brasileiro de domínios, que ninguém consegue registrar '
+          'como endereço novo. Por isso, o sinal de endereço recém-criado '
+          'não se aplica.',
+      fonte: _fonteRegistroBr,
+      status: StatusVerificacao.semSinal,
+    );
+  }
+
   static VerificacaoLink _verificacaoIdade(ResultadoConsultaDominio idade) {
-    const titulo = 'Tempo de existência do endereço';
+    const titulo = _tituloIdade;
     const limite = ScoreConfig.dominioRecenteLimiteDias;
 
     if (idade.status == StatusConsultaDominio.naoConcluida) {

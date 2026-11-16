@@ -7,6 +7,7 @@ class ResultadoAnaliseDominio {
     this.dominioRegistravel,
     this.typosquattingDetectado = false,
     this.marcaImitada,
+    this.dominioEhCategoria = false,
   });
 
   /// `false` quando a entrada não é uma URL/domínio válido — os demais
@@ -18,8 +19,14 @@ class ResultadoAnaliseDominio {
   /// Parte registrável de [dominioNormalizado], sem subdomínios (ex.:
   /// "itau.com.br" para "www2.itau.com.br"). É o que a consulta RDAP
   /// recebe: a data de registro pertence ao domínio registrável, não a
-  /// cada subdomínio.
+  /// cada subdomínio. `null` quando [dominioEhCategoria] é `true`.
   final String? dominioRegistravel;
+
+  /// `true` quando o endereço é a própria categoria do Registro.br (ex.:
+  /// "gov.br", usado direto pelo governo federal em "www.gov.br/inss"). A
+  /// categoria não tem dono individual nem data de registro, e ninguém
+  /// consegue registrá-la como endereço novo.
+  final bool dominioEhCategoria;
   final bool typosquattingDetectado;
   final String? marcaImitada;
 }

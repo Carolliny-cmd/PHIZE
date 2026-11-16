@@ -5,19 +5,13 @@
 /// (algoritmo de Levenshtein), incluindo os apelidos de cada marca.
 library;
 
+import 'dominio_registravel.dart';
 import 'marcas_conhecidas.dart';
 import 'normalizacao_url.dart';
 import 'resultado_analise_dominio.dart';
 
 class AnalisadorTyposquatting {
   AnalisadorTyposquatting._();
-
-  // TLDs de segundo nível reconhecidas sob ".br", usadas para isolar o nome
-  // registrável quando o domínio segue o padrão "nome.<categoria>.br" (ex.:
-  // "itau.com.br"). Sem essa lista, "com" seria tratado como o nome do
-  // domínio e "itau" como subdomínio, apontando falsamente um mimetismo de
-  // subdomínio inexistente.
-  static const _segundosNiveisBr = {'com', 'gov', 'org', 'net', 'edu'};
 
   // Confusões visuais deliberadamente curta: cobre só os disfarces mais
   // comuns observados em typosquatting de marcas brasileiras (dobrar uma
@@ -41,14 +35,25 @@ class AnalisadorTyposquatting {
       return const ResultadoAnaliseDominio(entradaValida: false);
     }
 
+    final dominioRegistravel = registravelDe(dominio);
+    if (dominioRegistravel == null) {
+      // O endereço é a própria categoria (ex.: "gov.br"): ninguém a
+      // registra, então ela não pode ser um nome criado para imitar uma
+      // marca.
+      return ResultadoAnaliseDominio(
+        entradaValida: true,
+        dominioNormalizado: dominio,
+        dominioEhCategoria: true,
+      );
+    }
+
     final rotulos = dominio.split('.');
-    final registravel = _labelsRegistravel(rotulos);
+    final registravel = dominioRegistravel.split('.');
     final subdominios = rotulos.sublist(
       0,
       rotulos.length - registravel.length,
     );
     final nomeRegistravel = registravel.first;
-    final dominioRegistravel = registravel.join('.');
 
     // Domínio exatamente igual ao de alguma marca da lista: é a marca
     // legítima, nunca typosquatting dela mesma. Tem precedência sobre todo
@@ -124,15 +129,6 @@ class AnalisadorTyposquatting {
       dominioNormalizado: dominio,
       dominioRegistravel: dominioRegistravel,
     );
-  }
-
-  static List<String> _labelsRegistravel(List<String> rotulos) {
-    if (rotulos.length >= 3 &&
-        rotulos.last == 'br' &&
-        _segundosNiveisBr.contains(rotulos[rotulos.length - 2])) {
-      return rotulos.sublist(rotulos.length - 3);
-    }
-    return rotulos.sublist(rotulos.length - 2);
   }
 
   static String _normalizarVisual(String pedaco) {
