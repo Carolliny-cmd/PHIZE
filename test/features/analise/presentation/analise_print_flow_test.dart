@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:phize/core/constants/firebase_auth_codigos.dart';
 import 'package:phize/core/routing/app_router.dart';
+import 'package:phize/core/theme/app_theme.dart';
 import 'package:phize/core/routing/app_routes.dart';
 import 'package:phize/features/analise/data/analise_texto_client_http.dart';
 import 'package:phize/features/analise/data/historico_repository_firestore.dart';
@@ -994,10 +995,16 @@ void main() {
       expect(vazio, findsOneWidget);
       expect(find.byIcon(Icons.check_circle_outline), findsNothing);
       expect(find.byIcon(Icons.check_circle), findsNothing);
+      // Ícone neutro de informação, nem confirmação nem alerta (achado 6
+      // do ensaio de 2026-11-16: o "?" laranja soava como aviso).
       expect(
-        find.descendant(of: vazio, matching: find.byIcon(Icons.help_outline)),
+        find.descendant(of: vazio, matching: find.byIcon(Icons.info_outline)),
         findsOneWidget,
       );
+      final icone = tester.widget<Icon>(
+        find.byKey(const Key('resultado_print_sem_sinais_icone')),
+      );
+      expect(icone.color, CoresPhize.textoSecundario);
       expect(
         find.descendant(
           of: vazio,

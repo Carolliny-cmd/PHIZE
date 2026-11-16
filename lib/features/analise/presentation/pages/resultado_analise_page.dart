@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../data/tutorial_repository_local.dart';
 import '../../domain/resultado_analise_link.dart';
 import '../../domain/resultado_analise_print.dart';
@@ -175,11 +176,17 @@ class ResultadoAnalisePage extends StatelessWidget {
       const SizedBox(height: 8),
       // Sem ícone de confirmação: ausência de sinais conhecidos não é
       // ausência de risco, e com verificação incompleta o texto diz isso.
+      // Nem de alerta: o "?" laranja soava como aviso no resultado verde
+      // (ensaio de 2026-11-16). Fica um ícone neutro de informação.
       if (resultado.sinais.isEmpty)
         ListTile(
           key: const Key('resultado_print_sem_sinais'),
           contentPadding: EdgeInsets.zero,
-          leading: const Icon(Icons.help_outline, color: Colors.orange),
+          leading: Icon(
+            Icons.info_outline,
+            key: const Key('resultado_print_sem_sinais_icone'),
+            color: context.cores.textoSecundario,
+          ),
           title: Text(
             resultado.verificacoesNaoConcluidas.isEmpty
                 ? 'Não identificamos sinais de golpe conhecidos neste texto.'
