@@ -225,16 +225,20 @@ class _SinalTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(titulo, style: Theme.of(context).textTheme.bodyLarge),
+                // A chave fica no filho do Padding: um sinal pode ter mais
+                // de uma frase, e chaves iguais entre irmãos quebram a tela.
                 for (final trecho in trechos)
-                  Container(
-                    key: const Key('resultado_print_trecho'),
-                    margin: const EdgeInsets.only(top: 8),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(12),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Container(
+                      key: const Key('resultado_print_trecho'),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.errorContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text('“$trecho”'),
                     ),
-                    child: Text('“$trecho”'),
                   ),
               ],
             ),
