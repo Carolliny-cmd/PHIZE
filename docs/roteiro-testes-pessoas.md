@@ -1,6 +1,6 @@
 # Roteiro dos testes com pessoas
 
-Fase 9, item 5 do `docs/ROADMAP.md`. Versão 1.1 (2026-11-16), proposta para revisão da equipe.
+Fase 9, item 5 do `docs/ROADMAP.md`. Versão 1.2 (2026-11-16), proposta para revisão da equipe.
 
 ## 1. Objetivo
 
@@ -82,9 +82,9 @@ As Cloud Functions só rodam no emulador local (decisão de 2026-11-12), então 
 | Mensagem | Resultado esperado |
 | --- | --- |
 | "Sua encomenda está retida. Regularize em http://testsafebrowsing.appspot.com/s/phishing.html" | vermelho: endereço de teste oficial do Google, sempre apontado como perigoso |
-| "Consulte seu benefício em https://www.gov.br" | verde |
+| "Consulte o rastreio em https://www.correios.com.br" | verde (confirmado no ensaio) |
 
-Os resultados esperados devem ser confirmados no ensaio. Anote o que sair diferente antes de começar as sessões.
+Os resultados esperados foram confirmados no ensaio de 2026-11-16 (seção 11). Links oficiais no formato `www.gov.br/...` não servem como exemplo de verde: dão amarelo por verificação incompleta.
 
 ## 6. Sessão (cerca de 40 minutos)
 
@@ -195,9 +195,35 @@ O termo assinado fica com a equipe, separado das fichas de observação, para qu
 - Registrar o resultado em `docs/resultados-testes-pessoas.md`, só com códigos de participante e faixas, nunca com nome, telefone ou conversa.
 - Os problemas que exigirem mudança no app viram itens do `docs/ROADMAP.md`.
 
+## 11. Registro do ensaio (2026-11-16)
+
+Feito no emulador Android (sistema em inglês), com os emuladores do Firebase aquecidos e uma conta nova. As tarefas foram executadas pela IA, com acompanhamento da equipe pelas capturas de tela; por isso, o tempo de cada tarefa não representa um participante.
+
+**Resultados esperados confirmados:**
+
+| Material | Resultado no ensaio |
+| --- | --- |
+| Print 1 (falso parente) | 100, vermelho; golpe do falso parente citado pelo nome |
+| Print 2 (falsa central), compartilhado da galeria | 100, vermelho |
+| Print 3 (conversa comum) | 0, verde |
+| Print 4 (CPF e celular) | 0, verde; CPF e celular não aparecem na explicação |
+| Link da encomenda (endereço de teste do Google) | 70, vermelho |
+| Link do gov.br | **amarelo**, e não verde: o RDAP não informa data de registro para o próprio `gov.br`, e verificação incompleta impede o verde (RF07). Trocado pelo link dos Correios, que deu 0, verde |
+
+**Ajustes feitos neste roteiro:** o link do verde passou a ser o dos Correios (seção 5); no emulador, as mensagens com link foram enviadas como SMS (`adb emu sms send`), o que é mais realista que o app de notas.
+
+**O que observar nas sessões, a partir do ensaio:**
+- No app de mensagens, **um toque no link abre o navegador**. Se o participante abrir, o moderador anota e pede para voltar; não é preciso impedir antes.
+- O balão "Colar" do Android é pequeno e aparece no canto do campo.
+- O seletor de fotos mostra miniaturas cortadas e exige confirmar a escolha; o moderador mostra antes qual print usar.
+- O botão "Entendi e concordo" do aviso de privacidade fica abaixo da dobra.
+- Depois de um resultado, a volta ao Início pode exigir vários toques em "voltar" (as telas de resultado não têm a barra inferior).
+- No celular dos participantes, deixar o sistema em português.
+
 ## Registro de versões
 
 | Versão | Data | Alteração |
 | --- | --- | --- |
 | 1.0 | 2026-11-16 | Primeira versão, proposta para revisão da equipe. |
 | 1.1 | 2026-11-16 | Enquadramento sem consulta ao comitê de ética (seção 3); gravação preferencialmente nenhuma. |
+| 1.2 | 2026-11-16 | Registro do ensaio (seção 11); link do verde trocado pelo dos Correios. |

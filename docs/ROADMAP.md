@@ -1194,6 +1194,19 @@ Build de debug no emulador Android (API 37), com Functions, Auth e Firestore emu
 - **Sem correção no código:** o print do golpe do Pix enviado por engano saiu com tipo "Outro golpe", o que está certo pela lista fechada de `docs/categorias-ameaca.md`, que não tem categoria para esse golpe. Criar uma categoria é decisão da equipe (registrada em Decisões Pendentes). O trecho destacado reproduz um erro do OCR ("pixX"), limitação já declarada do reconhecimento embarcado.
 - Não testados: login com Google (exige conta Google no emulador), exportação dos dados (abre a folha de compartilhar do Android), bloqueio após 5 tentativas de login (coberto por teste automático) e compartilhamento de imagem.
 
+### Achados de produto do ensaio (2026-11-16)
+
+Observados no ensaio dos testes com pessoas (`docs/roteiro-testes-pessoas.md`, seção 11). Nenhum foi corrigido ainda.
+
+1. **Links oficiais `www.gov.br/...` dão amarelo.** O RDAP do registro.br não traz data de registro para o próprio `gov.br` (subdomínios como `serpro.gov.br` trazem), então a idade do domínio fica "não concluída" e a faixa verde é impedida (RF07). O app segue a regra, mas para o usuário é alarme falso em links oficiais comuns, como `gov.br/inss`. Avaliar com a equipe um tratamento para domínios mantidos pelo próprio registro.
+2. **Tutorial do link diferente da tela real:** a cena mostra um botão "Colar" ao lado do campo, que a tela "Analisar link" não tem; na tela real é preciso tocar e segurar no campo.
+3. **Resultado do link mostra o motivo do vermelho por último:** as verificações sem sinal (✓) vêm antes da lista do Google, fora da primeira tela.
+4. **"Está demorando um pouco mais que o normal" aparece cedo**, cerca de 2 segundos depois de escolher o print, ainda na leitura do texto.
+5. **Navegação depois do resultado:** as telas de resultado não têm a barra inferior, e depois de uma análise compartilhada o resultado anterior continua por baixo; voltar ao Início exige vários toques.
+6. **Ícone laranja de interrogação no resultado verde** ("Não identificamos sinais de golpe..."), que pode soar como alerta.
+7. **Botão do aviso de privacidade abaixo da dobra** (texto longo na versão 2).
+8. **Erros do OCR nos trechos destacados** (ex.: "nascimentoea senha"); limitação declarada do reconhecimento embarcado.
+
 ---
 
 ## FASE 10 — EXPANSÃO (PÓS-MVP)
