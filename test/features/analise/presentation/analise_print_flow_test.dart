@@ -382,6 +382,10 @@ void main() {
       find.byKey(const Key('resultado_print_aviso_trechos')),
       findsOneWidget,
     );
+    expect(
+      find.textContaining('podem ter pequenos erros de leitura'),
+      findsOneWidget,
+    );
 
     final gravado = analiseParaDocumento(historico.analises.single);
     expect(gravado.keys.toSet(), {

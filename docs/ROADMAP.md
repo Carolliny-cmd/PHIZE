@@ -1196,7 +1196,7 @@ Build de debug no emulador Android (API 37), com Functions, Auth e Firestore emu
 
 ### Achados de produto do ensaio (2026-11-16)
 
-Observados no ensaio dos testes com pessoas (`docs/roteiro-testes-pessoas.md`, seção 11). Nenhum foi corrigido ainda.
+Observados no ensaio dos testes com pessoas (`docs/roteiro-testes-pessoas.md`, seção 11). Todos tratados em 2026-11-16.
 
 1. ~~**Links oficiais `www.gov.br/...` dão amarelo.**~~ **Corrigido em 2026-11-16.** Causa: o app tratava `gov.br` como domínio registrável e consultava a categoria no RDAP, que não tem data de registro. A lista de categorias `.br` também tinha só 5 itens (com, gov, org, net, edu), e por isso `www.tse.jus.br` consultava `jus.br`. Agora `lib/features/analise/domain/dominio_registravel.dart` traz as 147 categorias do Registro.br (Lista de Sufixos Públicos); quando o endereço é a própria categoria, a idade é dada como concluída sem sinal, com explicação na tela. Conferido no emulador: `www.gov.br/inss` deu 0, verde. **Decisão a confirmar com a equipe:** tratar o próprio `gov.br` como verificação concluída, e não como não concluída.
 2. ~~**Tutorial do link diferente da tela real.**~~ **Corrigido em 2026-11-16:** a tela "Analisar link" ganhou o botão "Colar" dentro do campo, como na cena do tutorial (desenho pedido pela equipe em 2026-11-12). Ele lê a área de transferência só quando tocado; sem nada copiado, explica como copiar o link. Conferido no emulador.
@@ -1205,7 +1205,7 @@ Observados no ensaio dos testes com pessoas (`docs/roteiro-testes-pessoas.md`, s
 5. ~~**Navegação depois do resultado.**~~ **Corrigido em 2026-11-16:** a tela de resultado ganhou o botão "Voltar ao início", sempre visível no rodapé; ele leva ao Início num toque e fecha as telas abertas por baixo, inclusive resultados anteriores de compartilhamento. Conferido no emulador: depois do botão, "voltar" no Início sai do app, sem resultado por baixo.
 6. ~~**Ícone laranja de interrogação no resultado verde.**~~ **Corrigido em 2026-11-16:** o estado vazio do resultado de print usa um ícone neutro de informação, na cor de texto secundário do tema (vale também no tema escuro). Continua sem ícone de confirmação, como pede a correção D2 da Fase 6.3. O "?" laranja segue só nas verificações de link não concluídas, onde é aviso de fato. Conferido no emulador com o print 3.
 7. ~~**Botão do aviso de privacidade abaixo da dobra.**~~ **Corrigido em 2026-11-16:** "Entendi e concordo" e "Agora não" ficam fixos no rodapé, e o texto rola acima deles. Teste novo em tela de 360×640. Conferido no emulador.
-8. **Erros do OCR nos trechos destacados** (ex.: "nascimentoea senha"); limitação declarada do reconhecimento embarcado.
+8. ~~**Erros do OCR nos trechos destacados.**~~ **Tratado em 2026-11-16 (decisão da equipe: aviso na tela).** Causa: o ML Kit às vezes junta palavras curtas mesmo em print nítido ("nascimento e a" → "nascimentoea"), e a frase destacada só aparece se existir igual no texto lido, então o erro passa adiante. O aviso abaixo das frases passou a dizer que elas são lidas do print e podem ter pequenos erros de leitura (RNF06, limitações declaradas). Os sinais e o score não dependem das frases. Alternativa não adotada: permitir ao modelo corrigir só espaços, com a Function comparando sem espaços; exigiria mudar o prompt e medir no Gemini.
 
 ---
 

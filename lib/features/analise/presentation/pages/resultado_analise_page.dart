@@ -227,9 +227,12 @@ class ResultadoAnalisePage extends StatelessWidget {
     ];
   }
 
+  /// O OCR embarcado às vezes junta palavras curtas ("nascimentoea"), e a
+  /// frase é mostrada como foi lida, sem correção (RNF06, limitações
+  /// declaradas; ensaio de 2026-11-16).
   static const String avisoTrechos =
-      'As frases destacadas aparecem só nesta tela e não ficam no seu '
-      'histórico.';
+      'As frases são lidas do print e podem ter pequenos erros de leitura. '
+      'Elas aparecem só nesta tela e não ficam no seu histórico.';
 }
 
 class _SinalTile extends StatelessWidget {
