@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/routing/app_routes.dart';
 import '../../data/tutorial_repository_local.dart';
 import '../../domain/resultado_analise_link.dart';
 import '../../domain/resultado_analise_print.dart';
@@ -61,6 +62,16 @@ class ResultadoAnalisePage extends StatelessWidget {
     );
   }
 
+  /// Volta ao Início num toque, limpando as telas abertas por baixo (a
+  /// tela de análise e, depois de um compartilhamento, resultados
+  /// anteriores). No ensaio de 2026-11-16, voltar exigia vários toques.
+  void _voltarAoInicio(BuildContext context) {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      AppRoutes.dashboard,
+      (_) => false,
+    );
+  }
+
   ResultadoScore get _score => _link?.score ?? _print!.score;
 
   @override
@@ -100,6 +111,17 @@ class ResultadoAnalisePage extends StatelessWidget {
                 texto: RotulosRisco.avisoPermanente,
               ),
             ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+          child: FilledButton.tonalIcon(
+            key: const Key('resultado_voltar_inicio'),
+            onPressed: () => _voltarAoInicio(context),
+            icon: const Icon(Icons.home_outlined),
+            label: const Text('Voltar ao início'),
           ),
         ),
       ),

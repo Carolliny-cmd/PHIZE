@@ -184,6 +184,22 @@ void _simularAreaDeTransferencia(WidgetTester tester, String? texto) {
 }
 
 void main() {
+  testWidgets('"Voltar ao início" leva ao Início num toque, sem telas por '
+      'baixo', (tester) async {
+    await _analisar(tester, _rdapDominioAntigo(), 'https://www.correios.com.br');
+    expect(find.text('Resultado da Análise'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('resultado_voltar_inicio')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Recebeu algo estranho?'), findsOneWidget);
+    expect(find.text('Resultado da Análise'), findsNothing);
+    expect(
+      Navigator.of(tester.element(find.text('Recebeu algo estranho?'))).canPop(),
+      isFalse,
+    );
+  });
+
   group('botão "Colar"', () {
     testWidgets('cola o link copiado no campo, e a análise segue normal', (
       tester,
