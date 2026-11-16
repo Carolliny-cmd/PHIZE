@@ -19,7 +19,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Testes:** 678 no app, 87 na Function.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
-- **Próximo passo:** fechar a Fase 9 com as seis decisões listadas em "Fechamento da Fase 9" (texto do "Cálculo do risco", RNF03, RAG no link, teste em Android real, login com Apple, ícone) e sincronizar os documentos. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Próximo passo:** fechar a Fase 9 com as seis decisões listadas em "Fechamento da Fase 9" (texto do "Cálculo do risco", RNF03, RAG no link, teste em Android real, login com Apple, ícone) e levar as mudanças aos .docx acadêmicos. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -236,7 +236,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | Espera entre reenvios do e-mail de verificação (provisório: 60 s) | Revisão | RF14 |
 | Categoria própria para o golpe do Pix enviado por engano (hoje cai em "Outro golpe" pela lista fechada v1.0) | Não bloqueante | `docs/categorias-ameaca.md` |
 | ~~Exigência de comitê de ética (CEP) para os testes com pessoas~~ — **decidido (2026-11-16):** sem consulta à instituição; testes enquadrados como avaliação de usabilidade do projeto acadêmico, sem dados que identifiquem os participantes, com termo de consentimento. Risco aceito: a instituição entender depois que a aprovação era necessária (`docs/roteiro-testes-pessoas.md`, seção 3) | ~~Testes com pessoas~~ Resolvida | Fase 9, item 5 |
-| Índice da base dentro da Function: a atualização da base passa a exigir nova publicação das Functions, não nova versão do app (arquitetura, seção 3.2 b, fala em nova versão do aplicativo) | Revisão do documento | Arquitetura 3.2 b |
+| ~~Índice da base dentro da Function: a atualização da base passa a exigir nova publicação das Functions, não nova versão do app~~ — **documento ajustado (2026-11-16):** arquitetura, seção 3.2 b | ~~Revisão do documento~~ Resolvida | Arquitetura 3.2 b |
 
 > Padrão adotado: **não bloquear**, seguindo o UC01.
 
@@ -274,8 +274,8 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - O streaming do RNF03 não foi implementado: a medição do Prompt 9.4 mostrou ganho de só 0,5 s. Reavaliar com o faturamento ativo.
 - ~~O build de release do Android falha (R8: classes ausentes do ML Kit)~~ — **resolvida em 2026-11-12**: `android/app/proguard-rules.pro` com `-dontwarn` para as escritas chinesa, devanágari, japonesa e coreana, que o app não usa. `flutter build apk --release` gera o APK (83,3 MB). O APK de release não fala com os emuladores do Firebase (sem exceção de HTTP); os testes de fluxo usam o build de debug.
 - A limitação acadêmica do RNF07 (nível gratuito do Gemini, só conteúdo fictício; 2026-11-12) foi declarada em `docs/requisitos.md` e `docs/relatorio-completo.md` e alinhada em `docs/arquitetura.md` (custos e transmissão a terceiros), `docs/viabilidade.md`, na tarefa T13 do `docs/BACKLOG.md` e na Seção 3 do `CLAUDE.md`. Falta levar o texto aos .docx acadêmicos, que ficam fora do repositório.
-- Sincronizar `docs/relatorio-completo.md` e os .docx acadêmicos com os RF13 e RF14 (2026-11-12); `docs/requisitos.md` prevalece até lá. O diagrama de classes de `docs/uml.md` (imagem) precisa do atributo `nomeExibicao` em Usuário depois do Prompt 9.10.
-- `ReconhecedorTextoMlKit` passou a organizar o texto do print (ordem de leitura, sem interface, só mensagens recebidas; Prompt 9.7). A arquitetura (seção 3.1) descreve só a extração do texto; avaliar se esse passo merece registro no documento.
+- Sincronizar os .docx acadêmicos com os RF13 e RF14 (2026-11-12); `docs/relatorio-completo.md` já os traz (2026-11-16). O diagrama de classes de `docs/uml.md` (imagem) precisa do atributo `nomeExibicao` em Usuário depois do Prompt 9.10.
+- ~~`ReconhecedorTextoMlKit` passou a organizar o texto do print~~ — **registrado na arquitetura, seção 3.1 (2026-11-16).**
 
 ---
 
@@ -1222,7 +1222,7 @@ Build de debug no emulador Android (API 37), com Functions, Auth e Firestore emu
 5. **Login com Apple:** exige Mac e conta paga de desenvolvedor Apple. Proposta: declarar fora do escopo acadêmico.
 6. **Ícone do app:** sem logo, o provisório com a letra "p" passa a ser o definitivo? Hoje só o Android tem o ícone.
 
-**Documentos a sincronizar (sem decisão):** RF13 e RF14 em `docs/relatorio-completo.md`; em `docs/arquitetura.md`, a organização do texto do print (seção 3.1) e a atualização da base por nova publicação das Functions (seção 3.2 b). Fora do repositório, com a equipe: .docx acadêmicos (RNF07, RF13, RF14) e a imagem do diagrama de classes (`nomeExibicao`).
+**Documentos sincronizados (2026-11-16):** RF13 e RF14 em `docs/relatorio-completo.md`; em `docs/arquitetura.md`, a organização do texto do print (seção 3.1) e a atualização da base por nova publicação das Functions (seção 3.2 b). **Falta, fora do repositório, com a equipe:** .docx acadêmicos (RNF07, RF13, RF14) e a imagem do diagrama de classes (`nomeExibicao`).
 
 **Não bloqueiam:** validação das tabelas v1.0 (pesos do score, categorias de ameaça, limite de texto do OCR, calibração da busca); valores provisórios (bloqueio de login de 15 min, espera de 60 s entre reenvios, não bloquear e-mail não verificado); categoria própria para o "Pix enviado por engano". Só importam numa publicação: política de privacidade e contato no "Sobre" e logo oficial do Google no botão de login.
 

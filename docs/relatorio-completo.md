@@ -312,6 +312,38 @@ O detalhamento integral dos requisitos, incluindo critérios de aceitação e ju
 
 **Justificativa: **Atendimento aos direitos de acesso, portabilidade e eliminação previstos no Art. 18 da Lei nº 13.709/2018.
 
+### **RF13 — Tutorial de Primeiro Uso das Análises**
+
+**Identificador: **RF13
+
+**Nome: **Tutorial de Primeiro Uso das Análises
+
+**Módulo: **Orientação / Educação
+
+**Prioridade: **Média
+
+**Descrição: **Na primeira vez que o usuário abrir a análise de link ou a análise de print, o sistema deve apresentar um tutorial curto e interativo, próprio de cada tipo de análise, explicando como enviar o conteúdo, o que o aplicativo verifica, como ler o resultado e como o conteúdo é tratado quanto à privacidade.
+
+**Critérios de Aceitação: **Cada tutorial deve ter no máximo 4 etapas, com indicação de progresso e opção de pular em qualquer etapa. Deve incluir um exemplo de resultado com conteúdo fictício, calculado pela mesma função determinística do RF07, sem chamada a serviço externo e sem registro no histórico. O exemplo segue a rotulagem obrigatória das três faixas, sendo vedado o termo "Seguro" ou equivalente. O tutorial não deve ser exibido de novo depois de concluído ou pulado, salvo quando o próprio usuário o reabrir pela tela de perfil (RF14) ou pela própria tela de análise, e não deve interromper a análise iniciada por compartilhamento nativo (RF10). A marca de tutorial visto fica apenas no dispositivo. O conteúdo deve funcionar com o tamanho de letra ampliado do RF14 e com leitor de tela.
+
+**Justificativa: **O perfil de usuário vulnerável (seção 4) tem letramento tecnológico reduzido e precisa entender o que enviar e como interpretar a escala de três faixas antes do primeiro uso. O tutorial antecipa a correção pedagógica do produto e reduz o uso equivocado, como esperar uma resposta binária de "seguro ou perigoso".
+
+### **RF14 — Perfil e Preferências do Usuário**
+
+**Identificador: **RF14
+
+**Nome: **Perfil e Preferências do Usuário
+
+**Módulo: **Acesso / Conta
+
+**Prioridade: **Média
+
+**Descrição: **O sistema deve oferecer uma tela de perfil que reúna, em seções: identificação (nome de exibição opcional, e-mail somente para leitura com estado de verificação e forma de login), segurança (troca de senha para contas de e-mail e senha, reenvio do e-mail de verificação e saída da conta), acessibilidade (tamanho da letra e tema claro, escuro ou do sistema), aprendizado (reabertura dos tutoriais do RF13 e explicação de como o risco é calculado), privacidade e dados (exportação e exclusão do RF12 e retirada do consentimento da análise de print) e informações sobre o aplicativo (versão e aviso de que a análise é ferramenta de apoio à decisão).
+
+**Critérios de Aceitação: **O nome de exibição é o único dado pessoal novo: opcional, com no máximo 40 caracteres, gravado no documento do usuário, incluído na exportação e removido na exclusão da conta (RF12). Não devem ser solicitados foto, telefone, CPF, data de nascimento ou endereço. A troca de senha exige nova autenticação e segue a regra de força do RF01. As preferências de acessibilidade ficam apenas no dispositivo e são aplicadas a todas as telas, mantendo o contraste das cores das faixas de risco. A explicação do cálculo do risco descreve os sinais e as três faixas em linguagem não técnica, sem reproduzir pesos ou pontos de corte, cuja fonte única é a documentação de calibração do score.
+
+**Justificativa: **Concentra em um só lugar as funções de conta já existentes (RF12, consentimento do RNF07) e acrescenta ajustes de acessibilidade exigidos pelo perfil de usuário vulnerável, seguindo o princípio da minimização de dados da LGPD (Art. 6º, III).
+
 ## **7.2 Requisitos Não Funcionais**
 
 ### **RNF01 — Privacidade e Conformidade com a LGPD**
