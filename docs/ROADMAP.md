@@ -19,7 +19,8 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Testes:** 678 no app, 87 na Function.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
-- **Próximo passo:** fechar a Fase 9 com as seis decisões listadas em "Fechamento da Fase 9" (texto do "Cálculo do risco", RNF03, RAG no link, teste em Android real, login com Apple, ícone) e levar as mudanças aos .docx acadêmicos. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Fase 9 fechada no app (2026-11-16):** texto do "Cálculo do risco" aprovado, limitação do RNF03 declarada, UC03 sem RAG no link, sem login com a Apple, teste em Android real declarado como não feito por enquanto. Ficam para o fim o ícone e as mudanças nos .docx e nas imagens dos diagramas.
+- **Próximo passo:** Fase 10 (notícias e comunidade), depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -226,10 +227,10 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | Validação da calibração da recuperação v1.0 (docs/calibracao-recuperacao.md) | Não bloqueante | RF07 / RNF05 |
 | ~~RAG na análise de link (UC03, passo 6 do fluxo principal)~~ — **decidido (2026-11-16): sem RAG no link;** UC03 ajustado | ~~Fechamento da Fase 9~~ Resolvida | UC03 / RNF05 |
 | ~~Declarar a limitação do RNF03 (5 s) no nível gratuito do Gemini~~ — **feito (2026-11-16)** | ~~Fechamento da Fase 9~~ Resolvida | RNF03 |
-| Teste em Android real (WhatsApp e OCR com prints reais, RNF06): fazer pelo cabo USB ou declarar como não feito | Fechamento da Fase 9 | RNF06 / RF10 |
+| ~~Teste em Android real (WhatsApp e OCR com prints reais, RNF06)~~ — **decidido (2026-11-16): não feito por enquanto** | ~~Fechamento da Fase 9~~ Resolvida | RNF06 / RF10 |
 | ~~Login com Apple fora do escopo acadêmico?~~ — **decidido (2026-11-16): não haverá** | ~~Fechamento da Fase 9~~ Resolvida | RF01 / T02/T04 |
 | Ícone provisório ("p") passa a definitivo? — fica para o fim (2026-11-16) | Última etapa | Design |
-| Texto da tela "Como o Phize calcula o risco" | Fechamento da Fase 9 | RF14 |
+| ~~Texto da tela "Como o Phize calcula o risco"~~ — **aprovado (2026-11-16)** | ~~Fechamento da Fase 9~~ Resolvida | RF14 |
 | ~~Tratamento do próprio `gov.br` no RDAP~~ — **decidido (2026-11-16):** verificação concluída, sem sinal | ~~Achado do ensaio~~ Resolvida | RF07 / UC03 |
 | ~~Testes com pessoas e logo definitivo~~ — **decidido (2026-11-16): não serão feitos** | ~~Fase 9~~ Resolvida | Fase 9, itens 5 e 6 |
 | Texto aprovado da política de privacidade e do contato da equipe, para a seção "Sobre o Phize" do perfil (hoje só versão e aviso) | Publicação | RF14 / LGPD |
@@ -265,7 +266,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - A remoção real do temporário nunca foi validada em dispositivo ou emulador Android; os testes usam sistema de arquivos em memória.
 - Quando o fluxo for ligado à tela (6.2), avaliar a coincidência de tempo entre a limpeza da inicialização e uma seleção em curso.
 - A camada de tela não pode exibir nem gravar em log a `FileSystemException` da captura: a mensagem traz o caminho do temporário, que inclui o nome original do print.
-- Validar o reconhecimento embarcado (ML Kit) em aparelho Android, com prints reais de WhatsApp e SMS, em tema claro e escuro, antes de considerar o RNF06 cumprido.
+- Validar o reconhecimento embarcado (ML Kit) em aparelho Android, com prints reais de WhatsApp e SMS, em tema claro e escuro, antes de considerar o RNF06 cumprido. Declarado como não feito, por enquanto (2026-11-16).
 - A arquitetura (3.2) não define onde o texto analisado é convertido em embedding para a recuperação RAG. Se a conversão ocorrer por API, haverá uma segunda etapa remota, o que afeta o RNF03 e exige registro no ciclo de vida do dado textual do RNF07. Definir na Fase 7.
 - Validar a chamada ao Gemini real (Function `analiseTexto`) com a chave configurada em `functions/.env.local`.
 - O mascaramento local não cobre todas as grafias dos dados listados; os formatos não cobertos estão registrados na limitação declarada do RNF07 (`docs/requisitos.md`).
@@ -1179,7 +1180,7 @@ de peso na tela de explicação.
 - **Testes:** 11 novos (tutoriais reabertos e marcados como vistos, explicação com sinais e faixas, ausência de "Seguro" e de números de peso, versão e falha ao lê-la, explicação sem estouro com letra muito grande nos dois temas). Suíte: 658 testes.
 
 > **Pontos para a equipe:**
-> - ~~Aprovar o texto dos tutoriais~~ — **tutorial aprovado (2026-11-16).** Falta aprovar o texto da tela "Como o Phize calcula o risco".
+> - ~~Aprovar o texto dos tutoriais~~ — **tutorial aprovado (2026-11-16).** Texto da tela "Como o Phize calcula o risco" aprovado (2026-11-16).
 > - A política de privacidade e o contato da equipe ainda não existem como texto aprovado.
 > - O nome de exibição só terá uso visível na comunidade (Fase 10); até lá, aparece no perfil e na exportação.
 
@@ -1215,14 +1216,16 @@ Build de debug no emulador Android (API 37), com Functions, Auth e Firestore emu
 
 **Falta decidir para fechar a fase:**
 
-1. Aprovar o texto da tela "Como o Phize calcula o risco" (Perfil → Aprender).
+1. ~~Aprovar o texto da tela "Como o Phize calcula o risco"~~ — **aprovado (2026-11-16).**
 2. ~~**RNF03 (5 segundos)**~~ — **feito (2026-11-16):** limitação de escopo acadêmico declarada no RNF03 de `docs/requisitos.md` e de `docs/relatorio-completo.md`, e citada na seção 6 de `docs/arquitetura.md`.
 3. ~~**RAG na análise de link**~~ — **feito (2026-11-16):** UC03 ajustado (`docs/casos-de-uso.md`, passo 6): a explicação do link vem de textos da aplicação, sem base de conhecimento nem modelo de linguagem. A equipe deve conferir se a imagem do diagrama de sequência (`docs/uml.md`, "Print ou Link") mostra o link passando pelo modelo.
-4. **Teste em Android real** (item 4, o que sobra sem Blaze e sem faturamento): compartilhamento pelo WhatsApp e OCR com prints reais em tema claro e escuro (validação do RNF06). Possível de graça, com o celular no cabo USB ligado aos emuladores do computador. Fazer ou declarar como não feito.
+4. **Teste em Android real** — **declarado como não feito, por enquanto (decisão de 2026-11-16).** Fica pendente a validação do RNF06 em aparelho (OCR com prints reais em tema claro e escuro) e do compartilhamento pelo WhatsApp. Quando for feito, o jeito mais simples e gratuito é a depuração por Wi-Fi (Android 11+) com `adb reverse` para os emuladores do computador, sem mudança no projeto.
 5. ~~**Login com Apple**~~ — **decidido (2026-11-16): não haverá.** RF01 de `docs/requisitos.md` e de `docs/relatorio-completo.md` e a tarefa T02 do `docs/BACKLOG.md` ajustados.
 6. **Ícone do app:** decisão da equipe (2026-11-16): fica para o fim. Hoje só o Android tem o ícone provisório, com a letra "p".
 
-**Documentos sincronizados (2026-11-16):** RF13 e RF14 em `docs/relatorio-completo.md`; em `docs/arquitetura.md`, a organização do texto do print (seção 3.1) e a atualização da base por nova publicação das Functions (seção 3.2 b). **Falta, fora do repositório, com a equipe:** .docx acadêmicos (RNF07, RF13, RF14) e a imagem do diagrama de classes (`nomeExibicao`).
+**Situação (2026-11-16):** com as decisões acima, a Fase 9 está fechada no app. Ficam para o fim, por decisão da equipe, o ícone e as mudanças na documentação fora do repositório.
+
+**Documentos sincronizados (2026-11-16):** RF13 e RF14 em `docs/relatorio-completo.md`; em `docs/arquitetura.md`, a organização do texto do print (seção 3.1) e a atualização da base por nova publicação das Functions (seção 3.2 b). **Falta, fora do repositório, com a equipe (últimas a serem feitas, decisão de 2026-11-16):** .docx acadêmicos (RNF07, RF13, RF14 e as mudanças de 2026-11-16: RNF03, RF01 sem Apple, UC03 passo 6), a imagem do diagrama de classes (`nomeExibicao`) e a conferência da imagem do diagrama de sequência ("Print ou Link") com o novo UC03.
 
 **Não bloqueiam:** validação das tabelas v1.0 (pesos do score, categorias de ameaça, limite de texto do OCR, calibração da busca); valores provisórios (bloqueio de login de 15 min, espera de 60 s entre reenvios, não bloquear e-mail não verificado); categoria própria para o "Pix enviado por engano". Só importam numa publicação: política de privacidade e contato no "Sobre" e logo oficial do Google no botão de login.
 
