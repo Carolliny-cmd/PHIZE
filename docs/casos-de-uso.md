@@ -80,8 +80,8 @@ No contexto deste projeto, essas descrições são fundamentais para alinhar o d
 | --- | --- |
 | **Ator Principal** | Usuário logado. |
 | **Pré-condições** | Identificação de fraude não catalogada. |
-| **Fluxo Principal** | 1. O usuário acessa a “Comunidade de Reporte”. 2. Insere a URL suspeita ou descrição do golpe. 3. Clica em “Denunciar/Reportar”. 4. O sistema normaliza o endereço submetido, isolando o domínio e descartando parâmetros de consulta variáveis, e gera a hash correspondente para fins de indexação e correspondência entre denúncias. 5. Envio da hash e dos dados textuais para o Cloud Firestore, com remoção prévia dos metadados EXIF de eventuais imagens anexadas. 6. Atualização da base comunitária. O reporte permanece com status pendente e não ingressa automaticamente na base de conhecimento, condicionando sua incorporação à curadoria humana prevista na Especificação da Arquitetura. 7. Exibição de mensagem de agradecimento. |
-| **Fluxos Alternativos / Exceções** | Ameaça já reportada: incremento do contador de incidência no banco, sem duplicidade. Falha de comunicação: salvamento em cache local para envio posterior. |
+| **Fluxo Principal** | 1. O usuário acessa a “Comunidade de Reporte”. 2. Insere a URL suspeita, a descrição do golpe ou um print. 3. Clica em “Denunciar/Reportar”. 4. O sistema normaliza o endereço submetido, isolando o domínio e descartando parâmetros de consulta variáveis, e gera a hash correspondente para fins de indexação e correspondência entre denúncias. 5. O relato passa pelo mascaramento local; o print, quando houver, tem o texto extraído e mascarado no dispositivo e a imagem descartada, sem envio nem armazenamento (RNF01, RNF07). Envio da hash e dos dados textuais mascarados para o Cloud Firestore, sem identificação do autor no conteúdo público. 6. Atualização da base comunitária. O reporte permanece com status pendente e não ingressa automaticamente na base de conhecimento, condicionando sua incorporação à curadoria humana prevista na Especificação da Arquitetura. 7. Exibição de mensagem de agradecimento. |
+| **Fluxos Alternativos / Exceções** | Ameaça já reportada: incremento do contador de incidência no banco, sem duplicidade. Domínio oficial: link cujo domínio é o endereço oficial de instituição da lista de marcas conhecidas é recusado, com explicação ao usuário (RF05, RF11). Falha de comunicação: o reporte é mantido apenas em memória e o sistema oferece nova tentativa, sem gravação em disco ou cache (RNF07, etapa 3). |
 | **Pós-condições** | Base contra ameaças expandida de forma criptografada e anônima, com o reporte aguardando validação. |
 
 ### **UC06: Consultar Histórico de Alertas**
@@ -120,7 +120,7 @@ No contexto deste projeto, essas descrições são fundamentais para alinhar o d
 | --- | --- |
 | **Ator Principal** | Usuário logado (autor do documento). |
 | **Pré-condições** | Usuário visualizando a seção “Meus Reportes” com itens cadastrados. |
-| **Fluxo Principal** | 1. O usuário seleciona a opção “Editar” em um reporte próprio. 2. O sistema carrega os dados no formulário. 3. O usuário altera os textos permitidos. 4. Clica em “Salvar Alterações”. 5. Envio do comando de atualização (update) ao Firestore. 6. Confirmação de sucesso e atualização visual da lista. |
+| **Fluxo Principal** | 1. O usuário seleciona a opção “Editar” em um reporte próprio. 2. O sistema carrega os dados no formulário. 3. O usuário altera o título ou o relato, que passam de novo pelo mascaramento local (RF16). 4. Clica em “Salvar Alterações”. 5. Envio do comando de atualização (update) ao Firestore. 6. Confirmação de sucesso e atualização visual da lista. |
 | **Fluxos Alternativos / Exceções** | Violação de privilégios: ação bloqueada pelo Firebase Security Rules. Edição de link: campo bloqueado para manter a integridade da hash. |
 | **Pós-condições** | Dados textuais da denúncia devidamente corrigidos no banco comunitário. |
 

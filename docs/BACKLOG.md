@@ -1,6 +1,6 @@
 # BACKLOG — Projeto Phize
 
-Tarefas técnicas derivadas dos Requisitos Funcionais (RF01–RF14) e Não Funcionais (RNF01–RNF07) descritos em `docs/requisitos.md`, com apoio dos fluxos detalhados em `docs/casos-de-uso.md`. A classificação MVP/Expansão segue estritamente a Seção 2 (Escopo) de `requisitos.md`.
+Tarefas técnicas derivadas dos Requisitos Funcionais (RF01–RF17) e Não Funcionais (RNF01–RNF07) descritos em `docs/requisitos.md`, com apoio dos fluxos detalhados em `docs/casos-de-uso.md`. A classificação MVP/Expansão segue estritamente a Seção 2 (Escopo) de `requisitos.md`.
 
 | ID | Tarefa | Requisito de origem | MVP ou Expansão | Depende de |
 | --- | --- | --- | --- | --- |
@@ -50,23 +50,29 @@ Tarefas técnicas derivadas dos Requisitos Funcionais (RF01–RF14) e Não Funci
 | T55 | Implementar as seções "Como o risco é calculado" (sem pesos nem pontos de corte), reabertura dos tutoriais e "Sobre o Phize" | RF14, RF07 | MVP | T51, T47 |
 | T36 | Implementar fluxo de reporte de golpe (URL, print ou relato), concluído em até 3 cliques | RF05 | Expansão | T01 |
 | T37 | Implementar normalização do endereço reportado (isolamento de domínio, descarte de parâmetros variáveis) e geração de hash SHA-256 | RF05 | Expansão | T36 |
-| T38 | Implementar remoção de metadados EXIF de imagens anexadas ao reporte | RF05 | Expansão | T36 |
+| T38 | Implementar o print do reporte como texto extraído e mascarado no dispositivo, com descarte da imagem (sem envio nem armazenamento; nenhum metadado chega à base) | RF05, RNF01, RNF07 | Expansão | T36 |
 | T39 | Implementar registro do reporte com status "pendente" no Cloud Firestore, sem ingresso automático na base de conhecimento | RF05 | Expansão | T37, T38 |
 | T40 | Implementar feed público de alertas com título, data e contagem de curtidas, filtrável entre "Em alta" e "Mais recentes" | RF08 | Expansão | T39 |
 | T41 | Implementar mecanismo de upvote com prevenção de votos duplicados pela mesma conta e influência na ordenação do feed | RF06 | Expansão | T40 |
 | T42 | Implementar compartilhamento externo de um alerta específico via menu de compartilhamento nativo, com mensagem padronizada | RF09 | Expansão | T40 |
 | T43 | Implementar mecanismo de denúncia de reportes comunitários, com registro do motivo selecionado e prevenção de denúncias duplicadas pela mesma conta | RF11 | Expansão | T39 |
-| T44 | Implementar ocultação automática do feed público de reportes denunciados acima do limiar definido | RF11 | Expansão | T43 |
+| T44 | Implementar ocultação automática do feed público de reportes com 3 ou mais denúncias de contas distintas (limiar do RF11) | RF11 | Expansão | T43 |
 | T45 | Implementar interface administrativa mínima para aprovação, ocultação ou remoção definitiva de reportes | RF11 | Expansão | T43 |
 | T46 | Implementar incorporação dos reportes comunitários validados à base de conhecimento, mediante curadoria humana | RNF05 | Expansão | T39, T15 |
+| T56 | Implementar recusa de reporte de link cujo domínio seja o endereço oficial de instituição da lista de marcas conhecidas, com explicação ao usuário | RF05, RF11 | Expansão | T37 |
+| T57 | Implementar pesquisa de reportes por palavras-chave (título e categoria) e por link, com a mesma normalização e hash do RF05, sem exibir reportes ocultados | RF15 | Expansão | T40 |
+| T58 | Implementar a seção "Meus reportes", com edição do título e do relato (novo mascaramento local) e link não editável | RF16 | Expansão | T39 |
+| T59 | Implementar exclusão do próprio reporte com confirmação, mantendo dissociada a hash de ameaça validada | RF16, RF12 | Expansão | T58 |
+| T60 | Incluir os reportes do usuário na exportação e na exclusão de conta, com dissociação das hashes validadas | RF12 | Expansão | T39 |
+| T61 | Implementar o cartão "Golpe da semana" na tela inicial, em rodízio semanal determinístico entre as fichas revisadas da base, sem reescrita por modelo de linguagem | RF17 | Expansão | T15 |
 
 ## Decisões não definidas nos documentos (bloqueiam implementação)
 
-- **Limiar de denúncias para ocultação automática (RF11):** o requisito determina que reportes "denunciados acima de limiar definido" sejam ocultados, mas não especifica o valor numérico do limiar. Bloqueia T44.
+- ~~**Limiar de denúncias para ocultação automática (RF11)**~~ — **decidido (2026-11-16): 3 denúncias de contas distintas, registrado no RF11.**
 - ~~**Volume mínimo de texto extraído (RF04 / UC04):** o caso de uso UC04 menciona que "volume inferior ao mínimo configurado interrompe o fluxo", mas nenhum documento define esse valor mínimo. Bloqueia T11.~~ — **decidido: v1.0 (2026-10-07), ver `docs/limite-texto-ocr.md`.**
 - **Periodicidade de atualização da base de conhecimento (RNF05):** o requisito exige "processo de atualização periódica documentado", sem definir a frequência nem o processo formal de execução. Impacta o planejamento operacional de T15/T46, sem bloquear a implementação inicial.
 - **Critérios de complexidade de senha (RF01):** definido apenas o mínimo de 8 caracteres; não há definição sobre exigência de maiúsculas, números, caracteres especiais ou política de expiração/reuso.
-- **Funcionalidade de Pesquisa de Reportes (UC08):** citada apenas no Escopo de Expansão (seção 2.2, "pesquisa") e detalhada em UC08, mas sem RF formal com critérios de aceitação em `requisitos.md`. Não há tarefa correspondente na tabela por ausência de requisito de origem citável.
-- **Edição e exclusão de reportes pelo autor (UC09 e UC10):** descritas em `casos-de-uso.md`, mas sem RF/RNF correspondente em `requisitos.md` — não há definição de quais campos são editáveis, nem de condições específicas para exclusão além do exigido para RF05. Não há tarefa correspondente na tabela por ausência de requisito de origem citável.
+- ~~**Funcionalidade de Pesquisa de Reportes (UC08)**~~ — **resolvido (2026-11-16): RF15, tarefa T57.**
+- ~~**Edição e exclusão de reportes pelo autor (UC09 e UC10)**~~ — **resolvido (2026-11-16): RF16, tarefas T58 e T59.**
 - **Consulta de Histórico de Alertas (UC06):** a persistência dos dados do histórico está coberta por RNF01/RNF07 (T31), mas não há RF específico definindo critérios de aceitação para a tela de listagem, ordenação cronológica e visualização de detalhe.
-- **Dissociação de hashes na exclusão de conta (RF12) vs. dependência de RF05 (Expansão):** RF12 exige que "hashes de ameaças validadas permaneçam na base comunitária de forma dissociada do autor", mas hashes só passam a existir com a funcionalidade de Comunidade (RF05), classificada como Expansão. Não está definido se essa regra de dissociação deve ser preparada no schema já durante o MVP ou implementada apenas junto da Expansão.
+- ~~**Dissociação de hashes na exclusão de conta (RF12) vs. dependência de RF05 (Expansão)**~~ — **resolvido (2026-11-16): implementada junto da Expansão, tarefas T59 e T60.**

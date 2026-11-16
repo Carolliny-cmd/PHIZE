@@ -72,7 +72,7 @@ lib/
       data/          # OCR, LLM/RAG, Safe Browsing, RDAP
       domain/        # AnaliseRisco, cálculo de score, mascaramento
       presentation/
-    comunidade/      # RF05, RF06, RF08, RF09, RF11 (expansão)
+    comunidade/      # RF05, RF06, RF08, RF09, RF11, RF15, RF16 (expansão)
       data/
       domain/
       presentation/

@@ -132,7 +132,7 @@ O Cloud Firestore armazena, por análise, apenas: identificador do usuário, sco
 
 ## **5.5 Proteção da Base Comunitária**
 
-Os reportes enviados à comunidade não armazenam URLs em texto puro. O endereço é previamente normalizado no dispositivo, com isolamento do domínio e descarte de parâmetros de consulta variáveis, e em seguida convertido em hash SHA-256, permitindo a verificação de correspondência entre denúncias sem expor o link original na base. A normalização é condição de funcionamento do mecanismo: sem ela, variações irrelevantes do endereço produziriam hashes distintas e impediriam o reconhecimento de uma mesma campanha de fraude. Metadados EXIF de imagens eventualmente anexadas a reportes são removidos no dispositivo antes do envio, preservando o anonimato do denunciante.
+Os reportes enviados à comunidade não armazenam URLs em texto puro. O endereço é previamente normalizado no dispositivo, com isolamento do domínio e descarte de parâmetros de consulta variáveis, e em seguida convertido em hash SHA-256, permitindo a verificação de correspondência entre denúncias sem expor o link original na base. A normalização é condição de funcionamento do mecanismo: sem ela, variações irrelevantes do endereço produziriam hashes distintas e impediriam o reconhecimento de uma mesma campanha de fraude. O print eventualmente anexado a um reporte recebe o mesmo tratamento da análise (seções 5.1 e 5.2): o texto é extraído e mascarado no dispositivo e a imagem é descartada, sem envio nem armazenamento, de modo que nenhum metadado da imagem chega à base e o anonimato do denunciante fica preservado. O conteúdo público do reporte não identifica o autor; a autoria fica restrita ao controle de edição e exclusão (RF16) e à exclusão de conta (RF12). Reporte de link cujo domínio é o endereço oficial de instituição da lista de marcas conhecidas é recusado no dispositivo (RF05).
 
 ## **5.6 Direitos do Titular**
 
@@ -140,7 +140,7 @@ O usuário dispõe, na própria interface, das funções de exportação e exclu
 
 ## **5.7 Moderação e Integridade do Conteúdo Comunitário**
 
-A base comunitária admite conteúdo submetido por terceiros e, por essa razão, incorpora mecanismo de denúncia e revisão descrito no RF11. Reportes sinalizados acima de limiar definido são ocultados do feed público até revisão humana. A medida protege a aplicação contra a publicação de acusação infundada a organização legítima e contra o uso da funcionalidade como vetor de desinformação, riscos que o mecanismo de upvote, por medir popularidade e não veracidade, não é capaz de endereçar.
+A base comunitária admite conteúdo submetido por terceiros e, por essa razão, incorpora mecanismo de denúncia e revisão descrito no RF11. Reportes sinalizados acima de limiar definido (3 denúncias de contas distintas, RF11) são ocultados do feed público até revisão humana. Na versão acadêmica, a ocultação é feita por função da camada intermediária acionada pela gravação da denúncia, executada no emulador local como as demais; a revisão é feita por contas da equipe registradas como moderadoras. A medida protege a aplicação contra a publicação de acusação infundada a organização legítima e contra o uso da funcionalidade como vetor de desinformação, riscos que o mecanismo de upvote, por medir popularidade e não veracidade, não é capaz de endereçar.
 
 # **6 REQUISITOS DE PERFORMANCE E USABILIDADE**
 

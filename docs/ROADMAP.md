@@ -20,7 +20,8 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
 - **Fase 9 fechada no app (2026-11-16):** texto do "Cálculo do risco" aprovado, limitação do RNF03 declarada, UC03 sem RAG no link, sem login com a Apple, teste em Android real declarado como não feito por enquanto. Ficam para o fim o ícone e as mudanças nos .docx e nas imagens dos diagramas.
-- **Próximo passo:** Fase 10 (notícias e comunidade), depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Fase 10 planejada (2026-11-16):** sete decisões da equipe e etapa 10.0 (requisitos e documentos) feita; RF15, RF16 e RF17 criados.
+- **Próximo passo:** etapa 10.1 (modelo de dados e regras do Firestore da comunidade); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -209,7 +210,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | ~~Limite de domínio recém-criado~~ — **decidido: v1.0, ver docs/score-calibracao.md** | ~~Fase 2~~ Resolvida | RF07 |
 | ~~Regra de verificação incompleta~~ — **decidido: v1.0, ver docs/score-calibracao.md** | ~~Fase 2~~ Resolvida | RF07 |
 | ~~Volume mínimo de texto do OCR~~ — **decidido: v1.1, ver docs/limite-texto-ocr.md** | ~~Fase 6~~ Resolvida | UC04 |
-| Limiar de denúncias para ocultar reporte | Fase 10 | RF11 |
+| ~~Limiar de denúncias para ocultar reporte~~ — **decidido (2026-11-16): 3 denúncias de contas distintas** (RF11) | ~~Fase 10~~ Resolvida | RF11 |
 | ~~Estrutura de pastas: por camada ou por feature~~ — **decidido: por feature** | ~~Fase 1~~ Resolvida | CLAUDE.md §6, commit `f17bb5c` |
 | Bloquear acesso de usuário com e-mail não verificado? | Fase 1 (pode ser revista depois) | RF01 / UC01 |
 | Tempo de expiração do bloqueio de login (provisório: 15 min) | Revisão | RF02 |
@@ -1246,12 +1247,40 @@ Observados no ensaio dos testes com pessoas (`docs/roteiro-testes-pessoas.md`, s
 
 ## FASE 10 — EXPANSÃO (PÓS-MVP)
 
-Comunidade (UC05, UC07–UC10) e moderação (RF11).
-Só depois do MVP validado, como o documento de Requisitos posiciona.
+Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe da semana (RF17) e curadoria dos reportes (RNF05). Plano definido em 2026-11-16. Projeto só com recursos gratuitos: as Functions seguem no emulador local (gatilhos do Firestore funcionam lá; agendamento não dispara sozinho) e só conteúdo fictício circula, inclusive na comunidade.
 
-Propostas da equipe de 2026-11-12, ainda sem requisito formal (registrar em `docs/requisitos.md` antes de implementar; desenho em "Plano de orientação e perfil", na Fase 9):
-- página inicial com notícias de golpes de fontes oficiais (RSS por Function agendada; só título, fonte, data e link);
-- discussão na comunidade, além do reporte do RF05: relato estruturado e mascarado; comentários só numa segunda etapa.
+### Decisões da equipe (2026-11-16)
+
+1. **Print no reporte:** só o texto extraído e mascarado no dispositivo; a imagem é descartada, sem envio nem armazenamento (RNF01; o Firebase Storage também exigiria o Blaze). RF05 e T38 ajustados.
+2. **Limiar de denúncias:** 3 denúncias de contas distintas ocultam o reporte do feed até revisão (RF11, T44).
+3. **Autoria:** anônima no conteúdo público ("Usuário do Phize"); a autoria fica só para editar, excluir (RF16) e exclusão de conta (RF12).
+4. **Moderação:** contas da equipe registradas como moderadoras numa lista no Firestore que só a equipe edita.
+5. **Notícias:** começar pelo "Golpe da semana" (RF17), com conteúdo das fichas revisadas e rodízio semanal; RSS de fontes externas fica para depois.
+6. **Comentários:** fora desta fase; reavaliar no fim.
+7. **Marca oficial:** reporte de link cujo domínio é o endereço oficial de uma marca da lista da análise de link é recusado, com explicação (RF05, T56).
+
+**Documentos (etapa 10.0, feita em 2026-11-16):** RF05 e RF11 ajustados e RF15 (pesquisa), RF16 (meus reportes) e RF17 (golpe da semana) criados em `docs/requisitos.md` e `docs/relatorio-completo.md`; UC05 e UC09 em `docs/casos-de-uso.md`; seções 5.5 e 5.7 de `docs/arquitetura.md`; tarefas T38, T44 e T56 a T61 em `docs/BACKLOG.md`. No UC05, a falha de comunicação deixou de prever "cache local para envio posterior", que contrariava o RNF07 (etapa 3): o reporte fica só em memória e o app oferece nova tentativa.
+
+### Etapas
+
+| Etapa | Entrega | Tarefas |
+| --- | --- | --- |
+| 10.0 | Requisitos e documentos (feita) | — |
+| 10.1 | Modelo de dados e regras do Firestore (reportes, votos, denúncias, moderadores), com testes das regras no emulador | T39 (base) |
+| 10.2 | Reportar golpe: link com hash, relato e print mascarados, aviso de duplicado, recusa de marca oficial | T36, T37, T38, T39, T56 |
+| 10.3 | Aba "Comunidade": feed ("Em alta" e "Mais recentes"), detalhe, curtir e compartilhar | T40, T41, T42 |
+| 10.4 | Denúncia, ocultação automática (gatilho na Function) e tela mínima de moderação | T43, T44, T45 |
+| 10.5 | Pesquisa, "Meus reportes" (editar e excluir) e reportes na exportação e na exclusão de conta | T57, T58, T59, T60 |
+| 10.6 | Cartão "Golpe da semana" na tela inicial | T61 |
+| 10.7 | Curadoria: transformar reporte validado em rascunho de ficha da base | T46 |
+| 10.8 | Comentários (opcional, a reavaliar) | — |
+
+A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perfil.
+
+> **Pontos para a equipe:**
+> - A comunidade só terá conteúdo fictício (RNF07, limitação de escopo acadêmico): serve para demonstrar o funcionamento, não para medir engajamento.
+> - O limiar de 3 denúncias é adequado ao volume pequeno da versão acadêmica; com usuários reais, reavaliar.
+> - Ninguém da comunidade é exposto: o feed não mostra link (só a hash é guardada, arquitetura 5.5), nome nem e-mail.
 
 ---
 

@@ -202,7 +202,7 @@ O detalhamento integral dos requisitos, incluindo critérios de aceitação e ju
 
 **Descrição: **O usuário deve poder denunciar uma nova tentativa de fraude, inserindo o link suspeito, um print ou um breve relato, para ajudar a alimentar o banco de dados de ameaças do aplicativo.
 
-**Critérios de Aceitação: **O fluxo de reporte deve ser simples, concluído em até 3 cliques. O aplicativo deve limpar metadados de imagens anexadas para garantir o anonimato de quem denuncia. O reporte é registrado com status pendente e não ingressa automaticamente na base de conhecimento.
+**Critérios de Aceitação: **O fluxo de reporte deve ser simples, concluído em até 3 cliques. O link é normalizado e convertido em hash no dispositivo, sem armazenamento do endereço em texto puro. O print segue o mesmo tratamento da análise (RNF01 e RNF07): o texto é extraído e mascarado no dispositivo e a imagem é descartada, sem envio nem armazenamento, de modo que nenhum metadado da imagem chega à base. O relato escrito passa pelo mesmo mascaramento local. O reporte é publicado sem identificação do autor e registrado com status pendente, sem ingresso automático na base de conhecimento. O reporte de link cujo domínio seja o endereço oficial de instituição da lista de marcas conhecidas usada na análise de link é recusado, com explicação ao usuário, para evitar acusação infundada a organização legítima (RF11). Decisões da equipe de 16/11/2026.
 
 ### **RF06 — Curtir Alertas da Comunidade (Upvote)**
 
@@ -292,7 +292,7 @@ O detalhamento integral dos requisitos, incluindo critérios de aceitação e ju
 
 **Descrição: **O sistema deve disponibilizar mecanismo de denúncia de reportes publicados na comunidade, permitindo sinalizar conteúdo falso, ofensivo, duplicado ou que impute conduta fraudulenta a organização legítima. Reportes denunciados acima de limiar definido devem ser automaticamente ocultados do feed público até revisão manual pela equipe.
 
-**Critérios de Aceitação: **A ação de denúncia deve estar acessível na tela de detalhe de qualquer alerta. O sistema deve registrar o motivo selecionado e impedir denúncias duplicadas pela mesma conta. Deve existir interface administrativa, ainda que mínima, para aprovação, ocultação ou remoção definitiva de reportes.
+**Critérios de Aceitação: **A ação de denúncia deve estar acessível na tela de detalhe de qualquer alerta. O sistema deve registrar o motivo selecionado e impedir denúncias duplicadas pela mesma conta. Deve existir interface administrativa, ainda que mínima, para aprovação, ocultação ou remoção definitiva de reportes. O limiar de ocultação automática é de 3 denúncias de contas distintas, e a interface administrativa é acessível apenas a contas da equipe registradas como moderadoras em lista mantida exclusivamente pela equipe (decisões de 16/11/2026).
 
 **Justificativa: **O mecanismo de upvote previsto no RF06 mede popularidade, não veracidade, e não oferece proteção contra a publicação de acusação infundada contra empresa ou pessoa identificável, situação que expõe o projeto a risco reputacional e jurídico. A ausência de moderação também permite o uso da base comunitária como vetor de desinformação, comprometendo a confiabilidade da própria funcionalidade.
 
@@ -343,6 +343,54 @@ O detalhamento integral dos requisitos, incluindo critérios de aceitação e ju
 **Critérios de Aceitação: **O nome de exibição é o único dado pessoal novo: opcional, com no máximo 40 caracteres, gravado no documento do usuário, incluído na exportação e removido na exclusão da conta (RF12). Não devem ser solicitados foto, telefone, CPF, data de nascimento ou endereço. A troca de senha exige nova autenticação e segue a regra de força do RF01. As preferências de acessibilidade ficam apenas no dispositivo e são aplicadas a todas as telas, mantendo o contraste das cores das faixas de risco. A explicação do cálculo do risco descreve os sinais e as três faixas em linguagem não técnica, sem reproduzir pesos ou pontos de corte, cuja fonte única é a documentação de calibração do score.
 
 **Justificativa: **Concentra em um só lugar as funções de conta já existentes (RF12, consentimento do RNF07) e acrescenta ajustes de acessibilidade exigidos pelo perfil de usuário vulnerável, seguindo o princípio da minimização de dados da LGPD (Art. 6º, III).
+
+### **RF15 — Pesquisa de Reportes da Comunidade**
+
+**Identificador: **RF15
+
+**Nome: **Pesquisa de Reportes da Comunidade
+
+**Módulo: **Comunidade
+
+**Prioridade: **Média
+
+**Descrição: **O usuário deve poder pesquisar na comunidade se uma ameaça já foi reportada, por palavras-chave ou colando um link suspeito.
+
+**Critérios de Aceitação: **O link pesquisado passa pela mesma normalização e conversão em hash do RF05, de modo que variações de parâmetros não impeçam a correspondência e o endereço não seja transmitido nem gravado em texto puro. As palavras-chave são comparadas ao título e à categoria dos reportes. Reportes ocultados por moderação (RF11) não aparecem nos resultados. Sem resultado, o sistema informa a ausência e sugere a criação de um novo reporte (RF05).
+
+**Justificativa: **Formaliza o UC08, previsto no escopo de expansão ("pesquisa") sem requisito correspondente, e permite ao usuário confirmar uma suspeita antes de reportar, reduzindo reportes duplicados.
+
+### **RF16 — Gestão dos Próprios Reportes**
+
+**Identificador: **RF16
+
+**Nome: **Gestão dos Próprios Reportes
+
+**Módulo: **Comunidade
+
+**Prioridade: **Baixa
+
+**Descrição: **O usuário deve poder consultar, editar e excluir os reportes que publicou, em uma seção "Meus reportes".
+
+**Critérios de Aceitação: **Só o autor edita ou exclui o próprio reporte, regra garantida pelas regras de segurança do banco de dados. Podem ser editados apenas o título e o relato, que passam de novo pelo mascaramento local; o link não é editável, para manter a integridade da hash. A exclusão exige confirmação com aviso de irreversibilidade e remove o reporte da interface e da autoria do usuário; a hash de ameaça validada permanece na base comunitária de forma dissociada do autor, conforme o RF12.
+
+**Justificativa: **Formaliza o UC09 e o UC10, descritos nos casos de uso sem requisito correspondente, e dá ao titular controle sobre o conteúdo que publicou (LGPD, Art. 18).
+
+### **RF17 — Golpe da Semana**
+
+**Identificador: **RF17
+
+**Nome: **Golpe da Semana
+
+**Módulo: **Conteúdo Educativo
+
+**Prioridade: **Baixa
+
+**Descrição: **A tela inicial deve exibir um cartão "Golpe da semana", que apresenta uma modalidade de fraude da base de conhecimento, com nome, sinais de alerta e orientação preventiva, como reforço educativo independente de uma análise.
+
+**Critérios de Aceitação: **O conteúdo vem exclusivamente das fichas da base de conhecimento revisadas pela curadoria humana (RNF05), sem reescrita por modelo de linguagem. A modalidade exibida muda a cada semana, em rodízio determinístico, de modo que todos os usuários vejam a mesma na mesma semana. A exibição não envia dados do usuário nem conteúdo de conversa. Notícias de fontes externas são evolução posterior e, quando adotadas, exibem apenas título, fonte, data e link, sem reescrita, por restrição de licença das fontes.
+
+**Justificativa: **Mantém o caráter pedagógico do produto também fora do momento da análise, com conteúdo próprio e curado, sem custo operacional nem dependência de fontes externas (decisão da equipe de 16/11/2026).
 
 ## **7.2 Requisitos Não Funcionais**
 
