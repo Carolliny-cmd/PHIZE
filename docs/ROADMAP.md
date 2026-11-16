@@ -225,6 +225,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | Texto aprovado da política de privacidade e do contato da equipe, para a seção "Sobre o Phize" do perfil (hoje só versão e aviso) | Publicação | RF14 / LGPD |
 | Espera entre reenvios do e-mail de verificação (provisório: 60 s) | Revisão | RF14 |
 | Categoria própria para o golpe do Pix enviado por engano (hoje cai em "Outro golpe" pela lista fechada v1.0) | Não bloqueante | `docs/categorias-ameaca.md` |
+| ~~Exigência de comitê de ética (CEP) para os testes com pessoas~~ — **decidido (2026-11-16):** sem consulta à instituição; testes enquadrados como avaliação de usabilidade do projeto acadêmico, sem dados que identifiquem os participantes, com termo de consentimento. Risco aceito: a instituição entender depois que a aprovação era necessária (`docs/roteiro-testes-pessoas.md`, seção 3) | ~~Testes com pessoas~~ Resolvida | Fase 9, item 5 |
 | Índice da base dentro da Function: a atualização da base passa a exigir nova publicação das Functions, não nova versão do app (arquitetura, seção 3.2 b, fala em nova versão do aplicativo) | Revisão do documento | Arquitetura 3.2 b |
 
 > Padrão adotado: **não bloquear**, seguindo o UC01.
@@ -847,7 +848,7 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 2. **Itens do MVP fora das fases anteriores:** tela de consentimento (T33), destaque das frases suspeitas (T19), resposta progressiva (T32), login com Google e Apple (T02/T04).
 3. **Validação da base:** mensagens de teste escritas por outras pessoas, comparação da análise com e sem a base, variação do score entre execuções. Pode correr em paralelo aos itens acima.
 4. **Ambiente real:** faturamento do Gemini, plano Blaze, publicação das Functions e das regras do Firestore, teste com WhatsApp em aparelho real.
-5. **Testes com pessoas:** idosos e pessoas com menos familiaridade digital, com consentimento dos participantes. Roteiro em `docs/roteiro-testes-pessoas.md` (v1.0, 2026-11-16, para revisão da equipe): só conteúdo fictício, celular de teste ligado ao computador da equipe, 8 tarefas, ficha de observação, questionário SUS e modelo de termo de consentimento. Antes das sessões: confirmar com o orientador se é preciso aprovação de comitê de ética e fazer o ensaio.
+5. **Testes com pessoas:** idosos e pessoas com menos familiaridade digital, com consentimento dos participantes. Roteiro em `docs/roteiro-testes-pessoas.md` (v1.0, 2026-11-16, para revisão da equipe): só conteúdo fictício, celular de teste ligado ao computador da equipe, 8 tarefas, ficha de observação, questionário SUS e modelo de termo de consentimento. Antes das sessões: gerar os prints e fazer o ensaio. Comitê de ética: sem consulta à instituição (decisão de 2026-11-16), os testes seguem como avaliação de usabilidade do projeto acadêmico, sem dados que identifiquem os participantes e com termo de consentimento (roteiro, seção 3).
 6. **Logo definitivo:** decisão da equipe (2026-11-04), última etapa.
 7. **Orientação e perfil (plano de 2026-11-12):** tutorial de primeiro uso (RF13) e tela de perfil (RF14), Prompts 9.8 a 9.12. Página inicial com notícias e comunidade ficam para a Fase 10.
 

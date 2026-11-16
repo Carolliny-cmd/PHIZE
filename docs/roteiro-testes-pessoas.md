@@ -1,6 +1,6 @@
 # Roteiro dos testes com pessoas
 
-Fase 9, item 5 do `docs/ROADMAP.md`. Versão 1.0 (2026-11-16), proposta para revisão da equipe.
+Fase 9, item 5 do `docs/ROADMAP.md`. Versão 1.1 (2026-11-16), proposta para revisão da equipe.
 
 ## 1. Objetivo
 
@@ -33,9 +33,18 @@ O teste avalia o app, não a pessoa. Não há resposta certa ou errada.
 - **Só conteúdo fictício.** O Phize usa a versão gratuita do Gemini, e o Google pode usar o texto enviado (RNF07, limitação de escopo acadêmico). Por isso, **o participante não usa o próprio celular nem as próprias conversas**. Todos os prints e links vêm da seção 5 deste roteiro.
 - **Consentimento antes de começar**, lido em voz alta e assinado. Modelo na seção 9.
 - **O que é anotado:** só o que a pessoa faz e diz sobre o app, sem nome. Cada participante recebe um código (P1, P2...). Idade e perfil vão em faixas (ex.: 60 a 69 anos).
-- **Gravação:** só da tela do celular de teste, e só com autorização marcada no termo. Nada de rosto ou voz.
+- **Gravação:** preferencialmente nenhuma. Se a equipe precisar, só da tela do celular de teste e com autorização marcada no termo. Nada de rosto ou voz.
 - **A pessoa pode parar a qualquer momento**, sem precisar explicar.
-- **Comitê de ética:** confirmem com o orientador se a instituição exige aprovação de comitê de ética em pesquisa (CEP) para teste de usabilidade com pessoas. Se exigir, as sessões só começam depois da aprovação.
+- **Comitê de ética (decisão da equipe, 2026-11-16):** não foi possível consultar a instituição sobre a necessidade de aprovação de comitê de ética em pesquisa (CEP). Os testes seguem enquadrados como **avaliação de usabilidade do app, realizada como atividade do projeto acadêmico**, buscando o perfil das atividades dispensadas pela Resolução CNS 510/2016:
+  - o objetivo é melhorar o Phize, não produzir conhecimento sobre os participantes;
+  - nenhum dado que identifique a pessoa é coletado (códigos, faixas de idade, sem gravação de rosto ou voz);
+  - risco mínimo: conteúdo fictício, celular da equipe, nenhum tema sensível, liberdade de parar a qualquer momento;
+  - termo de consentimento mantido, mesmo sem exigência formal;
+  - os resultados ficam restritos ao trabalho acadêmico.
+
+  **No relatório**, descrever assim: "avaliação de usabilidade com participantes voluntários, realizada como atividade do projeto acadêmico, sem coleta de dados pessoais, com termo de consentimento e uso exclusivo de conteúdo fictício". Não apresentar como pesquisa científica com seres humanos nem divulgar os resultados fora do trabalho.
+
+  **Risco aceito:** a instituição pode entender depois que a aprovação era necessária. Os cuidados acima reduzem esse risco, mas não o eliminam. Para reduzir ainda mais, a equipe pode recrutar os participantes no próprio convívio (familiares e conhecidos), com o mesmo roteiro.
 
 ## 4. Preparação técnica (antes de cada dia de teste)
 
@@ -191,3 +200,4 @@ O termo assinado fica com a equipe, separado das fichas de observação, para qu
 | Versão | Data | Alteração |
 | --- | --- | --- |
 | 1.0 | 2026-11-16 | Primeira versão, proposta para revisão da equipe. |
+| 1.1 | 2026-11-16 | Enquadramento sem consulta ao comitê de ética (seção 3); gravação preferencialmente nenhuma. |
