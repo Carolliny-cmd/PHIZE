@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/routing/app_routes.dart';
 import '../../data/historico_repository_firestore.dart';
@@ -70,6 +71,30 @@ class _AnalisarLinkPageState extends State<AnalisarLinkPage> {
     super.dispose();
   }
 
+  /// Botão "Colar" (o mesmo da cena do tutorial): lê a área de
+  /// transferência só quando a pessoa toca nele, e o texto vai para o campo,
+  /// como se tivesse sido colado à mão. O balão de colar do Android é
+  /// pequeno e fica no canto do campo (ensaio de 2026-11-16).
+  Future<void> _colar() async {
+    String? texto;
+    try {
+      texto = (await Clipboard.getData(Clipboard.kTextPlain))?.text?.trim();
+    } catch (_) {
+      texto = null;
+    }
+    if (!mounted) return;
+    if (texto == null || texto.isEmpty) {
+      setState(
+        () => _erro =
+            'Nenhum link copiado. Na conversa, toque e segure o link, '
+            'escolha "Copiar" e volte aqui.',
+      );
+      return;
+    }
+    _urlController.text = texto;
+    setState(() => _erro = null);
+  }
+
   Future<void> _verificar() async {
     // Feedback de carregamento imediato após a submissão (RNF03).
     setState(() {
@@ -135,6 +160,14 @@ class _AnalisarLinkPageState extends State<AnalisarLinkPage> {
                   labelText: 'Link',
                   hintText: 'https://...',
                   border: const OutlineInputBorder(),
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: TextButton(
+                      key: const Key('analisar_link_colar'),
+                      onPressed: _carregando ? null : _colar,
+                      child: const Text('Colar'),
+                    ),
+                  ),
                   errorText: _erro,
                   errorMaxLines: 3,
                 ),

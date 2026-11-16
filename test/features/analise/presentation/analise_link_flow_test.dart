@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -165,7 +166,54 @@ void _verificarInvariantesDoResultado() {
 
 const _fonteGoogle = 'Fonte: Google Safe Browsing, serviço do Google';
 
+/// Área de transferência fictícia: responde ao canal da plataforma com
+/// [texto] (`null` = nada copiado).
+void _simularAreaDeTransferencia(WidgetTester tester, String? texto) {
+  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+    SystemChannels.platform,
+    (chamada) async => chamada.method == 'Clipboard.getData'
+        ? (texto == null ? null : {'text': texto})
+        : null,
+  );
+  addTearDown(
+    () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      null,
+    ),
+  );
+}
+
 void main() {
+  group('botão "Colar"', () {
+    testWidgets('cola o link copiado no campo, e a análise segue normal', (
+      tester,
+    ) async {
+      _simularAreaDeTransferencia(tester, '  https://www.correios.com.br \n');
+      final rdap = _rdapDominioAntigo();
+      await _abrirAnalisarLink(tester, rdap);
+
+      await tester.tap(find.byKey(const Key('analisar_link_colar')));
+      await tester.pumpAndSettle();
+      expect(find.text('https://www.correios.com.br'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('analisar_link_botao')));
+      await tester.pumpAndSettle();
+      expect(rdap.dominiosConsultados, ['correios.com.br']);
+      _verificarInvariantesDoResultado();
+    });
+
+    testWidgets('sem nada copiado, explica como copiar o link', (tester) async {
+      _simularAreaDeTransferencia(tester, null);
+      final rdap = _rdapDominioAntigo();
+      await _abrirAnalisarLink(tester, rdap);
+
+      await tester.tap(find.byKey(const Key('analisar_link_colar')));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Nenhum link copiado'), findsOneWidget);
+      expect(rdap.dominiosConsultados, isEmpty);
+    });
+  });
+
   testWidgets('link compartilhado vai direto ao resultado e entra no '
       'histórico sem o endereço (UC11)', (tester) async {
     final historico = FakeHistoricoRepository();
