@@ -61,14 +61,14 @@ class AnalisadorLink {
       _consultaReputacao.consultar(entrada),
     ).wait;
 
-    final verificacoes = [
+    final verificacoes = _emOrdemDeImportancia([
       _verificacaoAnatomia(anatomia),
       if (idade == null)
         _verificacaoIdadeCategoria(anatomia.dominioNormalizado!)
       else
         _verificacaoIdade(idade),
       _verificacaoReputacao(reputacao),
-    ];
+    ]);
 
     final sinais = SinaisIdentificados(
       link: {
@@ -115,6 +115,22 @@ class AnalisadorLink {
       status: StatusVerificacao.sinalEncontrado,
     );
   }
+
+  /// Ordem da tela de resultado: primeiro o que encontrou sinal (o motivo
+  /// da faixa), depois o que não foi concluído e por último o que não
+  /// encontrou nada. Dentro de cada grupo, a ordem das etapas se mantém.
+  /// No ensaio de 2026-11-16, o motivo do vermelho aparecia por último,
+  /// fora da primeira tela.
+  static List<VerificacaoLink> _emOrdemDeImportancia(
+    List<VerificacaoLink> verificacoes,
+  ) => [
+    for (final status in const [
+      StatusVerificacao.sinalEncontrado,
+      StatusVerificacao.naoConcluida,
+      StatusVerificacao.semSinal,
+    ])
+      ...verificacoes.where((v) => v.status == status),
+  ];
 
   static const String _tituloIdade = 'Tempo de existência do endereço';
 

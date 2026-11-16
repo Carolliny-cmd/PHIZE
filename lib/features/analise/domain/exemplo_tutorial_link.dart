@@ -19,14 +19,13 @@ class ExemploTutorialLink {
   ResultadoScore get resultado =>
       CalculadoraScore.calcular(SinaisIdentificados(link: sinais));
 
-  /// As três verificações do link, na ordem da tela de resultado, com o
-  /// que o exemplo encontrou em cada uma.
+  /// As três verificações do link, na ordem da tela de resultado (as que
+  /// encontraram sinal primeiro), com o que o exemplo encontrou em cada uma.
   List<VerificacaoExemplo> get verificacoes => [
-    for (final sinal in SinalLink.values)
-      VerificacaoExemplo(
-        sinal: sinal,
-        encontrado: sinais.contains(sinal),
-      ),
+    for (final encontrado in const [true, false])
+      for (final sinal in SinalLink.values)
+        if (sinais.contains(sinal) == encontrado)
+          VerificacaoExemplo(sinal: sinal, encontrado: encontrado),
   ];
 
   /// O primeiro é o da simulação passo a passo; os outros podem ser

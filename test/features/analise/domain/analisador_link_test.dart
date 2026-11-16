@@ -31,6 +31,20 @@ class _ReputacaoNaoListado implements ReputacaoDominioClient {
   };
 }
 
+class _ReputacaoListado implements ReputacaoDominioClient {
+  @override
+  Future<Map<String, dynamic>> consultarUrl(String url) async => {
+    'status': 'listado',
+    'tiposAmeaca': ['SOCIAL_ENGINEERING'],
+  };
+}
+
+class _ReputacaoForaDoAr implements ReputacaoDominioClient {
+  @override
+  Future<Map<String, dynamic>> consultarUrl(String url) =>
+      Future.error(const ReputacaoIndisponivelException('fora do ar'));
+}
+
 void main() {
   late _RdapFake rdap;
   late AnalisadorLink analisador;
@@ -67,5 +81,43 @@ void main() {
     final resultado = await analisador.analisar('https://www.correios.com.br');
     expect(rdap.consultados, ['correios.com.br']);
     expect(resultado!.score.faixa, FaixaRisco.baixo);
+  });
+
+  group('ordem das verificações na tela', () {
+    test('o motivo do vermelho vem primeiro, mesmo sendo a última '
+        'etapa', () async {
+      final resultado = await AnalisadorLink(
+        ConsultaIdadeDominio(rdap, agora: () => DateTime.utc(2026, 11, 16)),
+        ConsultaReputacaoDominio(_ReputacaoListado()),
+      ).analisar('https://entrega-taxa.example/pagar');
+
+      expect(resultado!.verificacoes.map((v) => v.status), [
+        StatusVerificacao.sinalEncontrado,
+        StatusVerificacao.semSinal,
+        StatusVerificacao.semSinal,
+      ]);
+      expect(
+        resultado.verificacoes.first.titulo,
+        'Lista de endereços perigosos',
+      );
+      // Dentro do grupo sem sinal, a ordem das etapas se mantém.
+      expect(resultado.verificacoes.skip(1).map((v) => v.titulo), [
+        'Imitação de endereço conhecido',
+        'Tempo de existência do endereço',
+      ]);
+    });
+
+    test('a não concluída vem antes das que não encontraram nada', () async {
+      final resultado = await AnalisadorLink(
+        ConsultaIdadeDominio(rdap, agora: () => DateTime.utc(2026, 11, 16)),
+        ConsultaReputacaoDominio(_ReputacaoForaDoAr()),
+      ).analisar('https://www.correios.com.br');
+
+      expect(resultado!.verificacoes.map((v) => v.status), [
+        StatusVerificacao.naoConcluida,
+        StatusVerificacao.semSinal,
+        StatusVerificacao.semSinal,
+      ]);
+    });
   });
 }
