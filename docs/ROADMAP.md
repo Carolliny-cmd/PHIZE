@@ -7,11 +7,18 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 
 ## ONDE PARAMOS
 
-- **Data:** 2026-11-12
-- **Última tarefa concluída:** Prompt 9.12 — seções Aprender e Sobre do Perfil; com ele, o plano de orientação e perfil (RF13, RF14) está completo. 83 testes na Function, 658 no app
+- **Data:** 2026-11-16
+- **Últimas tarefas concluídas (2026-11-12):**
+  - Prompts 9.8 a 9.12: tutorial interativo do link e do print (RF13) e Perfil completo (RF14): nome de exibição, troca de senha, reenvio da verificação, tamanho da letra, tema escuro, Aprender e Sobre.
+  - Teste de todos os fluxos no emulador e correção dos achados: build de release do Android, aquecimento das Functions (`tool/emuladores/aquecer_functions.sh`), títulos com letra muito grande.
+  - Decisão de usar só recursos gratuitos: limitação acadêmica declarada no RNF07 e nos demais documentos; consentimento na versão 2 ("Use só conversas de teste").
+  - RAG: etapa 2 (só as mensagens recebidas do print), etapa 3 (situações legítimas testadas e retiradas do prompt, sem ganho confirmado) e etapa 4 (três fichas novas). Com a base: 63 de 63 golpes do conjunto de teste detectados e as 26 legítimas verdes.
+- **Testes:** 659 no app, 87 na Function.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
-- **Próximo passo:** testes com pessoas (Fase 9, item 5), depois de a equipe aprovar os textos dos tutoriais e do "Cálculo do risco". Projeto só com recursos gratuitos (decisão de 2026-11-12): extrair o máximo do nível gratuito na análise de print e de link. No RAG: medição com 3 repetições, etapas 3 e 4. Depois do MVP: notícias e comunidade (Fase 10) e, em seguida, nova rodada de design
+- **Próximo passo:** testes com pessoas (Fase 9, item 5), com o roteiro de `docs/roteiro-testes-pessoas.md`, depois de a equipe aprovar os textos dos tutoriais e do "Cálculo do risco". Em seguida, logo definitivo (fim da Fase 9). Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
+- **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
 ---
 
@@ -840,7 +847,7 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 2. **Itens do MVP fora das fases anteriores:** tela de consentimento (T33), destaque das frases suspeitas (T19), resposta progressiva (T32), login com Google e Apple (T02/T04).
 3. **Validação da base:** mensagens de teste escritas por outras pessoas, comparação da análise com e sem a base, variação do score entre execuções. Pode correr em paralelo aos itens acima.
 4. **Ambiente real:** faturamento do Gemini, plano Blaze, publicação das Functions e das regras do Firestore, teste com WhatsApp em aparelho real.
-5. **Testes com pessoas:** idosos e pessoas com menos familiaridade digital, com consentimento dos participantes.
+5. **Testes com pessoas:** idosos e pessoas com menos familiaridade digital, com consentimento dos participantes. Roteiro em `docs/roteiro-testes-pessoas.md` (v1.0, 2026-11-16, para revisão da equipe): só conteúdo fictício, celular de teste ligado ao computador da equipe, 8 tarefas, ficha de observação, questionário SUS e modelo de termo de consentimento. Antes das sessões: confirmar com o orientador se é preciso aprovação de comitê de ética e fazer o ensaio.
 6. **Logo definitivo:** decisão da equipe (2026-11-04), última etapa.
 7. **Orientação e perfil (plano de 2026-11-12):** tutorial de primeiro uso (RF13) e tela de perfil (RF14), Prompts 9.8 a 9.12. Página inicial com notícias e comunidade ficam para a Fase 10.
 
