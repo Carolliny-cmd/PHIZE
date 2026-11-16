@@ -1,6 +1,8 @@
 # Roteiro dos testes com pessoas
 
-Fase 9, item 5 do `docs/ROADMAP.md`. Versão 1.2 (2026-11-16), proposta para revisão da equipe.
+Fase 9, item 5 do `docs/ROADMAP.md`. Versão 1.3 (2026-11-16).
+
+> **Sessões canceladas (decisão da equipe, 2026-11-16).** O roteiro não será aplicado. Fica como registro do planejamento e do ensaio (seção 11), cujos oito achados foram tratados no app.
 
 ## 1. Objetivo
 
@@ -227,3 +229,4 @@ Feito no emulador Android (sistema em inglês), com os emuladores do Firebase aq
 | 1.0 | 2026-11-16 | Primeira versão, proposta para revisão da equipe. |
 | 1.1 | 2026-11-16 | Enquadramento sem consulta ao comitê de ética (seção 3); gravação preferencialmente nenhuma. |
 | 1.2 | 2026-11-16 | Registro do ensaio (seção 11); link do verde trocado pelo dos Correios. |
+| 1.3 | 2026-11-16 | Sessões canceladas pela equipe; roteiro mantido como registro. |

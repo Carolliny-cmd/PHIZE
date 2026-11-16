@@ -8,15 +8,18 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 ## ONDE PARAMOS
 
 - **Data:** 2026-11-16
-- **Últimas tarefas concluídas (2026-11-12):**
+- **Últimas tarefas concluídas (2026-11-16):**
+  - Ensaio dos testes com pessoas no emulador e correção dos oito achados de produto (seção "Achados de produto do ensaio", na Fase 9), mais um defeito da tela de resultado achado na conferência.
+  - Decisões da equipe: tutorial aprovado; próprio `gov.br` como verificação concluída; sem sessões com participantes e sem logo (seção "Fechamento da Fase 9").
+- **Tarefas de 2026-11-12:**
   - Prompts 9.8 a 9.12: tutorial interativo do link e do print (RF13) e Perfil completo (RF14): nome de exibição, troca de senha, reenvio da verificação, tamanho da letra, tema escuro, Aprender e Sobre.
   - Teste de todos os fluxos no emulador e correção dos achados: build de release do Android, aquecimento das Functions (`tool/emuladores/aquecer_functions.sh`), títulos com letra muito grande.
   - Decisão de usar só recursos gratuitos: limitação acadêmica declarada no RNF07 e nos demais documentos; consentimento na versão 2 ("Use só conversas de teste").
   - RAG: etapa 2 (só as mensagens recebidas do print), etapa 3 (situações legítimas testadas e retiradas do prompt, sem ganho confirmado) e etapa 4 (três fichas novas). Com a base: 63 de 63 golpes do conjunto de teste detectados e as 26 legítimas verdes.
-- **Testes:** 659 no app, 87 na Function.
+- **Testes:** 678 no app, 87 na Function.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
-- **Próximo passo:** testes com pessoas (Fase 9, item 5), com o roteiro de `docs/roteiro-testes-pessoas.md`, depois de a equipe aprovar os textos dos tutoriais e do "Cálculo do risco". Em seguida, logo definitivo (fim da Fase 9). Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Próximo passo:** fechar a Fase 9 com as seis decisões listadas em "Fechamento da Fase 9" (texto do "Cálculo do risco", RNF03, RAG no link, teste em Android real, login com Apple, ícone) e sincronizar os documentos. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -221,7 +224,14 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 | **Catalogar as modalidades iniciais da base de conhecimento** — trabalho manual da equipe (RDEV04), uma ficha por modalidade | Prompt 7.2 (validação com fichas reais) | RNF05 / RDEV04 |
 | ~~Limiar de similaridade para "correspondência com padrão catalogado"~~ — **proposto: v1.0, ver docs/calibracao-recuperacao.md** | ~~Prompt 7.2~~ Resolvida | RF07 / RNF05 |
 | Validação da calibração da recuperação v1.0 (docs/calibracao-recuperacao.md) | Não bloqueante | RF07 / RNF05 |
-| RAG na análise de link (UC03, passo 6 do fluxo principal) — o Prompt 7.2 conectou a base só à análise de print | Revisão do escopo | UC03 / RNF05 |
+| RAG na análise de link (UC03, passo 6 do fluxo principal) — o Prompt 7.2 conectou a base só à análise de print | Fechamento da Fase 9 | UC03 / RNF05 |
+| Declarar a limitação do RNF03 (5 s) no nível gratuito do Gemini | Fechamento da Fase 9 | RNF03 |
+| Teste em Android real (WhatsApp e OCR com prints reais, RNF06): fazer pelo cabo USB ou declarar como não feito | Fechamento da Fase 9 | RNF06 / RF10 |
+| Login com Apple fora do escopo acadêmico? | Fechamento da Fase 9 | T02/T04 |
+| Ícone provisório ("p") passa a definitivo? | Fechamento da Fase 9 | Design |
+| Texto da tela "Como o Phize calcula o risco" | Fechamento da Fase 9 | RF14 |
+| ~~Tratamento do próprio `gov.br` no RDAP~~ — **decidido (2026-11-16):** verificação concluída, sem sinal | ~~Achado do ensaio~~ Resolvida | RF07 / UC03 |
+| ~~Testes com pessoas e logo definitivo~~ — **decidido (2026-11-16): não serão feitos** | ~~Fase 9~~ Resolvida | Fase 9, itens 5 e 6 |
 | Texto aprovado da política de privacidade e do contato da equipe, para a seção "Sobre o Phize" do perfil (hoje só versão e aviso) | Publicação | RF14 / LGPD |
 | Espera entre reenvios do e-mail de verificação (provisório: 60 s) | Revisão | RF14 |
 | Categoria própria para o golpe do Pix enviado por engano (hoje cai em "Outro golpe" pela lista fechada v1.0) | Não bloqueante | `docs/categorias-ameaca.md` |
@@ -239,11 +249,11 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - Adicionar ao roadmap os passos de publicação das regras pelo console e teste no Playground.
 - Sincronizar os .docx acadêmicos com as alterações de RF07, arquitetura 3.3 e 6, UC03 e relatório 4.8.
 - A rotina de mascaramento local pode lançar `StateError` (falha na restauração do isolamento de URL/domínio). O fluxo do UC04 (Fase 6) deve tratar essa exceção interrompendo a análise, sem expor o texto ao usuário nem a log.
-- O cálculo do domínio registrável reconhece apenas `com`/`gov`/`org`/`net`/`edu` sob `.br`. Sufixos como `app.br`, `adv.br` e `co.uk` fazem a consulta RDAP no próprio sufixo, e a idade do domínio nunca é avaliada para eles. Degrada com segurança (verificação não concluída, nunca verde nem data falsa), mas a mensagem ao usuário é imprecisa. Solução futura: lista completa de sufixos públicos.
+- ~~O cálculo do domínio registrável reconhece apenas `com`/`gov`/`org`/`net`/`edu` sob `.br`~~ — **resolvida em 2026-11-16** (achado 1 do ensaio): `dominio_registravel.dart` com as 147 categorias do Registro.br. Sufixos compostos de outros países (`co.uk`) continuam sem tratamento.
 - Dois testes de widget anteriores perderam asserções de rótulo e aviso ao eliminar o caminho fictício da tela de Resultado; a cobertura passou para `test/features/analise/presentation/analise_link_flow_test.dart`.
 - ~~A tela de Histórico exibe rótulos de faixa sem o aviso permanente~~ — **resolvida no Prompt 8.1**.
 - ~~Resta dado fictício fora do fluxo de análise: saudação do Dashboard~~ — **resolvida no Prompt 8.2**.
-- Migrar do emulador para a Function publicada antes de qualquer teste em Android real ou entrega que não rode na máquina de desenvolvimento.
+- ~~Migrar do emulador para a Function publicada antes de qualquer teste em Android real~~ — **superada pela decisão de 2026-11-12** (sem Blaze, Functions só no emulador). Um teste em Android real usa o celular no cabo USB ligado aos emuladores do computador.
 - Restringir no console as chaves públicas do Firebase às APIs do Firebase, impedindo que sejam usadas para chamar o Safe Browsing direto e contornar a Function.
 - O contador de rate limiting é mantido em memória e zera a cada reinício da Function; migrar para armazenamento compartilhado antes do deploy com mais de uma instância.
 - O mapa do rate limiting nunca remove usuários antigos.
@@ -847,9 +857,9 @@ Plano definido em 2026-11-04. O design vem antes dos itens restantes para que el
 1. **Design:** direção Leve (Prompt 9.1).
 2. **Itens do MVP fora das fases anteriores:** tela de consentimento (T33), destaque das frases suspeitas (T19), resposta progressiva (T32), login com Google e Apple (T02/T04).
 3. **Validação da base:** mensagens de teste escritas por outras pessoas, comparação da análise com e sem a base, variação do score entre execuções. Pode correr em paralelo aos itens acima.
-4. **Ambiente real:** faturamento do Gemini, plano Blaze, publicação das Functions e das regras do Firestore, teste com WhatsApp em aparelho real.
-5. **Testes com pessoas:** idosos e pessoas com menos familiaridade digital, com consentimento dos participantes. Roteiro em `docs/roteiro-testes-pessoas.md` (v1.0, 2026-11-16, para revisão da equipe): só conteúdo fictício, celular de teste ligado ao computador da equipe, 8 tarefas, ficha de observação, questionário SUS e modelo de termo de consentimento. Antes das sessões: gerar os prints e fazer o ensaio. Comitê de ética: sem consulta à instituição (decisão de 2026-11-16), os testes seguem como avaliação de usabilidade do projeto acadêmico, sem dados que identifiquem os participantes e com termo de consentimento (roteiro, seção 3).
-6. **Logo definitivo:** decisão da equipe (2026-11-04), última etapa.
+4. **Ambiente real:** faturamento do Gemini, plano Blaze, publicação das Functions e das regras do Firestore, teste com WhatsApp em aparelho real. Faturamento e Blaze descartados (2026-11-12, só recursos gratuitos); o teste em aparelho real está em "Fechamento da Fase 9".
+5. ~~**Testes com pessoas**~~ — **cancelado (decisão de 2026-11-16).** O plano era: idosos e pessoas com menos familiaridade digital, com consentimento dos participantes. Roteiro em `docs/roteiro-testes-pessoas.md` (v1.0, 2026-11-16, para revisão da equipe): só conteúdo fictício, celular de teste ligado ao computador da equipe, 8 tarefas, ficha de observação, questionário SUS e modelo de termo de consentimento. Antes das sessões: gerar os prints e fazer o ensaio. Comitê de ética: sem consulta à instituição (decisão de 2026-11-16), os testes seguem como avaliação de usabilidade do projeto acadêmico, sem dados que identifiquem os participantes e com termo de consentimento (roteiro, seção 3).
+6. ~~**Logo definitivo**~~ — **cancelado (decisão de 2026-11-16).**
 7. **Orientação e perfil (plano de 2026-11-12):** tutorial de primeiro uso (RF13) e tela de perfil (RF14), Prompts 9.8 a 9.12. Página inicial com notícias e comunidade ficam para a Fase 10.
 
 ### Prompt 9.1 — Design Leve (concluído no código)
@@ -1169,7 +1179,7 @@ de peso na tela de explicação.
 - **Testes:** 11 novos (tutoriais reabertos e marcados como vistos, explicação com sinais e faixas, ausência de "Seguro" e de números de peso, versão e falha ao lê-la, explicação sem estouro com letra muito grande nos dois temas). Suíte: 658 testes.
 
 > **Pontos para a equipe:**
-> - Aprovar o texto dos tutoriais e da tela "Como o Phize calcula o risco" antes dos testes com pessoas.
+> - ~~Aprovar o texto dos tutoriais~~ — **tutorial aprovado (2026-11-16).** Falta aprovar o texto da tela "Como o Phize calcula o risco".
 > - A política de privacidade e o contato da equipe ainda não existem como texto aprovado.
 > - O nome de exibição só terá uso visível na comunidade (Fase 10); até lá, aparece no perfil e na exportação.
 
@@ -1194,11 +1204,33 @@ Build de debug no emulador Android (API 37), com Functions, Auth e Firestore emu
 - **Sem correção no código:** o print do golpe do Pix enviado por engano saiu com tipo "Outro golpe", o que está certo pela lista fechada de `docs/categorias-ameaca.md`, que não tem categoria para esse golpe. Criar uma categoria é decisão da equipe (registrada em Decisões Pendentes). O trecho destacado reproduz um erro do OCR ("pixX"), limitação já declarada do reconhecimento embarcado.
 - Não testados: login com Google (exige conta Google no emulador), exportação dos dados (abre a folha de compartilhar do Android), bloqueio após 5 tentativas de login (coberto por teste automático) e compartilhamento de imagem.
 
+### Fechamento da Fase 9 (2026-11-16)
+
+**Decisões da equipe (2026-11-16):**
+
+- **Tutorial (RF13) aprovado.**
+- **Próprio `gov.br` mantido como verificação concluída** (achado 1 do ensaio): a idade do domínio é dada como concluída sem sinal quando o endereço é a própria categoria do Registro.br, e o link pode chegar ao verde.
+- **Sem sessões com participantes** (item 5): o roteiro (`docs/roteiro-testes-pessoas.md`) fica como registro do ensaio e dos achados.
+- **Sem logo** (item 6).
+
+**Falta decidir para fechar a fase:**
+
+1. Aprovar o texto da tela "Como o Phize calcula o risco" (Perfil → Aprender).
+2. **RNF03 (5 segundos):** a primeira porção do resultado não aparece em 5 s no nível gratuito do Gemini (de 4 a 21 s, Prompt 9.4), e a medição com faturamento não vai acontecer. Proposta: declarar a limitação no RNF03, como no RNF07.
+3. **RAG na análise de link:** o UC03 (passo 6) prevê consulta à base também no link; o app consulta só no print. Implementar ou ajustar o UC03 (recomendado: ajustar, porque um link sozinho tem pouco texto para comparar com as fichas).
+4. **Teste em Android real** (item 4, o que sobra sem Blaze e sem faturamento): compartilhamento pelo WhatsApp e OCR com prints reais em tema claro e escuro (validação do RNF06). Possível de graça, com o celular no cabo USB ligado aos emuladores do computador. Fazer ou declarar como não feito.
+5. **Login com Apple:** exige Mac e conta paga de desenvolvedor Apple. Proposta: declarar fora do escopo acadêmico.
+6. **Ícone do app:** sem logo, o provisório com a letra "p" passa a ser o definitivo? Hoje só o Android tem o ícone.
+
+**Documentos a sincronizar (sem decisão):** RF13 e RF14 em `docs/relatorio-completo.md`; em `docs/arquitetura.md`, a organização do texto do print (seção 3.1) e a atualização da base por nova publicação das Functions (seção 3.2 b). Fora do repositório, com a equipe: .docx acadêmicos (RNF07, RF13, RF14) e a imagem do diagrama de classes (`nomeExibicao`).
+
+**Não bloqueiam:** validação das tabelas v1.0 (pesos do score, categorias de ameaça, limite de texto do OCR, calibração da busca); valores provisórios (bloqueio de login de 15 min, espera de 60 s entre reenvios, não bloquear e-mail não verificado); categoria própria para o "Pix enviado por engano". Só importam numa publicação: política de privacidade e contato no "Sobre" e logo oficial do Google no botão de login.
+
 ### Achados de produto do ensaio (2026-11-16)
 
 Observados no ensaio dos testes com pessoas (`docs/roteiro-testes-pessoas.md`, seção 11). Todos tratados em 2026-11-16.
 
-1. ~~**Links oficiais `www.gov.br/...` dão amarelo.**~~ **Corrigido em 2026-11-16.** Causa: o app tratava `gov.br` como domínio registrável e consultava a categoria no RDAP, que não tem data de registro. A lista de categorias `.br` também tinha só 5 itens (com, gov, org, net, edu), e por isso `www.tse.jus.br` consultava `jus.br`. Agora `lib/features/analise/domain/dominio_registravel.dart` traz as 147 categorias do Registro.br (Lista de Sufixos Públicos); quando o endereço é a própria categoria, a idade é dada como concluída sem sinal, com explicação na tela. Conferido no emulador: `www.gov.br/inss` deu 0, verde. **Decisão a confirmar com a equipe:** tratar o próprio `gov.br` como verificação concluída, e não como não concluída.
+1. ~~**Links oficiais `www.gov.br/...` dão amarelo.**~~ **Corrigido em 2026-11-16.** Causa: o app tratava `gov.br` como domínio registrável e consultava a categoria no RDAP, que não tem data de registro. A lista de categorias `.br` também tinha só 5 itens (com, gov, org, net, edu), e por isso `www.tse.jus.br` consultava `jus.br`. Agora `lib/features/analise/domain/dominio_registravel.dart` traz as 147 categorias do Registro.br (Lista de Sufixos Públicos); quando o endereço é a própria categoria, a idade é dada como concluída sem sinal, com explicação na tela. Conferido no emulador: `www.gov.br/inss` deu 0, verde. **Decisão da equipe (2026-11-16):** mantido; o próprio `gov.br` conta como verificação concluída.
 2. ~~**Tutorial do link diferente da tela real.**~~ **Corrigido em 2026-11-16:** a tela "Analisar link" ganhou o botão "Colar" dentro do campo, como na cena do tutorial (desenho pedido pela equipe em 2026-11-12). Ele lê a área de transferência só quando tocado; sem nada copiado, explica como copiar o link. Conferido no emulador.
 3. ~~**Resultado do link mostra o motivo do vermelho por último.**~~ **Corrigido em 2026-11-16:** as verificações aparecem em ordem de importância: as que encontraram sinal, depois as não concluídas e por último as sem sinal (o tutorial segue a mesma ordem). Conferido no emulador: a lista do Google aparece primeiro, na primeira tela.
 4. ~~**"Está demorando um pouco mais que o normal" aparece cedo.**~~ **Corrigido em 2026-11-16.** Causa: os 10 segundos do aviso começavam a contar ao tocar em "Escolher print", com a galeria ainda aberta; o tempo de escolha entrava na conta. Agora a contagem começa quando a imagem é escolhida. Conferido no emulador com 20 segundos na galeria: sem aviso. Na mesma conferência apareceu um defeito anterior: quando um sinal tinha duas frases destacadas, a tela de resultado quebrava (chave repetida; bloco vermelho em depuração, cinza na versão final). Corrigido junto, com teste.
