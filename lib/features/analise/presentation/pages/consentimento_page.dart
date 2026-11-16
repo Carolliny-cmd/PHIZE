@@ -102,13 +102,26 @@ class ConsentimentoPage extends StatelessWidget {
                     'Seu histórico guarda só o resultado da análise. Você pode '
                     'mudar esta escolha na aba Perfil.',
               ),
-              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      ),
+      // Botões fixos no rodapé, com o texto rolando acima: no ensaio de
+      // 2026-11-16, "Entendi e concordo" ficava abaixo da dobra e a pessoa
+      // não o encontrava.
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               FilledButton(
                 key: const Key('consentimento_aceitar'),
                 onPressed: () => _responder(context, true),
                 child: const Text('Entendi e concordo'),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               TextButton(
                 key: const Key('consentimento_recusar'),
                 onPressed: () => _responder(context, false),

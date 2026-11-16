@@ -131,6 +131,24 @@ void main() {
       expect(resultado, isFalse);
     });
 
+    testWidgets('em celular pequeno, os botões aparecem sem rolar a tela', (
+      tester,
+    ) async {
+      // Achado 7 do ensaio de 2026-11-16: o botão ficava abaixo da dobra.
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await abrir(tester, FakeConsentimentoRepository(aceitou: false));
+
+      for (final chave in ['consentimento_aceitar', 'consentimento_recusar']) {
+        final botao = tester.getRect(find.byKey(Key(chave)));
+        expect(botao.top, greaterThanOrEqualTo(0));
+        expect(botao.bottom, lessThanOrEqualTo(640));
+      }
+      // O texto continua rolando acima dos botões.
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
+    });
+
     testWidgets('voltar sem responder não libera', (tester) async {
       await abrir(tester, FakeConsentimentoRepository(aceitou: false));
 
