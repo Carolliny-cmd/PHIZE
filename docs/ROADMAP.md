@@ -16,14 +16,15 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
   - Teste de todos os fluxos no emulador e correção dos achados: build de release do Android, aquecimento das Functions (`tool/emuladores/aquecer_functions.sh`), títulos com letra muito grande.
   - Decisão de usar só recursos gratuitos: limitação acadêmica declarada no RNF07 e nos demais documentos; consentimento na versão 2 ("Use só conversas de teste").
   - RAG: etapa 2 (só as mensagens recebidas do print), etapa 3 (situações legítimas testadas e retiradas do prompt, sem ganho confirmado) e etapa 4 (três fichas novas). Com a base: 63 de 63 golpes do conjunto de teste detectados e as 26 legítimas verdes.
-- **Testes:** 678 no app, 87 na Function.
+- **Testes:** 724 no app, 87 na Function e 60 das regras do Firestore.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
 - **Fase 9 fechada no app (2026-11-16):** texto do "Cálculo do risco" aprovado, limitação do RNF03 declarada, UC03 sem RAG no link, sem login com a Apple, teste em Android real declarado como não feito por enquanto. Ficam para o fim o ícone e as mudanças nos .docx e nas imagens dos diagramas.
 - **Fase 10 planejada (2026-11-16):** sete decisões da equipe e etapa 10.0 (requisitos e documentos) feita; RF15, RF16 e RF17 criados.
 - **Etapa 10.1 feita (2026-11-16):** modelo de dados e regras da comunidade, com 56 testes das regras (`docs/comunidade-dados.md`).
 - **Etapa 10.2 feita (2026-11-16):** reportar golpe (link, relato e print), com código comum movido para `lib/shared/`.
-- **Próximo passo:** etapa 10.3 (aba Comunidade: feed, detalhe, curtir e compartilhar); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Etapa 10.3 feita (2026-11-16):** aba Comunidade, com feed "Em alta" e "Mais recentes", detalhe, curtir e compartilhar; barra inferior com quatro abas.
+- **Próximo passo:** etapa 10.4 (denúncia, ocultação automática com 3 denúncias e tela mínima de moderação); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -1270,7 +1271,7 @@ Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe 
 | 10.0 | Requisitos e documentos (feita) | — |
 | 10.1 | Modelo de dados e regras do Firestore (reportes, votos, denúncias, moderadores), com testes das regras no emulador (feita) | T39 (base) |
 | 10.2 | Reportar golpe: link com hash, relato e print mascarados, aviso de duplicado, recusa de marca oficial (feita) | T36, T37, T38, T39, T56 |
-| 10.3 | Aba "Comunidade": feed ("Em alta" e "Mais recentes"), detalhe, curtir e compartilhar | T40, T41, T42 |
+| 10.3 | Aba "Comunidade": feed ("Em alta" e "Mais recentes"), detalhe, curtir e compartilhar (feita) | T40, T41, T42 |
 | 10.4 | Denúncia, ocultação automática (gatilho na Function) e tela mínima de moderação | T43, T44, T45 |
 | 10.5 | Pesquisa, "Meus reportes" (editar e excluir) e reportes na exportação e na exclusão de conta | T57, T58, T59, T60 |
 | 10.6 | Cartão "Golpe da semana" na tela inicial | T61 |
@@ -1302,6 +1303,19 @@ A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perf
 > - A comunidade só terá conteúdo fictício (RNF07, limitação de escopo acadêmico): serve para demonstrar o funcionamento, não para medir engajamento.
 > - O limiar de 3 denúncias é adequado ao volume pequeno da versão acadêmica; com usuários reais, reavaliar.
 > - Ninguém da comunidade é exposto: o feed não mostra link (só a hash é guardada, arquitetura 5.5), nome nem e-mail.
+
+### Etapa 10.3 — Aba Comunidade (concluída, 2026-11-16)
+
+- **Navegação:** a barra inferior passou a ter quatro abas: Início, Comunidade, Histórico e Perfil. O botão provisório "Reportar um golpe à comunidade" saiu do Início; o reporte agora abre pelo botão "Reportar golpe" da aba Comunidade.
+- **Feed (RF08, UC07):** `ComunidadePage`, com "Em alta" (mais curtidos, depois os mais novos) e "Mais recentes", até 50 reportes. Cada cartão mostra título, tipo de golpe, data e curtidas, e "Ainda não revisado" nos pendentes. Aviso fixo de que os relatos vêm de pessoas do Phize, sem nome, e de que nem todos foram revisados. Falha de conexão mostra "Tentar de novo"; o próprio Firestore usa o que tiver em cache no aparelho (UC07). O feed recarrega ao voltar do detalhe ou do reporte.
+- **Consultas:** filtram o status (`pendente` e `aprovado`), como as regras exigem; sem o filtro, ou incluindo `oculto`, a consulta inteira é recusada (3 testes novos das regras, 60 no total). Os índices compostos estão em `firestore.indexes.json`; o emulador não precisa deles, um projeto publicado sim.
+- **Detalhe (RF06, RF09):** `DetalheReportePage`, com autor "Usuário do Phize", relato mascarado, quantas pessoas relataram e aviso de que o conteúdo é da comunidade e não substitui a confirmação com a instituição. Curtir grava +1 com a marca da conta; quem já curtiu vê "Você curtiu", sem novo voto (as regras não permitem desfazer a curtida). Compartilhar abre o menu do aparelho com mensagem padronizada (`mensagem_alerta.dart`): aviso de segurança, título, tipo, relato, número de relatos e a identidade do Phize, sem link.
+- **Código compartilhado:** a formatação de data passou a `lib/shared/domain/formatacao_data.dart`, usada pelo histórico e pela comunidade.
+- **Testes:** 23 novos no app (mensagem, leitura do documento, feed, detalhe, curtir, compartilhar, e as duas telas no teste de letra muito grande, que apontou um estouro no cartão com letra grande, corrigido); 724 no total. Conferido no emulador: feed com os reportes da 10.2, curtida gravada pelas regras reais, menu de compartilhamento com a mensagem e contagem atualizada no feed.
+
+> **Pontos para a equipe:**
+> - Curtida não se desfaz: as regras só aceitam +1, para impedir voto duplicado (RF06). Permitir "descurtir" exige regra e teste novos.
+> - "Em alta" ordena só por curtidas, como diz o RF08. Se a equipe quiser contar também as incidências ("também recebi"), é uma mudança pequena na consulta e no índice.
 
 ---
 

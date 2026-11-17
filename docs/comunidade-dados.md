@@ -38,7 +38,7 @@ Nenhum outro campo é aceito: não há onde gravar autor, link em texto puro ou 
 - **Edição (RF16):** só o autor, só título, relato e palavras. Categoria, tipo, link e status não mudam.
 - **Exclusão (RF16):** o autor exclui o reporte e a autoria juntos. Apagar só a autoria dissocia o autor e mantém o reporte (exclusão de conta com reporte validado, RF12).
 - **Moderação (RF11):** só contas em `moderadores` mudam o status, leem ocultos e excluem reportes de outras contas. Ninguém se torna moderador pelo app.
-- **Feed:** reporte oculto não é lido por conta comum; por isso, as consultas do feed precisam filtrar o status (`pendente` e `aprovado`). Ler um reporte que ainda não existe é permitido: é assim que o app confere se o link já foi reportado antes de publicar.
+- **Feed:** reporte oculto não é lido por conta comum; por isso, as consultas do feed filtram o status (`pendente` e `aprovado`), e uma consulta sem esse filtro é recusada inteira. "Em alta" ordena por `curtidas` e depois `criadoEm`; "Mais recentes", por `criadoEm` (índices compostos em `firestore.indexes.json`; etapa 10.3, `lib/features/comunidade/data/feed_repository_firestore.dart`). Ler um reporte que ainda não existe é permitido: é assim que o app confere se o link já foi reportado antes de publicar.
 - **Hashes validadas (RF12):** `ameacas/{hash}` só guarda a data de validação e continua lá depois da exclusão do reporte de origem.
 
 ## O que fica para as próximas etapas

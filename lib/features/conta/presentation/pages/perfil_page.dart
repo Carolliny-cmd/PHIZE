@@ -420,7 +420,7 @@ class _PerfilPageState extends State<PerfilPage> {
           // A exclusão em andamento decide sozinha para onde a tela vai.
           automaticallyImplyLeading: !_processando,
         ),
-        bottomNavigationBar: const PhizeBottomNav(currentIndex: 2),
+        bottomNavigationBar: const PhizeBottomNav(currentIndex: 3),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),

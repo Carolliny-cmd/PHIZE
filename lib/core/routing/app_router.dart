@@ -30,7 +30,12 @@ import '../../features/analise/presentation/pages/detalhe_historico_page.dart';
 import '../../features/analise/presentation/pages/historico_page.dart';
 import '../../features/analise/presentation/pages/resultado_analise_page.dart';
 import '../../features/auth/domain/auth_repository.dart';
+import '../../features/comunidade/domain/compartilhador_texto.dart';
+import '../../features/comunidade/domain/feed_repository.dart';
+import '../../features/comunidade/domain/reporte_comunidade.dart';
 import '../../features/comunidade/domain/reporte_repository.dart';
+import '../../features/comunidade/presentation/pages/comunidade_page.dart';
+import '../../features/comunidade/presentation/pages/detalhe_reporte_page.dart';
 import '../../features/comunidade/presentation/pages/reportar_golpe_page.dart';
 import '../../features/auth/presentation/pages/cadastro_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
@@ -58,6 +63,8 @@ class AppRouter {
     ConsentimentoRepository? consentimentoRepository,
     TutorialRepository? tutorialRepository,
     ReporteRepository? reporteRepository,
+    FeedRepository? feedRepository,
+    CompartilhadorTexto? compartilhadorTexto,
   }) {
     final caixa = caixaCompartilhamento ?? CaixaCompartilhamento.instancia;
 
@@ -140,6 +147,18 @@ class AppRouter {
             authRepository: authRepository,
             consentimentoRepository: consentimentoRepository,
             tutorialRepository: tutorialRepository,
+          ),
+        );
+      case AppRoutes.comunidade:
+        return MaterialPageRoute(
+          builder: (_) => ComunidadePage(repositorio: feedRepository),
+        );
+      case AppRoutes.detalheReporte:
+        return MaterialPageRoute(
+          builder: (_) => DetalheReportePage(
+            reporte: settings.arguments as ReporteComunidade,
+            repositorio: feedRepository,
+            compartilhador: compartilhadorTexto,
           ),
         );
       case AppRoutes.reportarGolpe:

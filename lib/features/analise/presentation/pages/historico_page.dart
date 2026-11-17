@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
+import '../../../../shared/domain/formatacao_data.dart';
 import '../../../../shared/widgets/phize_bottom_nav.dart';
 import '../../data/historico_repository_firestore.dart';
 import '../../domain/analise_risco.dart';
@@ -9,11 +10,6 @@ import '../../domain/historico_repository.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../../domain/rotulos_risco.dart';
 import '../widgets/aviso_card.dart';
-
-String formatarDataHistorico(DateTime data) {
-  return '${data.day.toString().padLeft(2, '0')}/'
-      '${data.month.toString().padLeft(2, '0')}/${data.year}';
-}
 
 String nomeTipoEntrada(TipoEntrada tipo) => switch (tipo) {
   TipoEntrada.link => 'Link',
@@ -62,7 +58,7 @@ class _HistoricoPageState extends State<HistoricoPage> {
           return _ListaAnalises(analises: analises);
         },
       ),
-      bottomNavigationBar: const PhizeBottomNav(currentIndex: 1),
+      bottomNavigationBar: const PhizeBottomNav(currentIndex: 2),
     );
   }
 }
@@ -102,7 +98,7 @@ class _ListaAnalises extends StatelessWidget {
             title: Text(analise.faixa.rotulo),
             subtitle: Text(
               '${nomeTipoEntrada(analise.tipoEntrada)} · '
-              '${formatarDataHistorico(analise.data)}',
+              '${formatarData(analise.data)}',
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.of(

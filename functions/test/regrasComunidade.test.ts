@@ -18,8 +18,14 @@ import {
   type Firestore,
   deleteDoc,
   doc,
+  collection,
   getDoc,
+  getDocs,
   increment,
+  limit,
+  orderBy,
+  query,
+  where,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -201,6 +207,45 @@ describe("ler (RF08, RF11)", () => {
     await semear("oculto");
     await assertFails(getDoc(doc(db("bia"), "reportes", "r1")));
     await assertSucceeds(getDoc(doc(db("mod"), "reportes", "r1")));
+  });
+
+  test("feed: consulta que filtra o status é aceita, nas duas ordens", async () => {
+    await semear();
+    const reportes = collection(db("bia"), "reportes");
+    const visiveis = where("status", "in", ["pendente", "aprovado"]);
+    await assertSucceeds(
+      getDocs(query(reportes, visiveis, orderBy("criadoEm", "desc"), limit(50))),
+    );
+    await assertSucceeds(
+      getDocs(
+        query(
+          reportes,
+          visiveis,
+          orderBy("curtidas", "desc"),
+          orderBy("criadoEm", "desc"),
+          limit(50),
+        ),
+      ),
+    );
+  });
+
+  test("feed: consulta sem o filtro de status é recusada", async () => {
+    await semear();
+    await assertFails(
+      getDocs(query(collection(db("bia"), "reportes"), orderBy("criadoEm", "desc"))),
+    );
+  });
+
+  test("feed: consulta que inclui ocultos é recusada", async () => {
+    await semear();
+    await assertFails(
+      getDocs(
+        query(
+          collection(db("bia"), "reportes"),
+          where("status", "in", ["pendente", "oculto"]),
+        ),
+      ),
+    );
   });
 
   test("a autoria é privada", async () => {

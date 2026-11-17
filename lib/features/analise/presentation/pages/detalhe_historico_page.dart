@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../shared/domain/formatacao_data.dart';
 import '../../domain/analise_risco.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../../domain/rotulos_risco.dart';
@@ -36,7 +37,7 @@ class DetalheHistoricoPage extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 '${nomeTipoEntrada(analise.tipoEntrada)} analisado em '
-                '${formatarDataHistorico(analise.data)}',
+                '${formatarData(analise.data)}',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),

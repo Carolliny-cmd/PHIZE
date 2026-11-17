@@ -19,6 +19,7 @@ import 'package:phize/features/conta/domain/preferencias_aparencia.dart';
 import '../support/fake_auth_repository.dart';
 import '../support/fake_consentimento_repository.dart';
 import '../support/fake_conta_repository.dart';
+import '../support/fake_feed_repository.dart';
 import '../support/fake_historico_repository.dart';
 import '../support/fake_tutorial_repository.dart';
 
@@ -114,6 +115,13 @@ Future<void> _abrir(
               compartilhador: FakeCompartilhador(),
               consentimentoRepository: FakeConsentimentoRepository(),
               tutorialRepository: FakeTutorialRepository(),
+              feedRepository: FakeFeedRepository(
+                reportes: [
+                  reporteDeTeste(),
+                  reporteDeTeste(id: 'r2', curtidas: 1),
+                ],
+              ),
+              compartilhadorTexto: FakeCompartilhadorTexto(),
             ),
     ),
   );
@@ -137,6 +145,8 @@ void main() {
         'resultado do link': (AppRoutes.resultado, _resultadoLink),
         'resultado do print': (AppRoutes.resultado, _resultadoPrint),
         'perfil': (AppRoutes.perfil, null),
+        'comunidade': (AppRoutes.comunidade, null),
+        'detalhe do reporte': (AppRoutes.detalheReporte, reporteDeTeste()),
       };
       for (final MapEntry(key: nome, value: (rota, argumentos))
           in rotas.entries) {
@@ -158,7 +168,10 @@ void main() {
         tester,
       ) async {
         await _abrir(tester, tema: tema, tela: const ComoCalculaRiscoPage());
-        await tester.drag(find.byType(Scrollable).first, const Offset(0, -6000));
+        await tester.drag(
+          find.byType(Scrollable).first,
+          const Offset(0, -6000),
+        );
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
       });
