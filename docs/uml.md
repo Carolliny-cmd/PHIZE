@@ -29,7 +29,7 @@ Esta seção destina-se à representação visual da arquitetura do aplicativo..
 **2.2 Diagramas de Sequência** 
 	
 
-1. O diagrama abaixo detalha o fluxo temporal e a troca de mensagens para a validação de ameaças. Ele evidencia a lógica condicional do sistema, onde o envio de uma imagem aciona primeiramente a extração de texto (OCR), seguida do descarte da mídia e da rotina local de mascaramento de dados pessoais, etapas que antecedem obrigatoriamente qualquer transmissão à camada de análise semântica. Em seguida, demonstra a consulta da IA ao repositório de padrões e o retorno do Score de Risco, finalizando com o salvamento assíncrono do histórico no banco de dados. 
+1. O diagrama abaixo detalha o fluxo temporal e a troca de mensagens para a validação de ameaças. Ele evidencia a lógica condicional do sistema, onde o envio de uma imagem aciona primeiramente a extração de texto (OCR), seguida do descarte da mídia e da rotina local de mascaramento de dados pessoais, etapas que antecedem obrigatoriamente qualquer transmissão à camada de análise semântica. Em seguida, demonstra a consulta à base de padrões (RAG) e o retorno, pelo modelo de linguagem, dos sinais identificados e da explicação pedagógica, com o Score de Risco calculado no próprio aplicativo por função determinística (RF07); no caso do link, as verificações de reputação e de idade do domínio ocupam o lugar do modelo de linguagem. Finaliza com o salvamento assíncrono do histórico no banco de dados, sem o conteúdo analisado. 
 
 Fluxo do Diagrama de Sequência: Análise de Ameaças (Print ou Link) 
 
@@ -43,6 +43,6 @@ Diagrama de Sequência de Gerenciamento de Reportes (CRUD)
 
 **2.3 Diagramas de Classe**
 
-1. A representação estrutural abaixo mapeia a arquitetura estática da aplicação, definindo os modelos de dados que trafegam entre a interface em *Flutter* e o banco de dados *Cloud Firestore*. O diagrama destaca os atributos essenciais das entidades centrais ( **Usuário****, ****AnaliseRisco**** **e** ****ReporteComunidade**) e a utilização de classes enumeradoras (*Enums*) para padronizar parâmetros do sistema, como o termômetro de periculosidade e a classificação de táticas como o mimetismo visual. Além disso, demonstra as regras de multiplicidade, indicando como a conta de um usuário se relaciona com seus múltiplos registros de histórico e denúncias na comunidade. 
+1. A representação estrutural abaixo mapeia a arquitetura estática da aplicação, definindo os modelos de dados que trafegam entre a interface em *Flutter* e o banco de dados *Cloud Firestore*. O diagrama destaca os atributos essenciais das entidades centrais ( **Usuário****, ****AnaliseRisco**** **e** ****ReporteComunidade**) e a utilização de classes enumeradoras (*Enums*) para padronizar parâmetros do sistema, como as faixas do termômetro de periculosidade e as categorias de ameaça. Além disso, demonstra as regras de multiplicidade, indicando como a conta de um usuário se relaciona com seus múltiplos registros de histórico e com os reportes que publica na comunidade, cuja autoria fica separada do conteúdo público. 
 
 Diagrama de Classes: Estrutura de Entidades e Modelos de Dados

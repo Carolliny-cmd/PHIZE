@@ -1,0 +1,122 @@
+%% Diagrama de classes do Phize (docs/uml.md, seção 2.3; docs/comunidade-dados.md;
+%% firestore.rules). Os tipos de ReporteComunidade (TipoReporte, StatusReporte,
+%% CategoriaAmeaca) aparecem nos atributos, sem seta, para as linhas não cruzarem.
+%% Gerar a imagem: ver docs/diagramas/README.md.
+classDiagram
+    direction LR
+
+    class Usuario {
+        +String uid
+        +String email
+        +String nomeExibicao
+        +DateTime createdAt
+    }
+
+    class AnaliseRisco {
+        +int score
+        +FaixaRisco faixa
+        +CategoriaAmeaca categoria
+        +String explicacao
+        +TipoEntrada tipoEntrada
+        +DateTime data
+    }
+
+    class ReporteComunidade {
+        +String id
+        +TipoReporte tipo
+        +String titulo
+        +String relato
+        +CategoriaAmeaca categoria
+        +String hashLink
+        +List~String~ palavras
+        +int curtidas
+        +int denuncias
+        +int incidencias
+        +StatusReporte status
+        +DateTime criadoEm
+        +DateTime editadoEm
+    }
+
+    class AutoriaReporte {
+        +DateTime criadoEm
+    }
+
+    class Denuncia {
+        +MotivoDenuncia motivo
+        +DateTime criadoEm
+    }
+
+    class Curtida {
+        +DateTime criadoEm
+    }
+
+    class AmeacaValidada {
+        +String hash
+        +DateTime validadoEm
+    }
+
+    class EntradaBaseComunidade {
+        +Ficha ficha
+        +List~double~ vetor
+        +DateTime incluidoEm
+    }
+
+    class FaixaRisco {
+        <<enumeration>>
+        BAIXO
+        MEDIO
+        ALTO
+    }
+
+    class TipoEntrada {
+        <<enumeration>>
+        LINK
+        IMAGEM
+    }
+
+    class CategoriaAmeaca {
+        <<enumeration>>
+        FALSO_CONTATO
+        FALSA_CENTRAL_OU_INSTITUICAO
+        COBRANCA_OU_BOLETO_FALSO
+        OFERTA_OU_PREMIO_FALSO
+        AMEACA_OU_EXTORSAO
+        ROUBO_DE_DADOS
+        OUTRO_GOLPE
+        SEM_INDICIOS
+    }
+
+    class TipoReporte {
+        <<enumeration>>
+        LINK
+        RELATO
+        PRINT
+    }
+
+    class StatusReporte {
+        <<enumeration>>
+        PENDENTE
+        APROVADO
+        OCULTO
+    }
+
+    class MotivoDenuncia {
+        <<enumeration>>
+        FALSO
+        OFENSIVO
+        DUPLICADO
+        ACUSA_ORGANIZACAO_LEGITIMA
+    }
+
+    Usuario "1" --> "0..*" AnaliseRisco : realiza
+    Usuario "1" --> "0..*" AutoriaReporte : publica
+    AutoriaReporte "1" --> "1" ReporteComunidade : autoria privada
+    ReporteComunidade "1" --> "0..*" Curtida : recebe (uma por conta)
+    ReporteComunidade "1" --> "0..*" Denuncia : recebe (uma por conta)
+    ReporteComunidade "0..1" ..> "0..1" AmeacaValidada : link aprovado
+    ReporteComunidade "1" ..> "0..1" EntradaBaseComunidade : incluído na base
+
+    AnaliseRisco ..> FaixaRisco : define
+    AnaliseRisco ..> TipoEntrada : classifica
+    AnaliseRisco ..> CategoriaAmeaca : categoriza
+    Denuncia ..> MotivoDenuncia

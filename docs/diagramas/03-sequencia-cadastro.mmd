@@ -1,0 +1,24 @@
+%% Sequência do cadastro e da criação da conta (docs/uml.md, seção 2.2, item 2;
+%% UC01; RF01). Gerar a imagem: ver docs/diagramas/README.md.
+sequenceDiagram
+    autonumber
+    actor U as Usuário
+    participant A as App Flutter
+    participant AU as Firebase Authentication
+    participant D as Cloud Firestore
+
+    alt E-mail e senha
+        U->>A: Preenche e-mail e senha e aceita os termos
+        Note right of A: Valida o formato do e-mail e a força da senha
+        A->>AU: Cria a conta
+        AU-->>A: Credencial e token de acesso
+        A->>AU: Pede o e-mail de verificação
+    else Continuar com Google
+        U->>A: Toca em "Continuar com Google"
+        A->>AU: Autentica com a conta Google
+        AU-->>A: Credencial e token de acesso<br/>(dispensa o e-mail de verificação)
+    end
+
+    A->>D: Cria o documento do usuário (uid, e-mail e data)
+    D-->>A: Confirma a gravação
+    A-->>U: Abre a tela inicial

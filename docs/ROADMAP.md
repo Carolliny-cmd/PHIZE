@@ -28,8 +28,10 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Etapa 10.5 feita (2026-11-17):** pesquisa por palavras ou link, "Meus reportes" (editar e excluir) e a comunidade na exportação e na exclusão de conta.
 - **Etapa 10.6 feita (2026-11-17):** cartão "Golpe da semana" no Início, com rodízio semanal entre as 21 fichas revisadas.
 - **Etapa 10.7 feita (2026-11-17):** "Aprovar e incluir na base" na moderação vale como curadoria; a entrada da comunidade entra no RAG sem reescrita e sai quando o reporte é excluído, ocultado ou editado.
-- **Próximo passo:** decidir sobre a etapa 10.8 (comentários, opcional); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
-- **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
+- **Fase 10 fechada (2026-11-17):** etapas 10.0 a 10.7 feitas; 10.8 (comentários) fora da fase, por decisão da equipe. Orientação padrão das entradas da comunidade aprovada; reporte aprovado e editado pelo autor continua aprovado.
+- **Documentação atualizada (2026-11-17):** os seis .docx acadêmicos levados ao texto dos `.md`, em alterações controladas para a equipe revisar e aceitar no Word, e os cinco diagramas UML refeitos em Mermaid (`docs/diagramas/`). Detalhes na seção "Atualização da documentação".
+- **Próximo passo:** a equipe revisar e aceitar as alterações dos `_atualizado.docx` (em `docs/DOCS/`); depois o ícone e a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Pendências sem pressa:** no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
 ---
@@ -256,7 +258,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - ~~`firestore.rules` não cobre subcoleções de `users/{uid}`~~ — **resolvida no Prompt 8.1**; publicar as regras novas no console junto com o deploy.
 - ~~Restringir os campos graváveis em `users/{uid}` aos previstos~~ — **resolvida no Prompt 9.10**; publicar as regras novas no console junto com o deploy.
 - Adicionar ao roadmap os passos de publicação das regras pelo console e teste no Playground.
-- Sincronizar os .docx acadêmicos com as alterações de RF07, arquitetura 3.3 e 6, UC03 e relatório 4.8.
+- ~~Sincronizar os .docx acadêmicos com as alterações de RF07, arquitetura 3.3 e 6, UC03 e relatório 4.8.~~ — **feito em 2026-11-17** (alterações controladas nos `_atualizado.docx`).
 - A rotina de mascaramento local pode lançar `StateError` (falha na restauração do isolamento de URL/domínio). O fluxo do UC04 (Fase 6) deve tratar essa exceção interrompendo a análise, sem expor o texto ao usuário nem a log.
 - ~~O cálculo do domínio registrável reconhece apenas `com`/`gov`/`org`/`net`/`edu` sob `.br`~~ — **resolvida em 2026-11-16** (achado 1 do ensaio): `dominio_registravel.dart` com as 147 categorias do Registro.br. Sufixos compostos de outros países (`co.uk`) continuam sem tratamento.
 - Dois testes de widget anteriores perderam asserções de rótulo e aviso ao eliminar o caminho fictício da tela de Resultado; a cobertura passou para `test/features/analise/presentation/analise_link_flow_test.dart`.
@@ -283,7 +285,7 @@ Nenhuma delas está nos documentos. São decisões humanas — se ninguém defin
 - O streaming do RNF03 não foi implementado: a medição do Prompt 9.4 mostrou ganho de só 0,5 s. Limitação declarada no RNF03 (2026-11-16); reavaliar só com plano pago.
 - ~~O build de release do Android falha (R8: classes ausentes do ML Kit)~~ — **resolvida em 2026-11-12**: `android/app/proguard-rules.pro` com `-dontwarn` para as escritas chinesa, devanágari, japonesa e coreana, que o app não usa. `flutter build apk --release` gera o APK (83,3 MB). O APK de release não fala com os emuladores do Firebase (sem exceção de HTTP); os testes de fluxo usam o build de debug.
 - A limitação acadêmica do RNF07 (nível gratuito do Gemini, só conteúdo fictício; 2026-11-12) foi declarada em `docs/requisitos.md` e `docs/relatorio-completo.md` e alinhada em `docs/arquitetura.md` (custos e transmissão a terceiros), `docs/viabilidade.md`, na tarefa T13 do `docs/BACKLOG.md` e na Seção 3 do `CLAUDE.md`. Falta levar o texto aos .docx acadêmicos, que ficam fora do repositório.
-- Sincronizar os .docx acadêmicos com os RF13 e RF14 (2026-11-12); `docs/relatorio-completo.md` já os traz (2026-11-16). O diagrama de classes de `docs/uml.md` (imagem) precisa do atributo `nomeExibicao` em Usuário depois do Prompt 9.10.
+- ~~Sincronizar os .docx acadêmicos com os RF13 e RF14 (2026-11-12); `docs/relatorio-completo.md` já os traz (2026-11-16). O diagrama de classes de `docs/uml.md` (imagem) precisa do atributo `nomeExibicao` em Usuário depois do Prompt 9.10.~~ — **feito em 2026-11-17:** texto nos `_atualizado.docx` e diagrama de classes refeito com `nomeExibicao`.
 - ~~`ReconhecedorTextoMlKit` passou a organizar o texto do print~~ — **registrado na arquitetura, seção 3.1 (2026-11-16).**
 
 ---
@@ -1280,9 +1282,30 @@ Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe 
 | 10.5 | Pesquisa, "Meus reportes" (editar e excluir) e reportes na exportação e na exclusão de conta (feita) | T57, T58, T59, T60 |
 | 10.6 | Cartão "Golpe da semana" na tela inicial (feita) | T61 |
 | 10.7 | Curadoria: reporte aprovado entra na base de conhecimento pela moderação (feita; plano mudou em 2026-11-17, ver a seção da etapa) | T46 |
-| 10.8 | Comentários (opcional, a reavaliar) | — |
+| 10.8 | Comentários (fora da fase, decisão da equipe de 2026-11-17) | — |
 
 A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perfil.
+
+### Atualização da documentação (2026-11-17)
+
+Os .docx acadêmicos (em `docs/DOCS/`, fora do git) eram anteriores até à decisão do OCR embarcado (2026-10-07): ainda citavam Google Cloud Vision, remoção de EXIF, "cache local para envio posterior", login com a Apple e histórico com o texto analisado. A comparação com os `.md` mostrou que todo texto presente só nos .docx era versão antiga, já substituída nos `.md`, que são a fonte (CLAUDE.md, seção 7).
+
+- **Textos:** seis .docx levados ao texto dos `.md` como **alterações controladas** do Word, com a formatação original mantida; os originais (`_corrigido.docx`) ficaram intactos e as cópias novas são os `_atualizado.docx`. Com as alterações aceitas, o texto dos sete documentos fica igual ao dos `.md` (conferido por script). O de stakeholders já estava igual. Cada arquivo foi aberto no Word e conferido em PDF.
+- **Diagramas:** os cinco diagramas do UML refeitos em Mermaid (`docs/diagramas/*.mmd`, com as imagens `.png`) e trocados no .docx do UML também como alteração controlada:
+  - casos de uso com pesquisa, "Meus reportes", denúncia, moderação, "Golpe da semana", tutorial e perfil;
+  - sequência da análise com o OCR e o mascaramento no aparelho e o score calculado no app;
+  - cadastro com o login Google;
+  - reportes com a hash, a incidência e a retirada da base;
+  - classes sem `textoAnalisado` nem autor no reporte, e com as entidades da comunidade.
+- **Legendas do UML (`docs/uml.md`):** duas frases corrigidas. A da sequência dizia que a IA devolve o Score de Risco, mas pelo RF07 ele é calculado no app. A das classes citava a "classificação de táticas como o mimetismo visual", que não é categoria do sistema.
+- **Ferramentas:** scripts em `tool/documentacao/` (README com o passo a passo), para repetir a sincronização quando os `.md` mudarem.
+
+> **Para a equipe:**
+> - Abrir cada `_atualizado.docx` no Word, revisar as alterações (Revisão > Alterações) e aceitar. O autor das alterações aparece como "Claude (atualização da documentação)".
+> - Depois de aceitar, conferir a numeração das páginas e o sumário, se houver.
+> - O ícone continua pendente (decisão de deixá-lo para o fim).
+
+**Fase 10 fechada (2026-11-17).** Etapas 10.0 a 10.7 concluídas. Decisões de fechamento da equipe: a etapa 10.8 (comentários) fica fora da fase; a orientação padrão das entradas da comunidade foi aprovada como está; reporte aprovado e editado pelo autor continua aprovado. Os documentos do repositório foram atualizados em cada etapa; falta levá-los aos .docx acadêmicos e às imagens dos diagramas.
 
 ### Etapa 10.1 — Modelo de dados e regras (concluída, 2026-11-16)
 
@@ -1390,9 +1413,9 @@ A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perf
   - Na mesma sessão, o Gemini gratuito devolveu "indisponível" em algumas análises, inclusive em texto sem relação com a comunidade: oscilação do provedor, não da mudança.
 
 > **Pontos para a equipe:**
-> - **Orientação padrão por categoria** (`ORIENTACAO_PADRAO` em `functions/src/fichaComunidade.ts`, versão 1.0): escrita por mim a partir das orientações das fichas, **pendente de revisão pela equipe**.
+> - ~~**Orientação padrão por categoria**~~ — **aprovada pela equipe (2026-11-17)** como está (`ORIENTACAO_PADRAO` em `functions/src/fichaComunidade.ts`, versão 1.0).
 > - **Só com conteúdo fictício:** os gatilhos reproduzem o relato, que pode ter nomes não mascarados (RNF07); essas frases vão ao prompt do Gemini nas análises parecidas. Antes de uso com pessoas reais, reavaliar (arquitetura, 3.2 d).
-> - **Edição de reporte aprovado (vale desde a 10.5):** o autor pode editar título e relato de um reporte já aprovado, e ele continua aprovado no feed sem nova revisão. A entrada da base sai na edição, mas o feed não volta a "pendente". Se a equipe quiser, a edição pode passar a devolver o reporte a pendente (mudança pequena nas regras e no app).
+> - ~~**Edição de reporte aprovado**~~ — **decidido (2026-11-17): continua aprovado.** O autor edita título e relato, o reporte segue aprovado no feed, e a entrada da base sai na edição (a moderação pode incluí-lo de novo).
 > - **Primeira inclusão demora** no emulador (cerca de 20 s, partida do processo da Function); depois, cerca de 1 s.
 
 ---

@@ -29,9 +29,9 @@ type CategoriaFicha = Exclude<CategoriaAmeaca, "sem_indicios">;
 
 /**
  * Orientação preventiva padrão de cada categoria, usada nas entradas da
- * comunidade. Versão 1.0, provisória: escrita a partir das orientações das
- * fichas de fontes públicas e pendente de revisão pela equipe
- * (docs/ROADMAP.md, etapa 10.7).
+ * comunidade. Versão 1.0, escrita a partir das orientações das fichas de
+ * fontes públicas e aprovada pela equipe em 2026-11-17 (docs/ROADMAP.md,
+ * etapa 10.7).
  */
 export const ORIENTACAO_PADRAO: Record<CategoriaFicha, string> = {
   falso_contato:

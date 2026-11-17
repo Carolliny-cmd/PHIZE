@@ -1,0 +1,36 @@
+%% Diagrama de casos de uso do Phize (docs/uml.md, seção 2.1; docs/casos-de-uso.md).
+%% Gerar a imagem: ver docs/diagramas/README.md.
+flowchart LR
+    usuario(("👤<br/>Usuário"))
+    moderadora(("🛡️<br/>Moderação<br/>(equipe)"))
+
+    subgraph app["Aplicativo Phize"]
+        direction TB
+        uc1(["Cadastro e Login<br/>(e-mail ou Google)"])
+        uc2(["Analisar Link Suspeito"])
+        uc3(["Analisar Print<br/>(OCR no aparelho)"])
+        uc4(["Analisar conteúdo<br/>compartilhado"])
+        uc5(["Consultar Histórico"])
+        uc6(["Ver Tutorial"])
+        uc7(["Perfil: exportar e<br/>excluir conta"])
+        uc8(["Ver Golpe da Semana"])
+        uc9(["Visualizar Feed<br/>da Comunidade"])
+        uc10(["Pesquisar Reportes"])
+        uc11(["Reportar Golpe"])
+        uc12(["Curtir, Compartilhar<br/>e Denunciar Alerta"])
+        uc13(["Meus Reportes:<br/>editar e excluir"])
+        uc14(["Moderar Reportes e<br/>incluir na base"])
+    end
+
+    links(("🔎<br/>Verificação de link<br/>(Safe Browsing, RDAP)"))
+    ia(("🤖<br/>IA (Gemini +<br/>base de golpes)"))
+
+    usuario --- uc1 & uc2 & uc3 & uc4 & uc5 & uc6 & uc7
+    usuario --- uc8 & uc9 & uc10 & uc11 & uc12 & uc13
+    moderadora --- uc14
+
+    uc2 --- links
+    uc3 --- ia
+    uc4 --- ia
+    uc4 --- links
+    uc14 --- ia

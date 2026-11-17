@@ -1,0 +1,38 @@
+%% Sequência da análise de ameaças, print ou link (docs/uml.md, seção 2.2, item 1;
+%% UC03 e UC04; RF07; RNF01 e RNF07). Gerar a imagem: ver docs/diagramas/README.md.
+sequenceDiagram
+    autonumber
+    actor U as Usuário
+    participant A as App Flutter<br/>(OCR ML Kit no aparelho)
+    participant F as Camada intermediária<br/>(Cloud Functions)
+    participant E as Safe Browsing<br/>e RDAP
+    participant G as IA (Gemini)<br/>+ base de golpes (RAG)
+    participant D as Cloud Firestore
+
+    U->>A: Envia print ou link suspeito
+    A-->>U: Mostra as etapas da análise (carregando)
+
+    alt Print (imagem)
+        Note right of A: Extrai o texto no próprio aparelho (OCR)
+        Note right of A: Descarta a imagem (Zero-Persistence)
+        Note right of A: Confere o tamanho mínimo e mascara<br/>CPF, telefone, e-mail, Pix, cartão e boleto
+        A->>F: Envia só o texto mascarado
+        F->>G: Busca os padrões de golpe mais parecidos (RAG)
+        F->>G: Pede os sinais e a explicação pedagógica
+        G-->>F: Sinais, categoria e explicação (sem nota)
+        F-->>A: Sinais, categoria e explicação
+        Note right of A: Descarta o texto da memória
+    else Link
+        Note right of A: Normaliza o endereço e confere imitação<br/>de marcas conhecidas (typosquatting)
+        A->>E: Consulta a idade do domínio (RDAP)
+        A->>F: Envia o endereço normalizado
+        F->>E: Consulta a reputação (Safe Browsing)
+        E-->>F: Listado ou não listado
+        F-->>A: Resultado da reputação
+        Note right of A: Monta a explicação de cada verificação<br/>com textos do próprio app
+    end
+
+    Note right of A: Calcula o Score de Risco com pesos fixos (RF07)<br/>Verificação incompleta não fica na faixa verde
+    A->>D: Salva só o resultado (score, faixa, categoria,<br/>explicação, tipo e data), sem o conteúdo
+    D-->>A: Confirma a gravação
+    A-->>U: Exibe o termômetro, os sinais e o aviso<br/>de ferramenta de apoio à decisão

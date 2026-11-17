@@ -58,3 +58,6 @@ functions/.env.*
 functions/.secret.local
 .env
 .env.*
+
+# .docx acadêmicos e imagens dos diagramas (fora do git; a fonte dos textos é docs/*.md)
+docs/DOCS/

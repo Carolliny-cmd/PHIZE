@@ -1,0 +1,62 @@
+%% Sequência do gerenciamento de reportes da comunidade (docs/uml.md, seção 2.2,
+%% item 3; UC05, UC07, UC09, UC10; RF05, RF06, RF11, RF16; docs/comunidade-dados.md).
+%% Gerar a imagem: ver docs/diagramas/README.md.
+sequenceDiagram
+    autonumber
+    actor U as Usuário
+    participant A as App Flutter
+    participant D as Cloud Firestore<br/>(Security Rules)
+    participant F as Cloud Functions
+
+    rect rgb(232, 244, 234)
+        Note over U,F: CREATE (reportar golpe)
+        U->>A: Preenche título, tipo de golpe e link, relato ou print
+        Note right of A: Mascara o texto, troca links por [LINK]<br/>e gera a hash do link (print: OCR e descarte)
+        A->>D: Confere se o link já foi reportado (pela hash)
+        alt Link já reportado
+            A->>D: +1 incidência com a marca da conta
+        else Reporte novo
+            A->>D: Grava o reporte público (pendente, sem autor)<br/>e a autoria privada na mesma gravação
+        end
+        D-->>A: Confirma
+        A-->>U: Exibe o agradecimento
+    end
+
+    rect rgb(234, 234, 246)
+        Note over U,F: READ (feed da comunidade)
+        U->>A: Abre a aba Comunidade
+        A->>D: Lê reportes pendentes e aprovados<br/>(ocultos não são lidos)
+        D-->>A: Reportes, sem autor nem link
+        A-->>U: Exibe o feed (Em alta ou Mais recentes)
+    end
+
+    rect rgb(253, 244, 228)
+        Note over U,F: UPDATE (editar próprio reporte)
+        U->>A: Altera título ou relato em "Meus reportes"
+        Note right of A: Mascara de novo (o link não muda)
+        A->>D: Envia a alteração
+        alt Autor do reporte
+            D-->>A: Confirma
+            D->>F: Reporte alterado
+            F->>D: Retira a entrada da base de conhecimento, se houver
+            A-->>U: Exibe "Alterações salvas"
+        else Outra conta
+            D-->>A: Permissão negada
+            A-->>U: Exibe "Ação não permitida"
+        end
+    end
+
+    rect rgb(252, 232, 234)
+        Note over U,F: DELETE (excluir próprio reporte)
+        U->>A: Confirma a exclusão (irreversível)
+        A->>D: Apaga o reporte e a autoria juntos
+        alt Autor do reporte
+            D-->>A: Confirma
+            D->>F: Reporte excluído
+            F->>D: Retira a entrada da base de conhecimento, se houver<br/>(a hash de link validado continua, sem autor)
+            A-->>U: Remove o reporte da lista
+        else Outra conta
+            D-->>A: Permissão negada
+            A-->>U: Exibe "Ação não permitida"
+        end
+    end
