@@ -84,4 +84,40 @@ class ModeracaoRepositoryFirestore implements ModeracaoRepository {
 
   @override
   Future<void> excluir(String reporteId) => _reportes.doc(reporteId).delete();
+
+  CollectionReference<Map<String, dynamic>> get _pedidos =>
+      _firestore.collection('curadoriaComunidade');
+
+  @override
+  Future<Map<String, SituacaoNaBase>> situacoesNaBase() async {
+    final pedidos = await _pedidos.get();
+    return {
+      for (final pedido in pedidos.docs)
+        pedido.id: SituacaoNaBase(switch (pedido.data()['status']) {
+          'incluido' => EstadoNaBase.incluido,
+          'recusado' => EstadoNaBase.recusado,
+          'falhou' => EstadoNaBase.falhou,
+          _ => EstadoNaBase.aguardando,
+        }, pedido.data()['motivo'] as String?),
+    };
+  }
+
+  @override
+  Future<void> incluirNaBase(ReporteComunidade reporte) async {
+    final lote = _firestore.batch();
+    if (reporte.status != StatusReporte.aprovado) {
+      lote.update(_reportes.doc(reporte.id), {
+        'status': StatusReporte.aprovado.codigo,
+      });
+    }
+    lote.set(_pedidos.doc(reporte.id), {
+      'solicitadoEm': FieldValue.serverTimestamp(),
+    });
+    await lote.commit();
+  }
+
+  @override
+  Future<void> pedirInclusaoDeNovo(String reporteId) => _pedidos
+      .doc(reporteId)
+      .set({'solicitadoEm': FieldValue.serverTimestamp()});
 }

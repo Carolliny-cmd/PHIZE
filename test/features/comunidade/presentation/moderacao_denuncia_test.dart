@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:phize/core/routing/app_router.dart';
 import 'package:phize/core/routing/app_routes.dart';
 import 'package:phize/features/comunidade/domain/motivo_denuncia.dart';
+import 'package:phize/features/comunidade/domain/novo_reporte.dart';
+import 'package:phize/features/comunidade/domain/moderacao_repository.dart';
 import 'package:phize/features/comunidade/domain/reporte_comunidade.dart';
 import 'package:phize/features/comunidade/presentation/pages/moderacao_page.dart';
 
@@ -183,6 +185,85 @@ void main() {
       );
       expect(moderacao.excluidos, ['o1']);
       expect(find.text('Reporte excluído.'), findsOneWidget);
+    });
+  });
+
+  group('curadoria (RNF05)', () {
+    testWidgets(
+      'aprovar e incluir na base pede a inclusão e mostra a situação',
+      (tester) async {
+        final moderacao = FakeModeracaoRepository(reportes: [reporteDeTeste()]);
+        await _abrir(tester, rota: AppRoutes.moderacao, moderacao: moderacao);
+        await _tocar(tester, find.text('Pendentes'));
+        await _tocar(
+          tester,
+          find.byKey(const Key('moderacao_incluir_base_r1')),
+        );
+
+        expect(moderacao.pedidosDeInclusao, ['r1']);
+        expect(moderacao.mudancas, [('r1', StatusReporte.aprovado)]);
+        expect(
+          find.textContaining('A inclusão na base começou'),
+          findsOneWidget,
+        );
+
+        await _tocar(tester, find.text('Aprovados'));
+        expect(
+          find.text('Incluindo na base de conhecimento...'),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const Key('moderacao_incluir_base_r1')),
+          findsNothing,
+        );
+      },
+    );
+
+    testWidgets('reporte de link não oferece a inclusão', (tester) async {
+      final moderacao = FakeModeracaoRepository(
+        reportes: [
+          reporteDeTeste(id: 'h1', tipo: TipoReporte.link, relato: ''),
+        ],
+      );
+      await _abrir(tester, rota: AppRoutes.moderacao, moderacao: moderacao);
+      await _tocar(tester, find.text('Pendentes'));
+      expect(find.byKey(const Key('moderacao_incluir_base_h1')), findsNothing);
+      expect(find.byKey(const Key('moderacao_aprovar_h1')), findsOneWidget);
+    });
+
+    testWidgets('incluído aparece como na base', (tester) async {
+      final moderacao = FakeModeracaoRepository(
+        reportes: [reporteDeTeste(status: StatusReporte.aprovado)],
+      )..situacoes['r1'] = const SituacaoNaBase(EstadoNaBase.incluido);
+      await _abrir(tester, rota: AppRoutes.moderacao, moderacao: moderacao);
+      await _tocar(tester, find.text('Aprovados'));
+      expect(find.text('Na base de conhecimento'), findsOneWidget);
+      expect(
+        find.byKey(const Key('moderacao_incluir_de_novo_r1')),
+        findsNothing,
+      );
+    });
+
+    testWidgets('recusa explica o motivo e permite tentar de novo', (
+      tester,
+    ) async {
+      final moderacao =
+          FakeModeracaoRepository(
+              reportes: [reporteDeTeste(status: StatusReporte.aprovado)],
+            )
+            ..situacoes['r1'] = const SituacaoNaBase(
+              EstadoNaBase.recusado,
+              'sem_frases',
+            );
+      await _abrir(tester, rota: AppRoutes.moderacao, moderacao: moderacao);
+      await _tocar(tester, find.text('Aprovados'));
+      expect(find.textContaining('não tem frases'), findsOneWidget);
+
+      await _tocar(
+        tester,
+        find.byKey(const Key('moderacao_incluir_de_novo_r1')),
+      );
+      expect(moderacao.pedidosDeInclusao, ['r1']);
     });
   });
 }

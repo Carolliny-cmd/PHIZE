@@ -19,12 +19,28 @@ import path from "node:path";
 
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import { getFirestore } from "firebase-admin/firestore";
+import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
-import { onDocumentCreated } from "firebase-functions/v2/firestore";
+import {
+  onDocumentCreated,
+  onDocumentWritten,
+} from "firebase-functions/v2/firestore";
 import { onRequest } from "firebase-functions/v2/https";
 
 import { analisarTextoGemini, textoValido } from "./analiseTexto";
+import {
+  gerarEmbeddingGemini,
+  hashEntrada,
+  normalizar,
+  textoParaEmbedding,
+  type EntradaIndice,
+} from "./baseConhecimento";
+import {
+  combinarIndices,
+  deveRetirarDaBase,
+  entradasComunidade,
+  fichaDoReporte,
+} from "./fichaComunidade";
 import {
   DIMENSAO_EMBEDDING,
   JANELA_LIMITE_MS,
@@ -38,6 +54,7 @@ import {
   REGIAO,
   TAMANHO_MAXIMO_TEXTO,
   TIMEOUT_EMBEDDING_CONSULTA_MS,
+  TIMEOUT_EMBEDDING_MS,
   TIMEOUT_LLM_MS,
   TIMEOUT_SAFE_BROWSING_MS,
   VARIAVEL_CHAVE_GEMINI,
@@ -71,6 +88,35 @@ const indiceBase = carregarIndice(
   path.join(__dirname, "..", "..", "base-conhecimento", "indice.json"),
   { modelo: MODELO_EMBEDDING, dimensao: DIMENSAO_EMBEDDING },
 );
+
+/** Entradas da comunidade guardadas por pouco tempo, para não ler o
+ * Firestore a cada análise. Uma retirada vale em até 30 segundos. */
+const VALIDADE_CACHE_COMUNIDADE_MS = 30_000;
+let cacheComunidade: { lidoEm: number; entradas: EntradaIndice[] } | undefined;
+
+/**
+ * Entradas da base geradas de reportes da comunidade (`baseComunidade`;
+ * arquitetura, 3.2 b e d). Falha de leitura não interrompe a análise: segue
+ * só com as fichas do arquivo (degradação controlada).
+ */
+async function baseComunidade(): Promise<EntradaIndice[]> {
+  const agora = Date.now();
+  if (cacheComunidade && agora - cacheComunidade.lidoEm < VALIDADE_CACHE_COMUNIDADE_MS) {
+    return cacheComunidade.entradas;
+  }
+  try {
+    const leitura = await getFirestore().collection("baseComunidade").get();
+    const entradas = entradasComunidade(
+      leitura.docs.map((d) => d.data()),
+      { modelo: MODELO_EMBEDDING, dimensao: DIMENSAO_EMBEDDING },
+    );
+    cacheComunidade = { lidoEm: agora, entradas };
+    return entradas;
+  } catch {
+    logger.warn("Entradas da comunidade não lidas; análise segue com o arquivo");
+    return [];
+  }
+}
 
 /**
  * POST com `Authorization: Bearer <ID token do Firebase Auth>` e corpo
@@ -214,7 +260,7 @@ export const analiseTexto = onRequest(
 
       const chave = process.env[VARIAVEL_CHAVE_GEMINI];
       const base = await consultarBase(texto, chave, {
-        indice: indiceBase,
+        indice: combinarIndices(indiceBase, await baseComunidade()),
         quantidade: QUANTIDADE_PADROES,
         limiar: LIMIAR_SIMILARIDADE,
         timeoutMs: TIMEOUT_EMBEDDING_CONSULTA_MS,
@@ -291,6 +337,132 @@ export const ocultarReporteDenunciado = onDocumentCreated(
       // Sem relançar: a denúncia já está gravada e conta para a revisão;
       // a próxima denúncia tenta de novo.
       logger.error("Falha ao conferir denúncias do reporte", { reporteId });
+    }
+  },
+);
+
+/**
+ * Inclusão de um reporte aprovado na base de conhecimento (RNF05;
+ * arquitetura, 3.2 d). Acionada quando uma conta moderadora toca em
+ * "Aprovar e incluir na base", que grava `curadoriaComunidade/{reporteId}`
+ * sem `status`. Monta a entrada sem reescrita (`fichaComunidade.ts`), gera o
+ * embedding e grava `baseComunidade/{reporteId}`. O resultado volta no
+ * próprio pedido (`incluido`, `recusado` ou `falhou`), que a moderação vê.
+ *
+ * O texto do relato vai ao provedor de embedding: o mesmo que já recebe o
+ * texto mascarado da análise. Só conteúdo fictício (RNF07, escopo
+ * acadêmico). O log traz só o identificador e o motivo, nunca o texto.
+ */
+export const incluirReporteNaBase = onDocumentWritten(
+  { document: "curadoriaComunidade/{reporteId}", region: REGIAO },
+  async (evento) => {
+    const pedido = evento.data?.after;
+    if (!pedido?.exists || pedido.data()?.status !== undefined) return;
+
+    const reporteId = evento.params.reporteId;
+    const banco = getFirestore();
+    const reporteRef = banco.collection("reportes").doc(reporteId);
+    const responder = (status: string, motivo?: string) =>
+      pedido.ref.update({
+        status,
+        ...(motivo ? { motivo } : {}),
+        atualizadoEm: FieldValue.serverTimestamp(),
+      });
+
+    try {
+      const reporte = await reporteRef.get();
+      const montagem = fichaDoReporte(reporteId, reporte.data(), new Date());
+      if ("recusa" in montagem) {
+        await responder("recusado", montagem.recusa);
+        return;
+      }
+      const { ficha } = montagem;
+
+      const chave = process.env[VARIAVEL_CHAVE_GEMINI];
+      if (!chave) {
+        await responder("falhou", "chave_ausente");
+        return;
+      }
+      const embedding = await gerarEmbeddingGemini(
+        // Mesmo texto das fichas do arquivo (baseConhecimento.ts).
+        textoParaEmbedding(ficha),
+        chave,
+        {
+          modelo: MODELO_EMBEDDING,
+          dimensao: DIMENSAO_EMBEDDING,
+          taskType: "RETRIEVAL_DOCUMENT",
+          timeoutMs: TIMEOUT_EMBEDDING_MS,
+        },
+      );
+      if (embedding.status !== "ok" || embedding.vetor.length !== DIMENSAO_EMBEDDING) {
+        await responder("falhou", embedding.status === "ok" ? "resposta_invalida" : embedding.motivo);
+        return;
+      }
+      const vetor = normalizar(embedding.vetor);
+
+      // O reporte pode ter mudado enquanto o embedding era gerado: só grava
+      // se ele continua aprovado e com o mesmo texto.
+      const gravou = await banco.runTransaction(async (transacao) => {
+        const atual = await transacao.get(reporteRef);
+        if (deveRetirarDaBase(reporte.data(), atual.data())) return false;
+        transacao.set(banco.collection("baseComunidade").doc(reporteId), {
+          ficha,
+          vetor,
+          modelo: MODELO_EMBEDDING,
+          dimensao: DIMENSAO_EMBEDDING,
+          hash: hashEntrada(ficha, MODELO_EMBEDDING, DIMENSAO_EMBEDDING),
+          incluidoEm: FieldValue.serverTimestamp(),
+        });
+        return true;
+      });
+      if (!gravou) {
+        await responder("recusado", "reporte_mudou");
+        return;
+      }
+      cacheComunidade = undefined;
+      await responder("incluido");
+      logger.info("Reporte incluído na base", { reporteId });
+    } catch {
+      logger.error("Falha ao incluir reporte na base", { reporteId });
+      try {
+        await responder("falhou", "indisponivel");
+      } catch {
+        // O pedido continua sem status; a moderação pode tentar de novo.
+      }
+    }
+  },
+);
+
+/**
+ * Retirada da base (arquitetura, 3.2 d; UC10): quando o reporte é excluído
+ * (pelo autor, por exclusão de conta ou pela moderação), ocultado,
+ * devolvido a pendente ou editado pelo autor, a entrada gerada dele sai de
+ * `baseComunidade`, junto com o pedido de inclusão. Assim nada escrito pelo
+ * autor fica na base depois que ele o remove ou altera.
+ */
+export const retirarReporteDaBase = onDocumentWritten(
+  { document: "reportes/{reporteId}", region: REGIAO },
+  async (evento) => {
+    const antes = evento.data?.before?.data();
+    const depois = evento.data?.after?.data();
+    if (!deveRetirarDaBase(antes, depois)) return;
+
+    const reporteId = evento.params.reporteId;
+    const banco = getFirestore();
+    const entrada = banco.collection("baseComunidade").doc(reporteId);
+    const pedido = banco.collection("curadoriaComunidade").doc(reporteId);
+    try {
+      const [temEntrada, temPedido] = await Promise.all([
+        entrada.get().then((d) => d.exists),
+        pedido.get().then((d) => d.exists),
+      ]);
+      if (!temEntrada && !temPedido) return;
+      await banco.batch().delete(entrada).delete(pedido).commit();
+      cacheComunidade = undefined;
+      logger.info("Reporte retirado da base", { reporteId });
+    } catch {
+      logger.error("Falha ao retirar reporte da base", { reporteId });
+      throw new Error("retirada não concluída");
     }
   },
 );

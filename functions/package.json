@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "test": "tsc && node --test lib/test/safeBrowsing.test.js lib/test/analiseTexto.test.js lib/test/baseConhecimento.test.js lib/test/recuperacao.test.js lib/test/avaliacaoAnalise.test.js lib/test/sobreposicaoFichas.test.js lib/test/moderacao.test.js",
+    "test": "tsc && node --test lib/test/safeBrowsing.test.js lib/test/analiseTexto.test.js lib/test/baseConhecimento.test.js lib/test/recuperacao.test.js lib/test/avaliacaoAnalise.test.js lib/test/sobreposicaoFichas.test.js lib/test/moderacao.test.js lib/test/fichaComunidade.test.js",
     "serve": "npm run build && firebase emulators:start --only functions",
     "indexar-base": "tsc && node lib/scripts/indexarBase.js",
     "avaliar-recuperacao": "tsc && node lib/scripts/avaliarRecuperacao.js",

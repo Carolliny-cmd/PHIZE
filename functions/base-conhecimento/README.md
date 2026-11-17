@@ -44,6 +44,18 @@ Campo fora da lista é rejeitado, para que um erro de digitação não passe des
 
 O embedding é gerado só com modalidade, canais, gatilhos e pedido financeiro: é o que se parece com a mensagem que o usuário recebe. Mudar apenas a orientação, as situações legítimas, a categoria, as fontes ou a curadoria atualiza o índice sem gerar embedding novo.
 
+## Entradas da comunidade
+
+Além das fichas desta pasta, a base recebe entradas geradas de reportes da comunidade (RNF05; arquitetura, 3.2 d; decisão da equipe de 2026-11-17). Elas não ficam aqui: ficam no Firestore, em `baseComunidade/{reporteId}`, com o embedding gerado pela Function `incluirReporteNaBase` quando uma conta moderadora toca em "Aprovar e incluir na base". A consulta soma essas entradas às do `indice.json`.
+
+Regras diferentes das fichas daqui, só para essas entradas:
+
+- **Fonte:** o próprio reporte aprovado ("Reporte aprovado da comunidade Phize", publicador "Comunidade Phize", data da inclusão), sem link.
+- **Gatilhos:** as frases do relato já mascarado no aparelho, sem reescrita, até 30 de até 300 caracteres. É a exceção à regra de não reproduzir a mensagem de alguém, admitida só porque a comunidade da versão acadêmica tem apenas conteúdo fictício (RNF07).
+- **Canais e pedido financeiro:** "Não informado" (o reporte não traz). **Orientação:** a padrão da categoria, em `functions/src/fichaComunidade.ts`.
+- **Saída:** a entrada some quando o reporte é excluído, ocultado, devolvido a pendente ou editado pelo autor.
+- Não entram no cartão "Golpe da semana" (RF17), que só usa as fichas desta pasta.
+
 ## Fontes aceitas
 
 Conteúdo público e de acesso irrestrito (arquitetura, seção 3.2 a): cartilhas e boletins da Febraban e do Banco Central; alertas de órgãos estaduais e federais de defesa do consumidor; comunicados de segurança de instituições financeiras; matérias de veículos de referência.

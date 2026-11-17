@@ -131,7 +131,7 @@ No contexto deste projeto, essas descrições são fundamentais para alinhar o d
 | **Ator Principal** | Usuário logado (autor do documento). |
 | **Pré-condições** | Usuário visualizando a seção “Meus Reportes”. |
 | **Fluxo Principal** | 1. O usuário clica em “Excluir” em um reporte ativo. 2. O sistema exibe aviso (modal) de ação irreversível. 3. O usuário confirma a exclusão. 4. O app envia comando de deleção (delete) ao Firestore. 5. Documento removido do perfil e lista atualizada com aviso de sucesso. |
-| **Fluxos Alternativos / Exceções** | Cancelamento: ação abortada no passo 2. Ameaça validada: o reporte é removido da interface e da autoria do usuário. A hash da ameaça, por não constituir dado pessoal, permanece dissociada na base comunitária. Caso o padrão já tenha sido incorporado à base de conhecimento por curadoria humana, sua permanência independe da exclusão do reporte de origem. |
+| **Fluxos Alternativos / Exceções** | Cancelamento: ação abortada no passo 2. Ameaça validada: o reporte é removido da interface e da autoria do usuário. A hash da ameaça, por não constituir dado pessoal, permanece dissociada na base comunitária. Ficha da base de conhecimento elaborada pela equipe a partir de fontes públicas permanece, independentemente da exclusão do reporte que a motivou; a entrada gerada a partir do próprio reporte (RNF05) é retirada da base junto com ele. |
 | **Pós-condições** | Reporte desvinculado permanentemente da conta e da visualização pública. |
 
 ### **UC11: Analisar Conteúdo por Compartilhamento Nativo**

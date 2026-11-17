@@ -16,7 +16,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
   - Teste de todos os fluxos no emulador e correção dos achados: build de release do Android, aquecimento das Functions (`tool/emuladores/aquecer_functions.sh`), títulos com letra muito grande.
   - Decisão de usar só recursos gratuitos: limitação acadêmica declarada no RNF07 e nos demais documentos; consentimento na versão 2 ("Use só conversas de teste").
   - RAG: etapa 2 (só as mensagens recebidas do print), etapa 3 (situações legítimas testadas e retiradas do prompt, sem ganho confirmado) e etapa 4 (três fichas novas). Com a base: 63 de 63 golpes do conjunto de teste detectados e as 26 legítimas verdes.
-- **Testes:** 781 no app, 93 na Function e 76 das regras do Firestore.
+- **Testes:** 785 no app, 102 na Function e 83 das regras do Firestore.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
 - **Fase 9 fechada no app (2026-11-16):** texto do "Cálculo do risco" aprovado, limitação do RNF03 declarada, UC03 sem RAG no link, sem login com a Apple, teste em Android real declarado como não feito por enquanto. Ficam para o fim o ícone e as mudanças nos .docx e nas imagens dos diagramas.
@@ -27,7 +27,8 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Etapa 10.4 feita (2026-11-16):** denúncia com motivo, ocultação automática com 3 denúncias (gatilho na Function) e tela mínima de moderação.
 - **Etapa 10.5 feita (2026-11-17):** pesquisa por palavras ou link, "Meus reportes" (editar e excluir) e a comunidade na exportação e na exclusão de conta.
 - **Etapa 10.6 feita (2026-11-17):** cartão "Golpe da semana" no Início, com rodízio semanal entre as 21 fichas revisadas.
-- **Próximo passo:** etapa 10.7 (curadoria: transformar reporte validado em rascunho de ficha da base); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Etapa 10.7 feita (2026-11-17):** "Aprovar e incluir na base" na moderação vale como curadoria; a entrada da comunidade entra no RAG sem reescrita e sai quando o reporte é excluído, ocultado ou editado.
+- **Próximo passo:** decidir sobre a etapa 10.8 (comentários, opcional); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -1278,7 +1279,7 @@ Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe 
 | 10.4 | Denúncia, ocultação automática (gatilho na Function) e tela mínima de moderação (feita) | T43, T44, T45 |
 | 10.5 | Pesquisa, "Meus reportes" (editar e excluir) e reportes na exportação e na exclusão de conta (feita) | T57, T58, T59, T60 |
 | 10.6 | Cartão "Golpe da semana" na tela inicial (feita) | T61 |
-| 10.7 | Curadoria: transformar reporte validado em rascunho de ficha da base | T46 |
+| 10.7 | Curadoria: reporte aprovado entra na base de conhecimento pela moderação (feita; plano mudou em 2026-11-17, ver a seção da etapa) | T46 |
 | 10.8 | Comentários (opcional, a reavaliar) | — |
 
 A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perfil.
@@ -1369,6 +1370,30 @@ A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perf
 > **Pontos para a equipe:**
 > - Incluir ou retirar uma ficha muda o tamanho do rodízio e, com isso, a ficha das semanas seguintes. Não é problema para a versão acadêmica; se a ordem importar, dá para fixar uma lista de rodízio.
 > - O RF17 também prevê notícias de fontes externas como evolução posterior (só título, fonte, data e link). Não entrou nesta etapa.
+
+### Etapa 10.7 — Curadoria dos reportes (concluída, 2026-11-17)
+
+**Decisão da equipe (2026-11-17):** o plano era gerar um rascunho de ficha para revisão. A equipe pediu que o reporte fosse ao RAG sem nova revisão; como o RNF05 exige curadoria humana e a arquitetura (3.2 d) protege contra envenenamento do índice, ficou decidido que **a inclusão expressa pela moderação vale como curadoria**, e o resto é automático. Documentos atualizados: RNF05 e RF17 (`docs/requisitos.md` e `docs/relatorio-completo.md`), arquitetura 3.2 (a), (b) e (d), UC10 e `functions/base-conhecimento/README.md` (seção "Entradas da comunidade").
+
+- **Moderação:** botão "Aprovar e incluir na base", separado de "Aprovar" (que só libera o feed), para relato e print. A tela mostra a situação: incluindo, na base, ou não entrou (com o motivo e "Tentar incluir de novo").
+- **Entrada gerada, sem reescrita** (`functions/src/fichaComunidade.ts`): modalidade = título; gatilhos = frases do relato mascarado (até 30, de até 300 caracteres, sem pedaços curtos ou só de marcadores); categoria do reporte; canais e pedido "Não informado"; orientação padrão da categoria; fonte "Reporte aprovado da comunidade Phize" (publicador "Comunidade Phize", sem link); curadoria "Moderação da comunidade", sem nome nem identificador de quem moderou.
+- **Functions:** `incluirReporteNaBase` (acionada pelo pedido em `curadoriaComunidade`) gera o embedding e grava `baseComunidade/{id}`, só se o reporte continuar aprovado e com o mesmo texto; `retirarReporteDaBase` (acionada por qualquer gravação em `reportes`) apaga a entrada e o pedido quando o reporte é excluído (autor, exclusão de conta ou moderação), sai de "aprovado" ou tem título ou relato editado. Os logs trazem só o identificador.
+- **Consulta:** a análise soma ao `indice.json` as entradas de `baseComunidade`, lidas do Firestore e guardadas por até 30 segundos; uma retirada vale em até 30 segundos. Falha de leitura não interrompe a análise.
+- **Regras:** só a moderação cria e lê o pedido, e só para reporte aprovado de relato ou print, junto com a aprovação; o resultado é gravado pela Function; `baseComunidade` não é lida nem gravada pelo app.
+- **Golpe da semana:** continua só com as fichas de fontes públicas (`fichas/`); as entradas da comunidade ficam fora.
+- **Testes:** 9 na Function (102 no total): frases, recusas, campos padrão, orientação de todas as categorias, sem "Seguro", regra de retirada, filtro e soma dos índices. 7 das regras (83 no total). 4 no app (785 no total): botão, link sem o botão, situação na base e nova tentativa.
+- **Conferido no emulador:**
+  - na moderação, "Aprovar e incluir na base" no relato fictício "Vaga de emprego pedindo taxa";
+  - a entrada foi gravada com o título, a frase do relato, os campos padrão, a fonte "Comunidade Phize" e 768 dimensões;
+  - uma mensagem fictícia parecida foi analisada pela Function e apontou `padraoCorrespondente: comunidade-<id>`;
+  - ao ocultar o reporte, a entrada e o pedido sumiram.
+  - Na mesma sessão, o Gemini gratuito devolveu "indisponível" em algumas análises, inclusive em texto sem relação com a comunidade: oscilação do provedor, não da mudança.
+
+> **Pontos para a equipe:**
+> - **Orientação padrão por categoria** (`ORIENTACAO_PADRAO` em `functions/src/fichaComunidade.ts`, versão 1.0): escrita por mim a partir das orientações das fichas, **pendente de revisão pela equipe**.
+> - **Só com conteúdo fictício:** os gatilhos reproduzem o relato, que pode ter nomes não mascarados (RNF07); essas frases vão ao prompt do Gemini nas análises parecidas. Antes de uso com pessoas reais, reavaliar (arquitetura, 3.2 d).
+> - **Edição de reporte aprovado (vale desde a 10.5):** o autor pode editar título e relato de um reporte já aprovado, e ele continua aprovado no feed sem nova revisão. A entrada da base sai na edição, mas o feed não volta a "pendente". Se a equipe quiser, a edição pode passar a devolver o reporte a pendente (mudança pequena nas regras e no app).
+> - **Primeira inclusão demora** no emulador (cerca de 20 s, partida do processo da Function); depois, cerca de 1 s.
 
 ---
 

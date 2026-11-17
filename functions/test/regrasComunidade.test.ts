@@ -557,6 +557,94 @@ describe("moderação (RF11)", () => {
   });
 });
 
+describe("inclusão na base de conhecimento (RNF05)", () => {
+  /** Aprova e pede a inclusão juntos, como o app faz. */
+  const incluir = (uid: string, id = "r1") => {
+    const banco = db(uid);
+    const lote = writeBatch(banco);
+    lote.update(doc(banco, "reportes", id), { status: "aprovado" });
+    lote.set(doc(banco, "curadoriaComunidade", id), {
+      solicitadoEm: serverTimestamp(),
+    });
+    return lote.commit();
+  };
+
+  test("moderadora aprova e pede a inclusão de um relato", async () => {
+    await semear();
+    await assertSucceeds(incluir("mod"));
+    await assertSucceeds(getDoc(doc(db("mod"), "curadoriaComunidade", "r1")));
+  });
+
+  test("conta comum não pede inclusão nem lê o pedido", async () => {
+    await semear("aprovado");
+    await assertFails(
+      setDoc(doc(db("ana"), "curadoriaComunidade", "r1"), {
+        solicitadoEm: serverTimestamp(),
+      }),
+    );
+    await assertFails(getDoc(doc(db("ana"), "curadoriaComunidade", "r1")));
+  });
+
+  test("sem aprovar, o pedido é recusado", async () => {
+    await semear();
+    await assertFails(
+      setDoc(doc(db("mod"), "curadoriaComunidade", "r1"), {
+        solicitadoEm: serverTimestamp(),
+      }),
+    );
+  });
+
+  test("reporte de link não entra na base", async () => {
+    await ambiente.withSecurityRulesDisabled(async (ctx) => {
+      const banco = ctx.firestore() as unknown as Firestore;
+      await setDoc(doc(banco, "reportes", HASH_A), {
+        ...reporte({ tipo: "link", hashLink: HASH_A, relato: "" }),
+        criadoEm: new Date(),
+      });
+      await setDoc(doc(banco, "moderadores", "mod"), {});
+    });
+    await assertFails(incluir("mod", HASH_A));
+  });
+
+  test("o pedido não leva outros campos nem o resultado", async () => {
+    await semear("aprovado");
+    await assertFails(
+      setDoc(doc(db("mod"), "curadoriaComunidade", "r1"), {
+        solicitadoEm: serverTimestamp(),
+        status: "incluido",
+      }),
+    );
+  });
+
+  test("depois de falha, a moderação pede de novo; depois de incluído, não", async () => {
+    await semear("aprovado");
+    const pedido = (status: string) =>
+      ambiente.withSecurityRulesDisabled(async (ctx) => {
+        const banco = ctx.firestore() as unknown as Firestore;
+        await setDoc(doc(banco, "curadoriaComunidade", "r1"), {
+          solicitadoEm: new Date(),
+          status,
+        });
+      });
+    const repetir = () =>
+      setDoc(doc(db("mod"), "curadoriaComunidade", "r1"), {
+        solicitadoEm: serverTimestamp(),
+      });
+    await pedido("falhou");
+    await assertSucceeds(repetir());
+    await pedido("incluido");
+    await assertFails(repetir());
+  });
+
+  test("ninguém lê nem grava as entradas geradas pelo app", async () => {
+    await semear("aprovado");
+    await assertFails(getDoc(doc(db("mod"), "baseComunidade", "r1")));
+    await assertFails(
+      setDoc(doc(db("mod"), "baseComunidade", "r1"), { ficha: {} }),
+    );
+  });
+});
+
 describe("hashes de ameaças validadas (RF12)", () => {
   test("moderadora grava, conta logada lê", async () => {
     await semear();

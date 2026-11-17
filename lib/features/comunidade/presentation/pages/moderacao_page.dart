@@ -5,6 +5,7 @@ import '../../../../shared/domain/formatacao_data.dart';
 import '../../data/moderacao_repository_firestore.dart';
 import '../../domain/moderacao_repository.dart';
 import '../../domain/motivo_denuncia.dart';
+import '../../domain/novo_reporte.dart';
 import '../../domain/reporte_comunidade.dart';
 
 /// Moderação mínima da comunidade (RF11): aprovar, ocultar ou excluir de vez
@@ -25,13 +26,33 @@ class _ModeracaoPageState extends State<ModeracaoPage> {
 
   /// Começa pelos ocultos: são os que esperam revisão depois de denúncias.
   StatusReporte _lista = StatusReporte.oculto;
-  late Future<List<ReporteComunidade>> _reportes = _repositorio.listar(_lista);
+  late Future<(List<ReporteComunidade>, Map<String, SituacaoNaBase>)>
+  _reportes = _carregar();
+
+  Future<(List<ReporteComunidade>, Map<String, SituacaoNaBase>)>
+  _carregar() async {
+    final (reportes, situacoes) = await (
+      _repositorio.listar(_lista),
+      _repositorio.situacoesNaBase(),
+    ).wait;
+    return (reportes, situacoes);
+  }
 
   void _recarregar() {
     setState(() {
-      _reportes = _repositorio.listar(_lista);
+      _reportes = _carregar();
     });
   }
+
+  Future<void> _incluirNaBase(ReporteComunidade reporte) => _executar(
+    () => _repositorio.incluirNaBase(reporte),
+    'Reporte aprovado. A inclusão na base começou.',
+  );
+
+  Future<void> _pedirDeNovo(ReporteComunidade reporte) => _executar(
+    () => _repositorio.pedirInclusaoDeNovo(reporte.id),
+    'Pedido de inclusão enviado de novo.',
+  );
 
   Future<void> _executar(Future<void> Function() acao, String sucesso) async {
     final mensageiro = ScaffoldMessenger.of(context);
@@ -112,53 +133,61 @@ class _ModeracaoPageState extends State<ModeracaoPage> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<ReporteComunidade>>(
-              future: _reportes,
-              builder: (context, carga) {
-                if (carga.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final reportes = carga.data;
-                if (carga.hasError || reportes == null) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text(
-                            'Não foi possível carregar os reportes.',
-                            textAlign: TextAlign.center,
+            child:
+                FutureBuilder<
+                  (List<ReporteComunidade>, Map<String, SituacaoNaBase>)
+                >(
+                  future: _reportes,
+                  builder: (context, carga) {
+                    if (carga.connectionState != ConnectionState.done) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final dados = carga.data;
+                    if (carga.hasError || dados == null) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                'Não foi possível carregar os reportes.',
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 12),
+                              OutlinedButton(
+                                onPressed: _recarregar,
+                                child: const Text('Tentar de novo'),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 12),
-                          OutlinedButton(
-                            onPressed: _recarregar,
-                            child: const Text('Tentar de novo'),
-                          ),
-                        ],
+                        ),
+                      );
+                    }
+                    final (reportes, situacoes) = dados;
+                    if (reportes.isEmpty) {
+                      return const Center(
+                        child: Text('Nenhum reporte nesta lista.'),
+                      );
+                    }
+                    return ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                      itemCount: reportes.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 8),
+                      itemBuilder: (context, i) => _CartaoModeracao(
+                        key: Key('moderacao_${reportes[i].id}'),
+                        reporte: reportes[i],
+                        repositorio: _repositorio,
+                        aoMudarStatus: (novo) =>
+                            _mudarStatus(reportes[i], novo),
+                        aoExcluir: () => _excluir(reportes[i]),
+                        situacaoNaBase: situacoes[reportes[i].id],
+                        aoIncluirNaBase: () => _incluirNaBase(reportes[i]),
+                        aoPedirDeNovo: () => _pedirDeNovo(reportes[i]),
                       ),
-                    ),
-                  );
-                }
-                if (reportes.isEmpty) {
-                  return const Center(
-                    child: Text('Nenhum reporte nesta lista.'),
-                  );
-                }
-                return ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                  itemCount: reportes.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 8),
-                  itemBuilder: (context, i) => _CartaoModeracao(
-                    key: Key('moderacao_${reportes[i].id}'),
-                    reporte: reportes[i],
-                    repositorio: _repositorio,
-                    aoMudarStatus: (novo) => _mudarStatus(reportes[i], novo),
-                    aoExcluir: () => _excluir(reportes[i]),
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
           ),
         ],
       ),
@@ -173,12 +202,20 @@ class _CartaoModeracao extends StatefulWidget {
     required this.repositorio,
     required this.aoMudarStatus,
     required this.aoExcluir,
+    required this.situacaoNaBase,
+    required this.aoIncluirNaBase,
+    required this.aoPedirDeNovo,
   });
 
   final ReporteComunidade reporte;
   final ModeracaoRepository repositorio;
   final ValueChanged<StatusReporte> aoMudarStatus;
   final VoidCallback aoExcluir;
+
+  /// `null` se nunca houve pedido de inclusão na base.
+  final SituacaoNaBase? situacaoNaBase;
+  final VoidCallback aoIncluirNaBase;
+  final VoidCallback aoPedirDeNovo;
 
   @override
   State<_CartaoModeracao> createState() => _CartaoModeracaoState();
@@ -249,10 +286,35 @@ class _CartaoModeracaoState extends State<_CartaoModeracao> {
                   );
                 },
               ),
+            if (widget.situacaoNaBase case final situacao?)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  situacao.descricao,
+                  key: Key('moderacao_base_${reporte.id}'),
+                  style: secundario,
+                ),
+              ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               children: [
+                // Curadoria (RNF05): só relato e print, que o índice compara
+                // como texto, e só se ainda não há pedido em andamento.
+                if (reporte.tipo != TipoReporte.link &&
+                    widget.situacaoNaBase == null)
+                  TextButton(
+                    key: Key('moderacao_incluir_base_${reporte.id}'),
+                    onPressed: widget.aoIncluirNaBase,
+                    child: const Text('Aprovar e incluir na base'),
+                  ),
+                if (widget.situacaoNaBase?.estado
+                    case EstadoNaBase.recusado || EstadoNaBase.falhou)
+                  TextButton(
+                    key: Key('moderacao_incluir_de_novo_${reporte.id}'),
+                    onPressed: widget.aoPedirDeNovo,
+                    child: const Text('Tentar incluir de novo'),
+                  ),
                 if (reporte.status != StatusReporte.aprovado)
                   TextButton(
                     key: Key('moderacao_aprovar_${reporte.id}'),

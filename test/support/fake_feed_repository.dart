@@ -141,9 +141,29 @@ class FakeModeracaoRepository implements ModeracaoRepository {
   final Map<MotivoDenuncia, int> motivos;
   final List<(String, StatusReporte)> mudancas = [];
   final List<String> excluidos = [];
+  final Map<String, SituacaoNaBase> situacoes = {};
+  final List<String> pedidosDeInclusao = [];
 
   @override
   Future<bool> ehModerador() async => moderador;
+
+  @override
+  Future<Map<String, SituacaoNaBase>> situacoesNaBase() async => {...situacoes};
+
+  @override
+  Future<void> incluirNaBase(ReporteComunidade reporte) async {
+    pedidosDeInclusao.add(reporte.id);
+    if (reporte.status != StatusReporte.aprovado) {
+      await mudarStatus(reporte, StatusReporte.aprovado);
+    }
+    situacoes[reporte.id] = const SituacaoNaBase(EstadoNaBase.aguardando);
+  }
+
+  @override
+  Future<void> pedirInclusaoDeNovo(String reporteId) async {
+    pedidosDeInclusao.add(reporteId);
+    situacoes[reporteId] = const SituacaoNaBase(EstadoNaBase.aguardando);
+  }
 
   @override
   Future<List<ReporteComunidade>> listar(StatusReporte status) async => [

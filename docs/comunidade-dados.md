@@ -14,6 +14,8 @@ Fase 10, etapa 10.1 (2026-11-16). Modelo de dados da comunidade (RF05, RF06, RF0
 | `users/{uid}/curtidas/{id}`, `users/{uid}/denuncias/{id}` | o dono | o dono, junto com a marca no reporte | índice das marcas da conta, para a exclusão de conta (`criadoEm`) |
 | `moderadores/{uid}` | o próprio moderador | **ninguém pelo app**: só a equipe, pelo console | marca de moderação (RF11) |
 | `ameacas/{hash}` | conta logada | moderação, ao aprovar um reporte de link | hash de ameaça validada, sem autor (`validadoEm`) |
+| `curadoriaComunidade/{id}` | moderação | moderação cria o pedido (reporte aprovado, de relato ou print); a Function grava o resultado | pedido de inclusão na base (`solicitadoEm`, `status`, `motivo`) |
+| `baseComunidade/{id}` | **ninguém pelo app**: só a Function | só a Function | entrada da base de conhecimento gerada do reporte (ficha e embedding) |
 
 ## Reporte público (`reportes/{id}`)
 
@@ -42,6 +44,7 @@ Nenhum outro campo é aceito: não há onde gravar autor, link em texto puro ou 
 - **Feed:** reporte oculto não é lido por conta comum; por isso, as consultas do feed filtram o status (`pendente` e `aprovado`), e uma consulta sem esse filtro é recusada inteira. "Em alta" ordena por `curtidas` e depois `criadoEm`; "Mais recentes", por `criadoEm` (índices compostos em `firestore.indexes.json`; etapa 10.3, `lib/features/comunidade/data/feed_repository_firestore.dart`). Ler um reporte que ainda não existe é permitido: é assim que o app confere se o link já foi reportado antes de publicar.
 - **Hashes validadas (RF12):** `ameacas/{hash}` só guarda a data de validação e continua lá depois da exclusão do reporte de origem. A moderação grava ao aprovar um reporte de link e retira ao ocultá-lo ou devolvê-lo a pendente.
 - **Retirada de curtida ou denúncia (RF12):** a própria conta apaga a marca junto com -1 no contador e o índice; se o reporte já não existe, a marca sai sem o -1. É o que a exclusão de conta usa (decisão da equipe de 2026-11-17).
+- **Inclusão na base de conhecimento (RNF05; arquitetura, 3.2 d):** "Aprovar e incluir na base" grava, junto com a aprovação, o pedido em `curadoriaComunidade`; a Function `incluirReporteNaBase` monta a entrada sem reescrita e gera o embedding. A Function `retirarReporteDaBase` apaga a entrada e o pedido quando o reporte é excluído, sai de "aprovado" ou tem título ou relato editado. Depois de recusa ou falha, a moderação pode pedir de novo.
 - **Exclusão de conta (RF12):** a conta exclui os próprios reportes e autorias, retira curtidas e denúncias e apaga as marcas de "também recebi" (`LimpezaComunidadeConta`, `lib/features/comunidade/data/meus_reportes_repository_firestore.dart`).
 
 ## O que fica fora das regras
