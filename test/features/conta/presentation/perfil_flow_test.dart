@@ -17,6 +17,7 @@ import '../../../support/fake_auth_repository.dart';
 import '../../../support/fake_consentimento_repository.dart';
 import '../../../support/fake_conta_repository.dart';
 import '../../../support/fake_historico_repository.dart';
+import '../../../support/fake_meus_reportes_repository.dart';
 
 const _senha = 'senha-de-teste';
 
@@ -26,6 +27,7 @@ Future<void> _abrir(
   FakeHistoricoRepository? historico,
   FakeCompartilhador? compartilhador,
   FakeAuthRepository? auth,
+  FakeMeusReportesRepository? meusReportes,
   String rota = AppRoutes.perfil,
 }) async {
   await tester.pumpWidget(
@@ -36,6 +38,7 @@ Future<void> _abrir(
         historicoRepository: historico ?? FakeHistoricoRepository(),
         compartilhador: compartilhador ?? FakeCompartilhador(),
         authRepository: auth ?? FakeAuthRepository(),
+        meusReportesRepository: meusReportes ?? FakeMeusReportesRepository(),
       ),
       initialRoute: rota,
     ),

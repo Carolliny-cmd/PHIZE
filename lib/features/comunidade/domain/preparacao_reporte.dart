@@ -123,3 +123,47 @@ PreparacaoReporte prepararReporte({
     ),
   );
 }
+
+/// Título e relato corrigidos pelo autor (RF16), prontos para gravar.
+class EdicaoPronta {
+  const EdicaoPronta({
+    required this.titulo,
+    required this.relato,
+    required this.palavras,
+  });
+
+  final String titulo;
+  final String relato;
+  final List<String> palavras;
+}
+
+/// Prepara a edição de um reporte (RF16, UC09): título e relato passam de
+/// novo pelo mascaramento e pela troca de links, com os mesmos limites do
+/// reporte novo. Tipo e categoria não mudam; o link nunca é editável.
+/// Devolve [EdicaoPronta] ou o [MotivoRecusaReporte].
+Object prepararEdicao({
+  required TipoReporte tipo,
+  required String titulo,
+  required String relato,
+  required CategoriaAmeaca categoria,
+}) {
+  final tituloPublico = textoPublico(titulo);
+  if (tituloPublico.length < tamanhoMinimoTitulo) {
+    return MotivoRecusaReporte.tituloCurto;
+  }
+  final relatoPublico = textoPublico(relato);
+  if (tipo != TipoReporte.link && relatoPublico.isEmpty) {
+    return MotivoRecusaReporte.relatoVazio;
+  }
+  if (relatoPublico.length > tamanhoMaximoRelato) {
+    return MotivoRecusaReporte.relatoLongo;
+  }
+  final tituloFinal = tituloPublico.length > tamanhoMaximoTitulo
+      ? tituloPublico.substring(0, tamanhoMaximoTitulo)
+      : tituloPublico;
+  return EdicaoPronta(
+    titulo: tituloFinal,
+    relato: relatoPublico,
+    palavras: palavrasDeBusca([tituloFinal, categoria.nome]),
+  );
+}

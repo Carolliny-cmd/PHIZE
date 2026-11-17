@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../domain/moderacao_repository.dart';
 import '../domain/motivo_denuncia.dart';
+import '../domain/novo_reporte.dart';
 import '../domain/reporte_comunidade.dart';
 import 'feed_repository_firestore.dart';
 
@@ -63,8 +64,23 @@ class ModeracaoRepositoryFirestore implements ModeracaoRepository {
   }
 
   @override
-  Future<void> mudarStatus(String reporteId, StatusReporte status) =>
-      _reportes.doc(reporteId).update({'status': status.codigo});
+  Future<void> mudarStatus(
+    ReporteComunidade reporte,
+    StatusReporte status,
+  ) async {
+    final lote = _firestore.batch()
+      ..update(_reportes.doc(reporte.id), {'status': status.codigo});
+    if (reporte.tipo == TipoReporte.link) {
+      // No reporte de link, o identificador é a própria hash.
+      final ameaca = _firestore.collection('ameacas').doc(reporte.id);
+      if (status == StatusReporte.aprovado) {
+        lote.set(ameaca, {'validadoEm': FieldValue.serverTimestamp()});
+      } else {
+        lote.delete(ameaca);
+      }
+    }
+    await lote.commit();
+  }
 
   @override
   Future<void> excluir(String reporteId) => _reportes.doc(reporteId).delete();

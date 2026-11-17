@@ -49,14 +49,11 @@ class _ModeracaoPageState extends State<ModeracaoPage> {
   }
 
   Future<void> _mudarStatus(ReporteComunidade reporte, StatusReporte novo) =>
-      _executar(
-        () => _repositorio.mudarStatus(reporte.id, novo),
-        switch (novo) {
-          StatusReporte.aprovado => 'Reporte aprovado.',
-          StatusReporte.oculto => 'Reporte ocultado do feed.',
-          StatusReporte.pendente => 'Reporte devolvido a pendente.',
-        },
-      );
+      _executar(() => _repositorio.mudarStatus(reporte, novo), switch (novo) {
+        StatusReporte.aprovado => 'Reporte aprovado.',
+        StatusReporte.oculto => 'Reporte ocultado do feed.',
+        StatusReporte.pendente => 'Reporte devolvido a pendente.',
+      });
 
   Future<void> _excluir(ReporteComunidade reporte) async {
     final confirmou = await showDialog<bool>(

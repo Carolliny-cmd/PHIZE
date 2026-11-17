@@ -17,4 +17,7 @@ class AppRoutes {
   static const String detalheReporte = '/comunidade/reporte';
   static const String reportarGolpe = '/comunidade/reportar';
   static const String moderacao = '/comunidade/moderacao';
+  static const String pesquisaComunidade = '/comunidade/pesquisa';
+  static const String meusReportes = '/comunidade/meus-reportes';
+  static const String editarReporte = '/comunidade/meus-reportes/editar';
 }

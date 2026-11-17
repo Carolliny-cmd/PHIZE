@@ -8,6 +8,7 @@ import '../../analise/data/tutorial_repository_local.dart';
 import '../../auth/data/auth_error_mapper.dart';
 import '../../auth/data/credencial_google.dart';
 import '../../auth/domain/auth_exception.dart';
+import '../../comunidade/data/meus_reportes_repository_firestore.dart';
 import '../domain/conta_repository.dart';
 import '../domain/exclusao_conta.dart';
 import 'compartilhador_arquivo_nativo.dart';
@@ -133,10 +134,21 @@ class ContaRepositoryFirebase implements ContaRepository {
       confirmarSenha: () => senha == null
           ? _confirmarPeloGoogle(usuario)
           : _confirmarSenha(usuario, senha),
-      lerDocumentos: () => _lerAnalises(uid).timeout(limiteEtapaExclusao),
+      lerDocumentos: () => (
+        _lerAnalises(uid),
+        LimpezaComunidadeConta(_firestore, uid).ler(),
+      ).wait.timeout(limiteEtapaExclusao),
       registrarPendencia: () => _pendencia.registrar(uid),
-      removerDocumentos: (analises) =>
-          _removerDocumentos(uid, analises).timeout(limiteEtapaExclusao),
+      removerDocumentos: (documentos) async {
+        final (analises, comunidade) = documentos;
+        // Primeiro a comunidade: enquanto o perfil existir, uma falha aqui
+        // deixa a pendência registrada e a exclusão pode ser retomada.
+        await LimpezaComunidadeConta(
+          _firestore,
+          uid,
+        ).remover(comunidade).timeout(limiteEtapaExclusao);
+        await _removerDocumentos(uid, analises).timeout(limiteEtapaExclusao);
+      },
       removerCredencial: usuario.delete,
       concluir: _pendencia.limpar,
     );

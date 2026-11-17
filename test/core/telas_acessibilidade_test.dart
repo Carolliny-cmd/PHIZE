@@ -14,6 +14,7 @@ import 'package:phize/features/analise/domain/verificacao_link.dart';
 import 'package:phize/features/analise/presentation/pages/como_calcula_risco_page.dart';
 import 'package:phize/features/analise/presentation/tutorial/tutorial_link.dart';
 import 'package:phize/features/analise/presentation/tutorial/tutorial_print.dart';
+import 'package:phize/features/comunidade/domain/meus_reportes_repository.dart';
 import 'package:phize/features/comunidade/domain/motivo_denuncia.dart';
 import 'package:phize/features/comunidade/domain/reporte_comunidade.dart';
 import 'package:phize/features/conta/domain/preferencias_aparencia.dart';
@@ -23,6 +24,7 @@ import '../support/fake_consentimento_repository.dart';
 import '../support/fake_conta_repository.dart';
 import '../support/fake_feed_repository.dart';
 import '../support/fake_historico_repository.dart';
+import '../support/fake_meus_reportes_repository.dart';
 import '../support/fake_tutorial_repository.dart';
 
 /// Telas principais no maior tamanho de letra do perfil (RF14), em tela de
@@ -124,6 +126,16 @@ Future<void> _abrir(
                 ],
               ),
               compartilhadorTexto: FakeCompartilhadorTexto(),
+              meusReportesRepository: FakeMeusReportesRepository(
+                reportes: [
+                  MeuReporte(
+                    id: 'r1',
+                    publicadoEm: DateTime(2026, 11, 16),
+                    reporte: reporteDeTeste(),
+                  ),
+                  MeuReporte(id: 'r2', publicadoEm: DateTime(2026, 11, 15)),
+                ],
+              ),
               moderacaoRepository: FakeModeracaoRepository(
                 reportes: [
                   reporteDeTeste(status: StatusReporte.oculto, denuncias: 3),
@@ -156,6 +168,9 @@ void main() {
         'comunidade': (AppRoutes.comunidade, null),
         'detalhe do reporte': (AppRoutes.detalheReporte, reporteDeTeste()),
         'moderação': (AppRoutes.moderacao, null),
+        'pesquisa da comunidade': (AppRoutes.pesquisaComunidade, null),
+        'meus reportes': (AppRoutes.meusReportes, null),
+        'editar reporte': (AppRoutes.editarReporte, reporteDeTeste()),
       };
       for (final MapEntry(key: nome, value: (rota, argumentos))
           in rotas.entries) {

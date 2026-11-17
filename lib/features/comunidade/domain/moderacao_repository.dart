@@ -14,8 +14,11 @@ abstract class ModeracaoRepository {
   /// Quantas denúncias o reporte recebeu por motivo.
   Future<Map<MotivoDenuncia, int>> motivosDasDenuncias(String reporteId);
 
-  /// Aprova, oculta ou devolve a pendente.
-  Future<void> mudarStatus(String reporteId, StatusReporte status);
+  /// Aprova, oculta ou devolve a pendente. Aprovar um reporte de link
+  /// registra a hash em `ameacas` como ameaça validada, que continua lá
+  /// mesmo se o reporte for excluído depois (RF12); ocultar ou devolver a
+  /// pendente retira a validação.
+  Future<void> mudarStatus(ReporteComunidade reporte, StatusReporte status);
 
   /// Remoção definitiva do reporte (RF11).
   Future<void> excluir(String reporteId);

@@ -20,6 +20,8 @@ import '../../../analise/presentation/widgets/aviso_card.dart';
 import '../../../auth/data/firebase_auth_repository.dart';
 import '../../../auth/domain/auth_exception.dart';
 import '../../../auth/domain/auth_repository.dart';
+import '../../../comunidade/data/meus_reportes_repository_firestore.dart';
+import '../../../comunidade/domain/meus_reportes_repository.dart';
 import '../../data/compartilhador_arquivo_nativo.dart';
 import '../../data/conta_repository_firebase.dart';
 import '../../domain/compartilhador_arquivo.dart';
@@ -49,6 +51,7 @@ class PerfilPage extends StatefulWidget {
     this.esperaReenvio,
     this.tutorialRepository,
     this.lerVersao,
+    this.meusReportesRepository,
   });
 
   final ContaRepository? contaRepository;
@@ -58,6 +61,9 @@ class PerfilPage extends StatefulWidget {
   final ConsentimentoRepository? consentimentoRepository;
   final EsperaReenvio? esperaReenvio;
   final TutorialRepository? tutorialRepository;
+
+  /// Reportes e marcas da comunidade, para a exportação (RF12).
+  final MeusReportesRepository? meusReportesRepository;
 
   /// Versão exibida em "Sobre o Phize"; por padrão, a do pacote instalado.
   final Future<String> Function()? lerVersao;
@@ -92,6 +98,8 @@ class _PerfilPageState extends State<PerfilPage> {
       widget.esperaReenvio ?? EsperaReenvio.global;
   late final TutorialRepository _tutorial =
       widget.tutorialRepository ?? TutorialRepositoryLocal();
+  late final MeusReportesRepository _meusReportes =
+      widget.meusReportesRepository ?? MeusReportesRepositoryFirestore();
   String? _versao;
 
   late IdentidadeConta? _identidade = _lerIdentidade();
@@ -317,6 +325,7 @@ class _PerfilPageState extends State<PerfilPage> {
         perfil: await _conta.carregarPerfil(),
         analises: await _historico.listar(somenteServidor: true),
         geradoEm: DateTime.now(),
+        comunidade: await _meusReportes.participacao(),
       );
       await _compartilhador.compartilhar(
         nomeArquivo: nomeArquivoExportacao,
@@ -566,8 +575,9 @@ class _PerfilPageState extends State<PerfilPage> {
                       title: const Text('Exportar meus dados'),
                       subtitle: const Text(
                         'Arquivo com seu e-mail, nome de exibição, data do '
-                        'cadastro e o resultado das suas análises. Você escolhe '
-                        'onde salvar ou para quem enviar.',
+                        'cadastro, o resultado das suas análises e o que você '
+                        'publicou, curtiu ou denunciou na comunidade. Você '
+                        'escolhe onde salvar ou para quem enviar.',
                       ),
                       onTap: _exportar,
                     ),
@@ -588,8 +598,8 @@ class _PerfilPageState extends State<PerfilPage> {
                       leading: const Icon(Icons.delete_outline),
                       title: const Text('Excluir minha conta'),
                       subtitle: const Text(
-                        'Apaga definitivamente sua conta e todo o seu histórico '
-                        'de análises.',
+                        'Apaga definitivamente sua conta, todo o seu histórico '
+                        'de análises e seus reportes na comunidade.',
                       ),
                       onTap: _excluir,
                     ),

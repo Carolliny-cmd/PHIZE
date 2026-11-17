@@ -71,6 +71,9 @@ class FeedRepositoryFirestore implements FeedRepository {
   CollectionReference<Map<String, dynamic>> get _reportes =>
       _firestore.collection('reportes');
 
+  DocumentReference<Map<String, dynamic>> _usuario(String uid) =>
+      _firestore.collection('users').doc(uid);
+
   @override
   Future<List<ReporteComunidade>> listar(OrdemFeed ordem) async {
     // O filtro de status é exigido pelas regras: sem ele, a consulta poderia
@@ -111,6 +114,11 @@ class FeedRepositoryFirestore implements FeedRepository {
       ..update(reporte, {'curtidas': FieldValue.increment(1)})
       ..set(reporte.collection('curtidas').doc(uid), {
         'criadoEm': FieldValue.serverTimestamp(),
+      })
+      // Índice privado: é por ele que a exclusão de conta acha a marca
+      // (RF12). As regras exigem os três juntos.
+      ..set(_usuario(uid).collection('curtidas').doc(reporteId), {
+        'criadoEm': FieldValue.serverTimestamp(),
       });
     await lote.commit();
   }
@@ -134,7 +142,68 @@ class FeedRepositoryFirestore implements FeedRepository {
       ..set(reporte.collection('denuncias').doc(uid), {
         'motivo': motivo.codigo,
         'criadoEm': FieldValue.serverTimestamp(),
+      })
+      ..set(_usuario(uid).collection('denuncias').doc(reporteId), {
+        'criadoEm': FieldValue.serverTimestamp(),
       });
     await lote.commit();
+  }
+
+  @override
+  Future<ResultadoPesquisaLink> pesquisarLink(String hash) async {
+    ReporteComunidade? reporte;
+    try {
+      final documento = await _reportes.doc(hash).get();
+      final dados = documento.data();
+      if (dados != null) reporte = reporteDoDocumento(documento.id, dados);
+    } on FirebaseException catch (e) {
+      // Reporte oculto, em revisão (RF11): não aparece na pesquisa.
+      if (e.code != 'permission-denied') rethrow;
+    }
+    final validado = await _firestore.collection('ameacas').doc(hash).get();
+    return ResultadoPesquisaLink(
+      reporte: reporte,
+      validadoPelaEquipe: validado.exists,
+    );
+  }
+
+  @override
+  Future<List<ReporteComunidade>> pesquisarPalavras(
+    List<String> palavras,
+  ) async {
+    if (palavras.isEmpty) return const [];
+    // Uma consulta por status visível: as regras exigem o filtro, e o
+    // Firestore não combina `whereIn` com `array-contains-any` em todos os
+    // casos.
+    final resultados = await Future.wait([
+      for (final status in [StatusReporte.pendente, StatusReporte.aprovado])
+        _reportes
+            .where('status', isEqualTo: status.codigo)
+            .where('palavras', arrayContainsAny: palavras)
+            .limit(FeedRepository.limite)
+            .get(),
+    ]);
+    final procuradas = palavras.toSet();
+    final encontrados = <(ReporteComunidade, int)>[];
+    for (final resultado in resultados) {
+      for (final documento in resultado.docs) {
+        final dados = documento.data();
+        final reporte = reporteDoDocumento(documento.id, dados);
+        if (reporte == null) continue;
+        final palavrasReporte = dados['palavras'];
+        final acertos = palavrasReporte is List
+            ? palavrasReporte.where(procuradas.contains).length
+            : 0;
+        encontrados.add((reporte, acertos));
+      }
+    }
+    encontrados.sort((a, b) {
+      final porAcertos = b.$2.compareTo(a.$2);
+      if (porAcertos != 0) return porAcertos;
+      final porCurtidas = b.$1.curtidas.compareTo(a.$1.curtidas);
+      if (porCurtidas != 0) return porCurtidas;
+      return b.$1.criadoEm.compareTo(a.$1.criadoEm);
+    });
+    return [for (final (reporte, _) in encontrados) reporte];
   }
 }

@@ -43,9 +43,10 @@ class _ExcluirContaDialogState extends State<ExcluirContaDialog> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Esta ação não pode ser desfeita. Sua conta e todo o seu '
-              'histórico de análises serão apagados, e não será possível '
-              'recuperá-los.',
+              'Esta ação não pode ser desfeita. Sua conta, todo o seu '
+              'histórico de análises e os reportes que você publicou na '
+              'comunidade serão apagados, e não será possível '
+              'recuperá-los. Suas curtidas e denúncias também saem.',
             ),
             if (!widget.exigeSenha) ...[
               const SizedBox(height: 12),

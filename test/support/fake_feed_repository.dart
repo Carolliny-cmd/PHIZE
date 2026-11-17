@@ -51,6 +51,13 @@ class FakeFeedRepository implements FeedRepository {
   final Map<String, MotivoDenuncia> denunciados;
   final List<OrdemFeed> ordensPedidas = [];
 
+  /// Hashes de links validados pela equipe (`ameacas`).
+  Set<String> ameacas = {};
+
+  /// Hash de link de cada reporte de link, para a pesquisa.
+  Map<String, String> hashes = {};
+  final List<List<String>> palavrasPesquisadas = [];
+
   @override
   Future<List<ReporteComunidade>> listar(OrdemFeed ordem) async {
     ordensPedidas.add(ordem);
@@ -76,6 +83,35 @@ class FakeFeedRepository implements FeedRepository {
     curtidos.add(reporteId);
     reportes = [
       for (final r in reportes) r.id == reporteId ? r.comMaisUmaCurtida() : r,
+    ];
+  }
+
+  @override
+  Future<ResultadoPesquisaLink> pesquisarLink(String hash) async {
+    if (falhaAoListar) throw Exception('sem rede');
+    final reporte = reportes
+        .where((r) => hashes[r.id] == hash || r.id == hash)
+        .firstOrNull;
+    return ResultadoPesquisaLink(
+      reporte: reporte?.status == StatusReporte.oculto ? null : reporte,
+      validadoPelaEquipe: ameacas.contains(hash),
+    );
+  }
+
+  @override
+  Future<List<ReporteComunidade>> pesquisarPalavras(
+    List<String> palavras,
+  ) async {
+    if (falhaAoListar) throw Exception('sem rede');
+    palavrasPesquisadas.add(palavras);
+    return [
+      for (final r in reportes)
+        if (r.status != StatusReporte.oculto &&
+            palavras.any(
+              (p) =>
+                  '${r.titulo} ${r.categoria.nome}'.toLowerCase().contains(p),
+            ))
+          r,
     ];
   }
 
@@ -121,7 +157,11 @@ class FakeModeracaoRepository implements ModeracaoRepository {
   ) async => motivos;
 
   @override
-  Future<void> mudarStatus(String reporteId, StatusReporte status) async {
+  Future<void> mudarStatus(
+    ReporteComunidade reporte,
+    StatusReporte status,
+  ) async {
+    final reporteId = reporte.id;
     mudancas.add((reporteId, status));
     reportes = [
       for (final r in reportes)

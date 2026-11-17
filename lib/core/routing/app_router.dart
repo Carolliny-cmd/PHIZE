@@ -32,12 +32,16 @@ import '../../features/analise/presentation/pages/resultado_analise_page.dart';
 import '../../features/auth/domain/auth_repository.dart';
 import '../../features/comunidade/domain/compartilhador_texto.dart';
 import '../../features/comunidade/domain/feed_repository.dart';
+import '../../features/comunidade/domain/meus_reportes_repository.dart';
 import '../../features/comunidade/domain/moderacao_repository.dart';
 import '../../features/comunidade/domain/reporte_comunidade.dart';
 import '../../features/comunidade/domain/reporte_repository.dart';
 import '../../features/comunidade/presentation/pages/comunidade_page.dart';
 import '../../features/comunidade/presentation/pages/detalhe_reporte_page.dart';
+import '../../features/comunidade/presentation/pages/editar_reporte_page.dart';
+import '../../features/comunidade/presentation/pages/meus_reportes_page.dart';
 import '../../features/comunidade/presentation/pages/moderacao_page.dart';
+import '../../features/comunidade/presentation/pages/pesquisa_comunidade_page.dart';
 import '../../features/comunidade/presentation/pages/reportar_golpe_page.dart';
 import '../../features/auth/presentation/pages/cadastro_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
@@ -68,6 +72,7 @@ class AppRouter {
     FeedRepository? feedRepository,
     CompartilhadorTexto? compartilhadorTexto,
     ModeracaoRepository? moderacaoRepository,
+    MeusReportesRepository? meusReportesRepository,
   }) {
     final caixa = caixaCompartilhamento ?? CaixaCompartilhamento.instancia;
 
@@ -150,6 +155,7 @@ class AppRouter {
             authRepository: authRepository,
             consentimentoRepository: consentimentoRepository,
             tutorialRepository: tutorialRepository,
+            meusReportesRepository: meusReportesRepository,
           ),
         );
       case AppRoutes.comunidade:
@@ -165,6 +171,21 @@ class AppRouter {
             reporte: settings.arguments as ReporteComunidade,
             repositorio: feedRepository,
             compartilhador: compartilhadorTexto,
+          ),
+        );
+      case AppRoutes.pesquisaComunidade:
+        return MaterialPageRoute(
+          builder: (_) => PesquisaComunidadePage(repositorio: feedRepository),
+        );
+      case AppRoutes.meusReportes:
+        return MaterialPageRoute(
+          builder: (_) => MeusReportesPage(repositorio: meusReportesRepository),
+        );
+      case AppRoutes.editarReporte:
+        return MaterialPageRoute<bool>(
+          builder: (_) => EditarReportePage(
+            reporte: settings.arguments as ReporteComunidade,
+            repositorio: meusReportesRepository,
           ),
         );
       case AppRoutes.moderacao:

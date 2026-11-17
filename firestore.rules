@@ -44,6 +44,33 @@ service cloud.firestore {
           && existsAfter(/databases/$(database)/documents/reportes/$(reporteId));
       }
 
+      // Índice das curtidas e denúncias da conta (RF12): é por ele que a
+      // exclusão de conta encontra as marcas gravadas nos reportes de outras
+      // pessoas. Nasce junto com a marca e sai junto com ela.
+      match /curtidas/{reporteId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow create: if request.auth != null
+          && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['criadoEm'])
+          && request.resource.data.criadoEm == request.time
+          && existsAfter(/databases/$(database)/documents/reportes/$(reporteId)/curtidas/$(uid));
+        allow delete: if request.auth != null
+          && request.auth.uid == uid
+          && !existsAfter(/databases/$(database)/documents/reportes/$(reporteId)/curtidas/$(uid));
+      }
+
+      match /denuncias/{reporteId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow create: if request.auth != null
+          && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['criadoEm'])
+          && request.resource.data.criadoEm == request.time
+          && existsAfter(/databases/$(database)/documents/reportes/$(reporteId)/denuncias/$(uid));
+        allow delete: if request.auth != null
+          && request.auth.uid == uid
+          && !existsAfter(/databases/$(database)/documents/reportes/$(reporteId)/denuncias/$(uid));
+      }
+
       // Marca de "também recebi este golpe" (UC05, ameaça já reportada):
       // uma por conta e por reporte, gravada junto com o +1 do contador.
       match /incidencias/{reporteId} {
@@ -70,11 +97,13 @@ service cloud.firestore {
     match /reportes/{reporteId} {
       // `resource == null`: ler um reporte que ainda não existe é permitido
       // (o app confere se o link já foi reportado antes de publicar), e não
-      // revela nada além da ausência.
+      // revela nada além da ausência. O autor lê o próprio reporte mesmo
+      // oculto, para ver em "Meus reportes" que ele está em revisão (RF16).
       allow read: if request.auth != null
         && (resource == null
           || resource.data.status != 'oculto'
-          || moderador());
+          || moderador()
+          || autor(reporteId));
 
       allow create: if request.auth != null
         && reporteNovoValido(request.resource.data, reporteId)
@@ -95,6 +124,12 @@ service cloud.firestore {
              /databases/$(database)/documents/reportes/$(reporteId)/denuncias/$(request.auth.uid))
         || maisUmCom('incidencias',
              /databases/$(database)/documents/users/$(request.auth.uid)/incidencias/$(reporteId))
+        // A conta retira a própria curtida ou denúncia: -1 junto com a
+        // remoção da marca (exclusão de conta, RF12).
+        || menosUmSem('curtidas',
+             /databases/$(database)/documents/reportes/$(reporteId)/curtidas/$(request.auth.uid))
+        || menosUmSem('denuncias',
+             /databases/$(database)/documents/reportes/$(reporteId)/denuncias/$(request.auth.uid))
         // Moderação (RF11): aprovar, ocultar ou devolver a pendente.
         || (moderador()
           && request.resource.data.diff(resource.data).affectedKeys()
@@ -105,13 +140,20 @@ service cloud.firestore {
       allow delete: if request.auth != null
         && (autor(reporteId) || moderador());
 
+      // A marca nasce com +1 no contador e com o índice da conta; sai com
+      // -1 e com o índice (ou sem o -1, se o reporte já foi excluído).
       match /curtidas/{uid} {
         allow read: if request.auth != null && request.auth.uid == uid;
         allow create: if request.auth != null
           && request.auth.uid == uid
           && request.resource.data.keys().hasOnly(['criadoEm'])
           && request.resource.data.criadoEm == request.time
-          && contadorMaisUm(reporteId, 'curtidas');
+          && contadorMaisUm(reporteId, 'curtidas')
+          && existsAfter(/databases/$(database)/documents/users/$(uid)/curtidas/$(reporteId));
+        allow delete: if request.auth != null
+          && request.auth.uid == uid
+          && saiDoContador(reporteId, 'curtidas')
+          && !existsAfter(/databases/$(database)/documents/users/$(uid)/curtidas/$(reporteId));
       }
 
       match /denuncias/{uid} {
@@ -123,7 +165,12 @@ service cloud.firestore {
           && request.resource.data.motivo in [
                'falso', 'ofensivo', 'duplicado', 'acusa_organizacao_legitima']
           && request.resource.data.criadoEm == request.time
-          && contadorMaisUm(reporteId, 'denuncias');
+          && contadorMaisUm(reporteId, 'denuncias')
+          && existsAfter(/databases/$(database)/documents/users/$(uid)/denuncias/$(reporteId));
+        allow delete: if request.auth != null
+          && request.auth.uid == uid
+          && saiDoContador(reporteId, 'denuncias')
+          && !existsAfter(/databases/$(database)/documents/users/$(uid)/denuncias/$(reporteId));
       }
     }
 
@@ -155,6 +202,23 @@ service cloud.firestore {
         && request.resource.data[campo] == resource.data[campo] + 1
         && !exists(marca)
         && existsAfter(marca);
+    }
+
+    // O reporte só perde 1 em [campo] e a marca da conta sai nesta mesma
+    // gravação.
+    function menosUmSem(campo, marca) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([campo])
+        && request.resource.data[campo] == resource.data[campo] - 1
+        && exists(marca)
+        && !existsAfter(marca);
+    }
+
+    // A marca sai com -1 no contador, ou sozinha se o reporte não existe
+    // mais (excluído pelo autor ou pela moderação).
+    function saiDoContador(reporteId, campo) {
+      return !exists(/databases/$(database)/documents/reportes/$(reporteId))
+        || getAfter(/databases/$(database)/documents/reportes/$(reporteId)).data[campo]
+          == get(/databases/$(database)/documents/reportes/$(reporteId)).data[campo] - 1;
     }
 
     function contadorMaisUm(reporteId, campo) {

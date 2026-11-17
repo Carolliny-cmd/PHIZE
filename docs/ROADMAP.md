@@ -16,7 +16,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
   - Teste de todos os fluxos no emulador e correção dos achados: build de release do Android, aquecimento das Functions (`tool/emuladores/aquecer_functions.sh`), títulos com letra muito grande.
   - Decisão de usar só recursos gratuitos: limitação acadêmica declarada no RNF07 e nos demais documentos; consentimento na versão 2 ("Use só conversas de teste").
   - RAG: etapa 2 (só as mensagens recebidas do print), etapa 3 (situações legítimas testadas e retiradas do prompt, sem ganho confirmado) e etapa 4 (três fichas novas). Com a base: 63 de 63 golpes do conjunto de teste detectados e as 26 legítimas verdes.
-- **Testes:** 736 no app, 93 na Function e 62 das regras do Firestore.
+- **Testes:** 765 no app, 93 na Function e 76 das regras do Firestore.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
 - **Fase 9 fechada no app (2026-11-16):** texto do "Cálculo do risco" aprovado, limitação do RNF03 declarada, UC03 sem RAG no link, sem login com a Apple, teste em Android real declarado como não feito por enquanto. Ficam para o fim o ícone e as mudanças nos .docx e nas imagens dos diagramas.
@@ -25,7 +25,8 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Etapa 10.2 feita (2026-11-16):** reportar golpe (link, relato e print), com código comum movido para `lib/shared/`.
 - **Etapa 10.3 feita (2026-11-16):** aba Comunidade, com feed "Em alta" e "Mais recentes", detalhe, curtir e compartilhar; barra inferior com quatro abas.
 - **Etapa 10.4 feita (2026-11-16):** denúncia com motivo, ocultação automática com 3 denúncias (gatilho na Function) e tela mínima de moderação.
-- **Próximo passo:** etapa 10.5 (pesquisa, "Meus reportes" e reportes na exportação e na exclusão de conta); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Etapa 10.5 feita (2026-11-17):** pesquisa por palavras ou link, "Meus reportes" (editar e excluir) e a comunidade na exportação e na exclusão de conta.
+- **Próximo passo:** etapa 10.6 (cartão "Golpe da semana" na tela inicial); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -1274,7 +1275,7 @@ Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe 
 | 10.2 | Reportar golpe: link com hash, relato e print mascarados, aviso de duplicado, recusa de marca oficial (feita) | T36, T37, T38, T39, T56 |
 | 10.3 | Aba "Comunidade": feed ("Em alta" e "Mais recentes"), detalhe, curtir e compartilhar (feita) | T40, T41, T42 |
 | 10.4 | Denúncia, ocultação automática (gatilho na Function) e tela mínima de moderação (feita) | T43, T44, T45 |
-| 10.5 | Pesquisa, "Meus reportes" (editar e excluir) e reportes na exportação e na exclusão de conta | T57, T58, T59, T60 |
+| 10.5 | Pesquisa, "Meus reportes" (editar e excluir) e reportes na exportação e na exclusão de conta (feita) | T57, T58, T59, T60 |
 | 10.6 | Cartão "Golpe da semana" na tela inicial | T61 |
 | 10.7 | Curadoria: transformar reporte validado em rascunho de ficha da base | T46 |
 | 10.8 | Comentários (opcional, a reavaliar) | — |
@@ -1330,6 +1331,30 @@ A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perf
 > - **Reporte aprovado não é ocultado de novo** por novas denúncias: a aprovação já é a revisão manual que o RF11 pede. Se a equipe preferir reocultar com novas denúncias depois da aprovação, é preciso contar só as posteriores (mudança no modelo de dados).
 > - **Excluir pela moderação** remove o reporte público, mas não a autoria privada do autor (`users/{uid}/reportes/{id}`), que só o dono apaga, nem as marcas de curtida e denúncia (o Firestore não apaga subcoleções sozinho). Nada disso aparece no app; "Meus reportes" (10.5) deve tratar a autoria de reporte que não existe mais.
 > - Para moderar, a conta precisa de um documento em `moderadores/{uid}`, criado pela equipe no console (ou na interface do emulador).
+
+### Etapa 10.5 — Pesquisa, "Meus reportes" e direitos do titular (concluída, 2026-11-17)
+
+**Decisões da equipe (2026-11-17), na exclusão de conta (RF12):**
+1. **Reportes da conta:** todos são excluídos, com a autoria. Fica só a hash de link validado pela equipe, em `ameacas`, sem autor.
+2. **Curtidas e denúncias da conta** nos reportes de outras pessoas: também são apagadas, com -1 no contador. Para isso, cada curtida e denúncia passa a ter um índice privado da conta (`users/{uid}/curtidas` e `users/{uid}/denuncias`), e as regras passam a aceitar retirar a própria marca junto com o -1. Efeito colateral aceito: as regras passam a permitir "descurtir" e retirar a denúncia (o app não oferece esses botões).
+
+- **Pesquisa (RF15, UC08, T57):** lupa na barra da aba Comunidade. Texto sem espaços que seja um endereço vira link: passa pela mesma normalização e hash do reporte, no aparelho, e só a hash é consultada. O resto vira palavras de busca (sem acento, 3 letras ou mais, até 10), comparadas às palavras do título e da categoria gravadas no reporte. Ocultos não aparecem. Se a hash estiver em `ameacas`, a tela avisa que a equipe confirmou o link como golpe, mesmo que o reporte de origem já tenha sido excluído. Sem resultado, informa e oferece "Reportar golpe".
+- **"Meus reportes" (RF16, UC09, UC10, T58, T59):** ícone na barra da aba Comunidade. Mostra a situação de cada reporte (aguardando revisão, aprovado, fora do feed em revisão, removido pela moderação); o autor lê o próprio reporte mesmo oculto (regra nova). Editar muda só título e relato, que passam de novo pelo mascaramento e pela troca de links (`prepararEdicao`); o link não é editável. Excluir pede confirmação irreversível e avisa que a confirmação da equipe sobre o link continua, sem o nome. Reporte já removido pela moderação sai da lista apagando só a autoria.
+- **Hash validada:** aprovar um reporte de link na moderação grava a hash em `ameacas` na mesma gravação; ocultar ou devolver a pendente retira. Antes desta etapa, nada gravava `ameacas`.
+- **Exportação (RF12, T60):** o arquivo ganhou a seção `comunidade`: os reportes publicados (com a situação), as curtidas, as denúncias (com o motivo) e os "também recebi". O texto do Perfil diz isso.
+- **Exclusão de conta (RF12, T60):** antes do perfil e das análises, a conta apaga os próprios reportes e autorias, retira curtidas e denúncias dos reportes de outras pessoas (com -1, ou sem ele se o reporte já não existe) e apaga as marcas de "também recebi". O diálogo de confirmação e o texto do Perfil citam os reportes. Uma falha no meio mantém a pendência, como antes, e a exclusão pode ser retomada.
+- **Testes:** 14 novos das regras (76 no total): índice obrigatório, retirada com -1, recusas, reporte já excluído, autor lendo o próprio oculto, consulta da pesquisa e aprovação com hash. 29 novos no app (765 no total): pesquisa, edição, telas de pesquisa, "Meus reportes" e edição (também no teste de letra muito grande) e a exportação com a comunidade.
+- **Conferido no emulador**, com a conta fictícia de `docs/emulador-local.md`:
+  - a conta curtiu e denunciou o reporte de outra conta fictícia;
+  - publicou um link e o achou pela palavra e pela variação `https://www.pagamento-urgente.example/pagar?id=7`;
+  - editou o relato com um CPF e um link fictícios, gravados como `Pediram o CPF [CPF] no site [LINK]`;
+  - como moderadora, aprovou o próprio link (hash gravada em `ameacas`);
+  - excluiu a conta. Depois: reporte, perfil, índices, marcas e credencial removidos; contadores do outro reporte de volta a 0; hash validada mantida.
+
+> **Pontos para a equipe:**
+> - `moderadores/{uid}` continua depois da exclusão de uma conta moderadora: só a equipe edita essa lista, pelo console. Remover a pessoa da lista faz parte de desligá-la da moderação.
+> - Curtidas e denúncias gravadas antes desta etapa não têm o índice privado e não seriam achadas na exclusão de conta. Na versão acadêmica, os dados do emulador são fictícios e somem quando ele reinicia; numa base real, seria preciso migrar.
+> - A pesquisa por palavras faz duas consultas (pendentes e aprovados) e ordena no aparelho, até 50 de cada. Com muitos reportes, rever. Os índices compostos estão em `firestore.indexes.json`.
 
 ---
 

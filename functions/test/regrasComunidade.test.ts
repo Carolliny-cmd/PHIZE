@@ -82,8 +82,17 @@ const semear = (status = "pendente") =>
     await setDoc(doc(banco, "moderadores", "mod"), {});
   });
 
-/** +1 no contador junto com a marca da conta, como o app fará. */
-const maisUm = (uid: string, campo: string, marca: string[]) => {
+/**
+ * +1 no contador junto com a marca da conta, como o app faz. Curtida e
+ * denúncia levam também o índice privado da conta (RF12), a não ser que
+ * [semIndice] peça o contrário.
+ */
+const maisUm = (
+  uid: string,
+  campo: string,
+  marca: string[],
+  { semIndice = false } = {},
+) => {
   const banco = db(uid);
   const lote = writeBatch(banco);
   lote.update(doc(banco, "reportes", "r1"), { [campo]: increment(1) });
@@ -94,6 +103,27 @@ const maisUm = (uid: string, campo: string, marca: string[]) => {
       ? { motivo: "falso", criadoEm: serverTimestamp() }
       : { criadoEm: serverTimestamp() },
   );
+  if (!semIndice && campo !== "incidencias") {
+    lote.set(doc(banco, "users", uid, campo, "r1"), {
+      criadoEm: serverTimestamp(),
+    });
+  }
+  return lote.commit();
+};
+
+/** Retira a marca da conta com -1 e o índice, como a exclusão de conta. */
+const menosUm = (
+  uid: string,
+  campo: "curtidas" | "denuncias",
+  { delta = -1, semIndice = false, semContador = false } = {},
+) => {
+  const banco = db(uid);
+  const lote = writeBatch(banco);
+  if (!semContador) {
+    lote.update(doc(banco, "reportes", "r1"), { [campo]: increment(delta) });
+  }
+  lote.delete(doc(banco, "reportes", "r1", campo, uid));
+  if (!semIndice) lote.delete(doc(banco, "users", uid, campo, "r1"));
   return lote.commit();
 };
 
@@ -203,10 +233,12 @@ describe("ler (RF08, RF11)", () => {
     await assertFails(getDoc(doc(db(), "reportes", "r1")));
   });
 
-  test("oculto só a moderação lê", async () => {
+  test("oculto só a moderação e o autor leem", async () => {
     await semear("oculto");
     await assertFails(getDoc(doc(db("bia"), "reportes", "r1")));
     await assertSucceeds(getDoc(doc(db("mod"), "reportes", "r1")));
+    // A autora vê em "Meus reportes" que o reporte está em revisão (RF16).
+    await assertSucceeds(getDoc(doc(db("ana"), "reportes", "r1")));
   });
 
   test("feed: consulta que filtra o status é aceita, nas duas ordens", async () => {
@@ -225,6 +257,28 @@ describe("ler (RF08, RF11)", () => {
           orderBy("criadoEm", "desc"),
           limit(50),
         ),
+      ),
+    );
+  });
+
+  test("pesquisa por palavras com o status filtrado é aceita (RF15)", async () => {
+    await semear();
+    const reportes = collection(db("bia"), "reportes");
+    for (const status of ["pendente", "aprovado"]) {
+      await assertSucceeds(
+        getDocs(
+          query(
+            reportes,
+            where("status", "==", status),
+            where("palavras", "array-contains-any", ["falso", "pix"]),
+            limit(50),
+          ),
+        ),
+      );
+    }
+    await assertFails(
+      getDocs(
+        query(reportes, where("palavras", "array-contains-any", ["falso"])),
       ),
     );
   });
@@ -351,6 +405,57 @@ describe("curtir, denunciar e incidência (RF06, RF11, UC05)", () => {
     await assertFails(lote.commit());
   });
 
+  for (const campo of ["curtidas", "denuncias"] as const) {
+    test(`${campo}: sem o índice da conta é recusado`, async () => {
+      await semear();
+      await assertFails(
+        maisUm("bia", campo, ["reportes", "r1", campo, "bia"], {
+          semIndice: true,
+        }),
+      );
+    });
+
+    test(`${campo}: a conta retira a própria marca com -1 (RF12)`, async () => {
+      await semear();
+      await maisUm("bia", campo, ["reportes", "r1", campo, "bia"]);
+      await assertSucceeds(menosUm("bia", campo));
+    });
+
+    test(`${campo}: retirar sem o -1, com -2 ou sem o índice é recusado`, async () => {
+      await semear();
+      await maisUm("bia", campo, ["reportes", "r1", campo, "bia"]);
+      await assertFails(menosUm("bia", campo, { semContador: true }));
+      await assertFails(menosUm("bia", campo, { delta: -2 }));
+      await assertFails(menosUm("bia", campo, { semIndice: true }));
+    });
+
+    test(`${campo}: -1 sem retirar a marca é recusado`, async () => {
+      await semear();
+      await maisUm("bia", campo, ["reportes", "r1", campo, "bia"]);
+      await assertFails(
+        updateDoc(doc(db("bia"), "reportes", "r1"), { [campo]: increment(-1) }),
+      );
+    });
+
+    test(`${campo}: outra conta não retira a marca`, async () => {
+      await semear();
+      await maisUm("bia", campo, ["reportes", "r1", campo, "bia"]);
+      await assertFails(
+        deleteDoc(doc(db("caio"), "reportes", "r1", campo, "bia")),
+      );
+    });
+
+    test(`${campo}: reporte já excluído, a marca sai sem o -1`, async () => {
+      await semear();
+      await maisUm("bia", campo, ["reportes", "r1", campo, "bia"]);
+      await ambiente.withSecurityRulesDisabled(async (ctx) => {
+        const banco = ctx.firestore() as unknown as Firestore;
+        await deleteDoc(doc(banco, "reportes", "r1"));
+      });
+      await assertSucceeds(menosUm("bia", campo, { semContador: true }));
+    });
+  }
+
   test("ninguém lê a curtida de outra conta", async () => {
     await semear();
     await maisUm("bia", "curtidas", ["reportes", "r1", "curtidas", "bia"]);
@@ -459,6 +564,22 @@ describe("hashes de ameaças validadas (RF12)", () => {
       setDoc(doc(db("mod"), "ameacas", HASH_A), { validadoEm: serverTimestamp() }),
     );
     await assertSucceeds(getDoc(doc(db("bia"), "ameacas", HASH_A)));
+  });
+
+  test("aprovar link grava status e hash validada juntos", async () => {
+    await ambiente.withSecurityRulesDisabled(async (ctx) => {
+      const banco = ctx.firestore() as unknown as Firestore;
+      await setDoc(doc(banco, "reportes", HASH_A), {
+        ...reporte({ tipo: "link", hashLink: HASH_A, relato: "" }),
+        criadoEm: new Date(),
+      });
+      await setDoc(doc(banco, "moderadores", "mod"), {});
+    });
+    const banco = db("mod");
+    const lote = writeBatch(banco);
+    lote.update(doc(banco, "reportes", HASH_A), { status: "aprovado" });
+    lote.set(doc(banco, "ameacas", HASH_A), { validadoEm: serverTimestamp() });
+    await assertSucceeds(lote.commit());
   });
 
   test("conta comum não grava", async () => {

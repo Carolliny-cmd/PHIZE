@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../shared/domain/formatacao_data.dart';
 import '../../../../shared/widgets/phize_bottom_nav.dart';
 import '../../data/feed_repository_firestore.dart';
 import '../../data/moderacao_repository_firestore.dart';
 import '../../domain/feed_repository.dart';
 import '../../domain/moderacao_repository.dart';
 import '../../domain/reporte_comunidade.dart';
+import '../widgets/cartao_reporte.dart';
 
 /// Aba "Comunidade" (RF08, UC07): reportes de outras pessoas, "Em alta" ou
 /// "Mais recentes". Reportes ocultos pela moderação não aparecem (RF11).
@@ -56,6 +56,12 @@ class _ComunidadePageState extends State<ComunidadePage> {
     if (mounted && moderador) setState(() => _moderador = true);
   }
 
+  Future<void> _abrirMeusReportes() async {
+    await Navigator.of(context).pushNamed(AppRoutes.meusReportes);
+    // Edição ou exclusão muda o feed.
+    if (mounted) _recarregar();
+  }
+
   Future<void> _abrirModeracao() async {
     await Navigator.of(context).pushNamed(AppRoutes.moderacao);
     if (mounted) _recarregar();
@@ -91,6 +97,19 @@ class _ComunidadePageState extends State<ComunidadePage> {
       appBar: AppBar(
         title: const Text('Comunidade'),
         actions: [
+          IconButton(
+            key: const Key('comunidade_pesquisar'),
+            tooltip: 'Pesquisar',
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AppRoutes.pesquisaComunidade),
+            icon: const Icon(Icons.search),
+          ),
+          IconButton(
+            key: const Key('comunidade_meus_reportes'),
+            tooltip: 'Meus reportes',
+            onPressed: _abrirMeusReportes,
+            icon: const Icon(Icons.article_outlined),
+          ),
           if (_moderador)
             IconButton(
               key: const Key('comunidade_moderacao'),
@@ -150,7 +169,7 @@ class _ComunidadePageState extends State<ComunidadePage> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
                     itemCount: reportes.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (context, i) => _CartaoReporte(
+                    itemBuilder: (context, i) => CartaoReporte(
                       reporte: reportes[i],
                       aoTocar: () => _abrir(reportes[i]),
                     ),
@@ -168,72 +187,6 @@ class _ComunidadePageState extends State<ComunidadePage> {
         label: const Text('Reportar golpe'),
       ),
       bottomNavigationBar: const PhizeBottomNav(currentIndex: 1),
-    );
-  }
-}
-
-class _CartaoReporte extends StatelessWidget {
-  const _CartaoReporte({required this.reporte, required this.aoTocar});
-
-  final ReporteComunidade reporte;
-  final VoidCallback aoTocar;
-
-  @override
-  Widget build(BuildContext context) {
-    final tema = Theme.of(context).textTheme;
-    final secundario = TextStyle(
-      fontSize: 14,
-      color: context.cores.textoSecundario,
-    );
-    final curtidas = reporte.curtidas == 1
-        ? '1 curtida'
-        : '${reporte.curtidas} curtidas';
-
-    return Card(
-      key: Key('comunidade_reporte_${reporte.id}'),
-      margin: EdgeInsets.zero,
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: aoTocar,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(reporte.titulo, style: tema.titleMedium),
-              const SizedBox(height: 4),
-              Text(
-                '${reporte.categoria.nome} · ${formatarData(reporte.criadoEm)}',
-                style: secundario,
-              ),
-              const SizedBox(height: 8),
-              // Wrap: com letra grande, a marca de "não revisado" desce
-              // para a linha de baixo em vez de estourar (RF14).
-              Wrap(
-                spacing: 16,
-                runSpacing: 4,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.thumb_up_outlined,
-                        size: 18,
-                        color: context.cores.textoSecundario,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(curtidas, style: secundario),
-                    ],
-                  ),
-                  if (reporte.status == StatusReporte.pendente)
-                    Text('Ainda não revisado', style: secundario),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
