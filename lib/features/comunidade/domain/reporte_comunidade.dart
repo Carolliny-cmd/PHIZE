@@ -4,12 +4,16 @@ import 'novo_reporte.dart';
 /// Situação de um reporte na moderação (RF11). Reporte oculto nunca chega
 /// ao feed: as regras só o deixam ser lido pela moderação.
 enum StatusReporte {
-  pendente('pendente'),
-  aprovado('aprovado');
+  pendente('pendente', 'Pendentes'),
+  aprovado('aprovado', 'Aprovados'),
+  oculto('oculto', 'Ocultos');
 
-  const StatusReporte(this.codigo);
+  const StatusReporte(this.codigo, this.nomeLista);
 
   final String codigo;
+
+  /// Nome da lista na tela de moderação.
+  final String nomeLista;
 
   static StatusReporte? doCodigo(Object? codigo) {
     for (final status in values) {
@@ -39,6 +43,7 @@ class ReporteComunidade {
     required this.relato,
     required this.categoria,
     required this.curtidas,
+    this.denuncias = 0,
     required this.incidencias,
     required this.status,
     required this.criadoEm,
@@ -50,6 +55,9 @@ class ReporteComunidade {
   final String relato;
   final CategoriaAmeaca categoria;
   final int curtidas;
+
+  /// Denúncias recebidas (RF11). Com 3, o reporte pendente é ocultado.
+  final int denuncias;
 
   /// Quantas contas relataram ter recebido o golpe (UC05; o autor conta 1).
   final int incidencias;
@@ -66,6 +74,7 @@ class ReporteComunidade {
     relato: relato,
     categoria: categoria,
     curtidas: curtidas + 1,
+    denuncias: denuncias,
     incidencias: incidencias,
     status: status,
     criadoEm: criadoEm,

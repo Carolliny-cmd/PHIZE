@@ -32,10 +32,12 @@ import '../../features/analise/presentation/pages/resultado_analise_page.dart';
 import '../../features/auth/domain/auth_repository.dart';
 import '../../features/comunidade/domain/compartilhador_texto.dart';
 import '../../features/comunidade/domain/feed_repository.dart';
+import '../../features/comunidade/domain/moderacao_repository.dart';
 import '../../features/comunidade/domain/reporte_comunidade.dart';
 import '../../features/comunidade/domain/reporte_repository.dart';
 import '../../features/comunidade/presentation/pages/comunidade_page.dart';
 import '../../features/comunidade/presentation/pages/detalhe_reporte_page.dart';
+import '../../features/comunidade/presentation/pages/moderacao_page.dart';
 import '../../features/comunidade/presentation/pages/reportar_golpe_page.dart';
 import '../../features/auth/presentation/pages/cadastro_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
@@ -65,6 +67,7 @@ class AppRouter {
     ReporteRepository? reporteRepository,
     FeedRepository? feedRepository,
     CompartilhadorTexto? compartilhadorTexto,
+    ModeracaoRepository? moderacaoRepository,
   }) {
     final caixa = caixaCompartilhamento ?? CaixaCompartilhamento.instancia;
 
@@ -151,7 +154,10 @@ class AppRouter {
         );
       case AppRoutes.comunidade:
         return MaterialPageRoute(
-          builder: (_) => ComunidadePage(repositorio: feedRepository),
+          builder: (_) => ComunidadePage(
+            repositorio: feedRepository,
+            moderacao: moderacaoRepository,
+          ),
         );
       case AppRoutes.detalheReporte:
         return MaterialPageRoute(
@@ -160,6 +166,10 @@ class AppRouter {
             repositorio: feedRepository,
             compartilhador: compartilhadorTexto,
           ),
+        );
+      case AppRoutes.moderacao:
+        return MaterialPageRoute(
+          builder: (_) => ModeracaoPage(repositorio: moderacaoRepository),
         );
       case AppRoutes.reportarGolpe:
         return MaterialPageRoute(

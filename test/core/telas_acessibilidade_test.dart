@@ -14,6 +14,8 @@ import 'package:phize/features/analise/domain/verificacao_link.dart';
 import 'package:phize/features/analise/presentation/pages/como_calcula_risco_page.dart';
 import 'package:phize/features/analise/presentation/tutorial/tutorial_link.dart';
 import 'package:phize/features/analise/presentation/tutorial/tutorial_print.dart';
+import 'package:phize/features/comunidade/domain/motivo_denuncia.dart';
+import 'package:phize/features/comunidade/domain/reporte_comunidade.dart';
 import 'package:phize/features/conta/domain/preferencias_aparencia.dart';
 
 import '../support/fake_auth_repository.dart';
@@ -122,6 +124,12 @@ Future<void> _abrir(
                 ],
               ),
               compartilhadorTexto: FakeCompartilhadorTexto(),
+              moderacaoRepository: FakeModeracaoRepository(
+                reportes: [
+                  reporteDeTeste(status: StatusReporte.oculto, denuncias: 3),
+                ],
+                motivos: {MotivoDenuncia.acusaOrganizacaoLegitima: 3},
+              ),
             ),
     ),
   );
@@ -147,6 +155,7 @@ void main() {
         'perfil': (AppRoutes.perfil, null),
         'comunidade': (AppRoutes.comunidade, null),
         'detalhe do reporte': (AppRoutes.detalheReporte, reporteDeTeste()),
+        'moderação': (AppRoutes.moderacao, null),
       };
       for (final MapEntry(key: nome, value: (rota, argumentos))
           in rotas.entries) {

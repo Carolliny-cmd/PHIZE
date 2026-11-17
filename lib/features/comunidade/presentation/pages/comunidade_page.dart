@@ -5,15 +5,18 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/domain/formatacao_data.dart';
 import '../../../../shared/widgets/phize_bottom_nav.dart';
 import '../../data/feed_repository_firestore.dart';
+import '../../data/moderacao_repository_firestore.dart';
 import '../../domain/feed_repository.dart';
+import '../../domain/moderacao_repository.dart';
 import '../../domain/reporte_comunidade.dart';
 
 /// Aba "Comunidade" (RF08, UC07): reportes de outras pessoas, "Em alta" ou
 /// "Mais recentes". Reportes ocultos pela moderação não aparecem (RF11).
 class ComunidadePage extends StatefulWidget {
-  const ComunidadePage({super.key, this.repositorio});
+  const ComunidadePage({super.key, this.repositorio, this.moderacao});
 
   final FeedRepository? repositorio;
+  final ModeracaoRepository? moderacao;
 
   static const String avisoFeed =
       'Relatos enviados por pessoas do Phize, sem nome. Nem todos foram '
@@ -30,6 +33,33 @@ class _ComunidadePageState extends State<ComunidadePage> {
       widget.repositorio ?? FeedRepositoryFirestore();
   OrdemFeed _ordem = OrdemFeed.emAlta;
   late Future<List<ReporteComunidade>> _reportes = _repositorio.listar(_ordem);
+
+  /// A entrada da moderação só aparece para contas da lista `moderadores`
+  /// (RF11). Esconder o botão é conveniência; o acesso é barrado pelas
+  /// regras do Firestore.
+  bool _moderador = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _conferirModeracao();
+  }
+
+  Future<void> _conferirModeracao() async {
+    bool moderador;
+    try {
+      final moderacao = widget.moderacao ?? ModeracaoRepositoryFirestore();
+      moderador = await moderacao.ehModerador();
+    } catch (_) {
+      moderador = false;
+    }
+    if (mounted && moderador) setState(() => _moderador = true);
+  }
+
+  Future<void> _abrirModeracao() async {
+    await Navigator.of(context).pushNamed(AppRoutes.moderacao);
+    if (mounted) _recarregar();
+  }
 
   void _recarregar() {
     setState(() {
@@ -58,7 +88,18 @@ class _ComunidadePageState extends State<ComunidadePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Comunidade')),
+      appBar: AppBar(
+        title: const Text('Comunidade'),
+        actions: [
+          if (_moderador)
+            IconButton(
+              key: const Key('comunidade_moderacao'),
+              tooltip: 'Moderação',
+              onPressed: _abrirModeracao,
+              icon: const Icon(Icons.shield_outlined),
+            ),
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

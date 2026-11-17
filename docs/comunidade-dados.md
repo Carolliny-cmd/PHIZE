@@ -41,9 +41,9 @@ Nenhum outro campo é aceito: não há onde gravar autor, link em texto puro ou 
 - **Feed:** reporte oculto não é lido por conta comum; por isso, as consultas do feed filtram o status (`pendente` e `aprovado`), e uma consulta sem esse filtro é recusada inteira. "Em alta" ordena por `curtidas` e depois `criadoEm`; "Mais recentes", por `criadoEm` (índices compostos em `firestore.indexes.json`; etapa 10.3, `lib/features/comunidade/data/feed_repository_firestore.dart`). Ler um reporte que ainda não existe é permitido: é assim que o app confere se o link já foi reportado antes de publicar.
 - **Hashes validadas (RF12):** `ameacas/{hash}` só guarda a data de validação e continua lá depois da exclusão do reporte de origem.
 
-## O que fica para as próximas etapas
+## O que fica fora das regras
 
-- **Ocultação automática com 3 denúncias (RF11):** feita por função acionada pela gravação da denúncia, na etapa 10.4. As regras já guardam o contador.
+- **Ocultação automática com 3 denúncias (RF11):** feita pela Function `ocultarReporteDenunciado`, acionada pela gravação da denúncia (etapa 10.4). Só o reporte `pendente` passa a `oculto`; o aprovado já foi revisado pela equipe e não é ocultado de novo.
 - **Mascaramento, normalização e hash:** feitos no aparelho (etapa 10.2, `lib/features/comunidade/domain/preparacao_reporte.dart`); as regras não leem o conteúdo, só o formato. A hash é o SHA-256 do domínio normalizado.
 - **Recusa de domínio oficial (RF05):** feita no aparelho (etapa 10.2).
 

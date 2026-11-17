@@ -3,12 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../shared/domain/categoria_ameaca.dart';
 import '../domain/feed_repository.dart';
+import '../domain/motivo_denuncia.dart';
 import '../domain/novo_reporte.dart';
 import '../domain/reporte_comunidade.dart';
 
 /// Converte `reportes/{id}` no reporte do feed. Documento fora do formato
-/// das regras, ou oculto, volta `null` e não aparece.
-ReporteComunidade? reporteDoDocumento(String id, Map<String, dynamic> dados) {
+/// das regras, ou oculto, volta `null` e não aparece. A moderação usa
+/// [incluirOcultos] para ver também os ocultos.
+ReporteComunidade? reporteDoDocumento(
+  String id,
+  Map<String, dynamic> dados, {
+  bool incluirOcultos = false,
+}) {
   final tipo = switch (dados['tipo']) {
     'link' => TipoReporte.link,
     'relato' => TipoReporte.relato,
@@ -21,9 +27,11 @@ ReporteComunidade? reporteDoDocumento(String id, Map<String, dynamic> dados) {
   final relato = dados['relato'];
   final curtidas = dados['curtidas'];
   final incidencias = dados['incidencias'];
+  final denuncias = dados['denuncias'];
   if (tipo == null ||
       categoria == null ||
       status == null ||
+      (status == StatusReporte.oculto && !incluirOcultos) ||
       titulo is! String ||
       relato is! String ||
       curtidas is! int ||
@@ -38,6 +46,7 @@ ReporteComunidade? reporteDoDocumento(String id, Map<String, dynamic> dados) {
     relato: relato,
     categoria: categoria,
     curtidas: curtidas,
+    denuncias: denuncias is int ? denuncias : 0,
     incidencias: incidencias,
     status: status,
     // Gravação ainda sem a hora do servidor (só no próprio aparelho).
@@ -101,6 +110,29 @@ class FeedRepositoryFirestore implements FeedRepository {
     final lote = _firestore.batch()
       ..update(reporte, {'curtidas': FieldValue.increment(1)})
       ..set(reporte.collection('curtidas').doc(uid), {
+        'criadoEm': FieldValue.serverTimestamp(),
+      });
+    await lote.commit();
+  }
+
+  @override
+  Future<bool> jaDenunciou(String reporteId) async {
+    final marca = await _reportes
+        .doc(reporteId)
+        .collection('denuncias')
+        .doc(_uid)
+        .get();
+    return marca.exists;
+  }
+
+  @override
+  Future<void> denunciar(String reporteId, MotivoDenuncia motivo) async {
+    final uid = _uid;
+    final reporte = _reportes.doc(reporteId);
+    final lote = _firestore.batch()
+      ..update(reporte, {'denuncias': FieldValue.increment(1)})
+      ..set(reporte.collection('denuncias').doc(uid), {
+        'motivo': motivo.codigo,
         'criadoEm': FieldValue.serverTimestamp(),
       });
     await lote.commit();

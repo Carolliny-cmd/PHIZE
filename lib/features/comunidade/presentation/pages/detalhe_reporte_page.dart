@@ -7,11 +7,13 @@ import '../../data/feed_repository_firestore.dart';
 import '../../domain/compartilhador_texto.dart';
 import '../../domain/feed_repository.dart';
 import '../../domain/mensagem_alerta.dart';
+import '../../domain/motivo_denuncia.dart';
 import '../../domain/novo_reporte.dart';
 import '../../domain/reporte_comunidade.dart';
 
 /// Detalhe de um reporte da comunidade (RF08), com curtir (RF06) e
-/// compartilhar (RF09). Sem autor: aparece como "Usuário do Phize".
+/// compartilhar (RF09) e denunciar (RF11). Sem autor: aparece como
+/// "Usuário do Phize".
 class DetalheReportePage extends StatefulWidget {
   const DetalheReportePage({
     super.key,
@@ -44,10 +46,15 @@ class _DetalheReportePageState extends State<DetalheReportePage> {
   bool? _curtiu;
   bool _curtindo = false;
 
+  /// `null` enquanto confere se a conta já denunciou.
+  bool? _denunciou;
+  bool _denunciando = false;
+
   @override
   void initState() {
     super.initState();
     _conferirCurtida();
+    _conferirDenuncia();
   }
 
   Future<void> _conferirCurtida() async {
@@ -60,6 +67,68 @@ class _DetalheReportePageState extends State<DetalheReportePage> {
       curtiu = false;
     }
     if (mounted) setState(() => _curtiu = curtiu);
+  }
+
+  Future<void> _conferirDenuncia() async {
+    bool denunciou;
+    try {
+      denunciou = await _repositorio.jaDenunciou(_reporte.id);
+    } catch (_) {
+      // As regras impedem a denúncia duplicada de qualquer jeito.
+      denunciou = false;
+    }
+    if (mounted) setState(() => _denunciou = denunciou);
+  }
+
+  Future<void> _denunciar() async {
+    final motivo = await showDialog<MotivoDenuncia>(
+      context: context,
+      builder: (contexto) => SimpleDialog(
+        key: const Key('detalhe_motivos'),
+        title: const Text('Por que denunciar?'),
+        children: [
+          for (final motivo in MotivoDenuncia.values)
+            SimpleDialogOption(
+              key: Key('motivo_${motivo.codigo}'),
+              onPressed: () => Navigator.of(contexto).pop(motivo),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              child: Text(motivo.nome),
+            ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: TextButton(
+                onPressed: () => Navigator.of(contexto).pop(),
+                child: const Text('Cancelar'),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (motivo == null || !mounted) return;
+
+    setState(() => _denunciando = true);
+    final mensageiro = ScaffoldMessenger.of(context);
+    try {
+      await _repositorio.denunciar(_reporte.id, motivo);
+      if (!mounted) return;
+      setState(() => _denunciou = true);
+      mensageiro.showSnackBar(
+        const SnackBar(
+          content: Text('Denúncia enviada. A equipe vai revisar o reporte.'),
+        ),
+      );
+    } catch (_) {
+      mensageiro.showSnackBar(
+        const SnackBar(
+          content: Text('Não foi possível enviar a denúncia. Tente de novo.'),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _denunciando = false);
+    }
   }
 
   Future<void> _curtir() async {
@@ -194,6 +263,23 @@ class _DetalheReportePageState extends State<DetalheReportePage> {
                   ),
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Denúncia (RF11): acessível em qualquer alerta, uma por conta.
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              key: const Key('detalhe_denunciar'),
+              onPressed: _denunciou == null || _denunciou! || _denunciando
+                  ? null
+                  : _denunciar,
+              icon: const Icon(Icons.flag_outlined),
+              label: Text(
+                _denunciou == true
+                    ? 'Você denunciou este reporte'
+                    : 'Denunciar este reporte',
+              ),
             ),
           ),
         ],

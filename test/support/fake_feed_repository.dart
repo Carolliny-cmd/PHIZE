@@ -1,5 +1,7 @@
 import 'package:phize/features/comunidade/domain/compartilhador_texto.dart';
 import 'package:phize/features/comunidade/domain/feed_repository.dart';
+import 'package:phize/features/comunidade/domain/moderacao_repository.dart';
+import 'package:phize/features/comunidade/domain/motivo_denuncia.dart';
 import 'package:phize/features/comunidade/domain/novo_reporte.dart';
 import 'package:phize/features/comunidade/domain/reporte_comunidade.dart';
 import 'package:phize/shared/domain/categoria_ameaca.dart';
@@ -12,6 +14,7 @@ ReporteComunidade reporteDeTeste({
   String relato = 'Mensagem de número novo dizendo que trocou de celular.',
   CategoriaAmeaca categoria = CategoriaAmeaca.falsoContato,
   int curtidas = 3,
+  int denuncias = 0,
   int incidencias = 2,
   StatusReporte status = StatusReporte.pendente,
   DateTime? criadoEm,
@@ -22,6 +25,7 @@ ReporteComunidade reporteDeTeste({
   relato: relato,
   categoria: categoria,
   curtidas: curtidas,
+  denuncias: denuncias,
   incidencias: incidencias,
   status: status,
   criadoEm: criadoEm ?? DateTime(2026, 11, 16),
@@ -33,13 +37,18 @@ class FakeFeedRepository implements FeedRepository {
     this.falhaAoListar = false,
     this.falhaAoCurtir = false,
     Set<String>? curtidos,
+    this.falhaAoDenunciar = false,
+    Map<String, MotivoDenuncia>? denunciados,
   }) : reportes = reportes ?? [reporteDeTeste()],
-       curtidos = curtidos ?? {};
+       curtidos = curtidos ?? {},
+       denunciados = denunciados ?? {};
 
   List<ReporteComunidade> reportes;
   bool falhaAoListar;
   final bool falhaAoCurtir;
   final Set<String> curtidos;
+  final bool falhaAoDenunciar;
+  final Map<String, MotivoDenuncia> denunciados;
   final List<OrdemFeed> ordensPedidas = [];
 
   @override
@@ -67,6 +76,78 @@ class FakeFeedRepository implements FeedRepository {
     curtidos.add(reporteId);
     reportes = [
       for (final r in reportes) r.id == reporteId ? r.comMaisUmaCurtida() : r,
+    ];
+  }
+
+  @override
+  Future<bool> jaDenunciou(String reporteId) async =>
+      denunciados.containsKey(reporteId);
+
+  @override
+  Future<void> denunciar(String reporteId, MotivoDenuncia motivo) async {
+    if (falhaAoDenunciar || denunciados.containsKey(reporteId)) {
+      throw Exception('recusado');
+    }
+    denunciados[reporteId] = motivo;
+  }
+}
+
+class FakeModeracaoRepository implements ModeracaoRepository {
+  FakeModeracaoRepository({
+    this.moderador = true,
+    List<ReporteComunidade>? reportes,
+    Map<MotivoDenuncia, int>? motivos,
+  }) : reportes = reportes ?? [],
+       motivos = motivos ?? {};
+
+  final bool moderador;
+  List<ReporteComunidade> reportes;
+  final Map<MotivoDenuncia, int> motivos;
+  final List<(String, StatusReporte)> mudancas = [];
+  final List<String> excluidos = [];
+
+  @override
+  Future<bool> ehModerador() async => moderador;
+
+  @override
+  Future<List<ReporteComunidade>> listar(StatusReporte status) async => [
+    for (final r in reportes)
+      if (r.status == status) r,
+  ];
+
+  @override
+  Future<Map<MotivoDenuncia, int>> motivosDasDenuncias(
+    String reporteId,
+  ) async => motivos;
+
+  @override
+  Future<void> mudarStatus(String reporteId, StatusReporte status) async {
+    mudancas.add((reporteId, status));
+    reportes = [
+      for (final r in reportes)
+        r.id == reporteId
+            ? ReporteComunidade(
+                id: r.id,
+                tipo: r.tipo,
+                titulo: r.titulo,
+                relato: r.relato,
+                categoria: r.categoria,
+                curtidas: r.curtidas,
+                denuncias: r.denuncias,
+                incidencias: r.incidencias,
+                status: status,
+                criadoEm: r.criadoEm,
+              )
+            : r,
+    ];
+  }
+
+  @override
+  Future<void> excluir(String reporteId) async {
+    excluidos.add(reporteId);
+    reportes = [
+      for (final r in reportes)
+        if (r.id != reporteId) r,
     ];
   }
 }

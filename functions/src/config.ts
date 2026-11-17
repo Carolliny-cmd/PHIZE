@@ -79,3 +79,9 @@ export const VARIAVEL_MODELO_GEMINI = "GEMINI_MODEL";
  * 2026-10-27); o substituto é o indicado pela própria mensagem de erro.
  */
 export const MODELO_GEMINI_PADRAO = "gemini-3.8-flash";
+
+/**
+ * Denúncias de contas distintas que ocultam um reporte da comunidade até a
+ * revisão da equipe (RF11; decisão da equipe de 2026-11-16).
+ */
+export const LIMIAR_DENUNCIAS_OCULTACAO = 3;

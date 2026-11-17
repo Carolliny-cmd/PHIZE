@@ -248,6 +248,35 @@ describe("ler (RF08, RF11)", () => {
     );
   });
 
+  test("moderação lista os ocultos; conta comum não", async () => {
+    await semear("oculto");
+    const ocultos = (uid: string) =>
+      getDocs(
+        query(
+          collection(db(uid), "reportes"),
+          where("status", "==", "oculto"),
+          orderBy("criadoEm", "desc"),
+        ),
+      );
+    await assertSucceeds(ocultos("mod"));
+    await assertFails(ocultos("bia"));
+  });
+
+  test("moderação lê os motivos das denúncias; conta comum não", async () => {
+    await semear();
+    await ambiente.withSecurityRulesDisabled(async (ctx) => {
+      const banco = ctx.firestore() as unknown as Firestore;
+      await setDoc(doc(banco, "reportes", "r1", "denuncias", "bia"), {
+        motivo: "falso",
+        criadoEm: new Date(),
+      });
+    });
+    const denuncias = (uid: string) =>
+      getDocs(collection(db(uid), "reportes", "r1", "denuncias"));
+    await assertSucceeds(denuncias("mod"));
+    await assertFails(denuncias("caio"));
+  });
+
   test("a autoria é privada", async () => {
     await semear();
     await assertSucceeds(getDoc(doc(db("ana"), "users", "ana", "reportes", "r1")));

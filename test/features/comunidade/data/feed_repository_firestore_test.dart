@@ -32,6 +32,16 @@ void main() {
     expect(reporte.criadoEm, DateTime(2026, 11, 16, 10));
   });
 
+  test('a moderação lê também os ocultos, com as denúncias', () {
+    final reporte = reporteDoDocumento(
+      'x',
+      _documento({'status': 'oculto', 'denuncias': 3}),
+      incluirOcultos: true,
+    )!;
+    expect(reporte.status, StatusReporte.oculto);
+    expect(reporte.denuncias, 3);
+  });
+
   test('reporte oculto ou fora do formato não aparece', () {
     expect(reporteDoDocumento('x', _documento({'status': 'oculto'})), isNull);
     expect(reporteDoDocumento('x', _documento({'categoria': 'nada'})), isNull);

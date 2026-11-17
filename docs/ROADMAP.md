@@ -16,7 +16,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
   - Teste de todos os fluxos no emulador e correção dos achados: build de release do Android, aquecimento das Functions (`tool/emuladores/aquecer_functions.sh`), títulos com letra muito grande.
   - Decisão de usar só recursos gratuitos: limitação acadêmica declarada no RNF07 e nos demais documentos; consentimento na versão 2 ("Use só conversas de teste").
   - RAG: etapa 2 (só as mensagens recebidas do print), etapa 3 (situações legítimas testadas e retiradas do prompt, sem ganho confirmado) e etapa 4 (três fichas novas). Com a base: 63 de 63 golpes do conjunto de teste detectados e as 26 legítimas verdes.
-- **Testes:** 724 no app, 87 na Function e 60 das regras do Firestore.
+- **Testes:** 736 no app, 93 na Function e 62 das regras do Firestore.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
 - **Fase 9 fechada no app (2026-11-16):** texto do "Cálculo do risco" aprovado, limitação do RNF03 declarada, UC03 sem RAG no link, sem login com a Apple, teste em Android real declarado como não feito por enquanto. Ficam para o fim o ícone e as mudanças nos .docx e nas imagens dos diagramas.
@@ -24,7 +24,8 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Etapa 10.1 feita (2026-11-16):** modelo de dados e regras da comunidade, com 56 testes das regras (`docs/comunidade-dados.md`).
 - **Etapa 10.2 feita (2026-11-16):** reportar golpe (link, relato e print), com código comum movido para `lib/shared/`.
 - **Etapa 10.3 feita (2026-11-16):** aba Comunidade, com feed "Em alta" e "Mais recentes", detalhe, curtir e compartilhar; barra inferior com quatro abas.
-- **Próximo passo:** etapa 10.4 (denúncia, ocultação automática com 3 denúncias e tela mínima de moderação); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Etapa 10.4 feita (2026-11-16):** denúncia com motivo, ocultação automática com 3 denúncias (gatilho na Function) e tela mínima de moderação.
+- **Próximo passo:** etapa 10.5 (pesquisa, "Meus reportes" e reportes na exportação e na exclusão de conta); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -1272,7 +1273,7 @@ Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe 
 | 10.1 | Modelo de dados e regras do Firestore (reportes, votos, denúncias, moderadores), com testes das regras no emulador (feita) | T39 (base) |
 | 10.2 | Reportar golpe: link com hash, relato e print mascarados, aviso de duplicado, recusa de marca oficial (feita) | T36, T37, T38, T39, T56 |
 | 10.3 | Aba "Comunidade": feed ("Em alta" e "Mais recentes"), detalhe, curtir e compartilhar (feita) | T40, T41, T42 |
-| 10.4 | Denúncia, ocultação automática (gatilho na Function) e tela mínima de moderação | T43, T44, T45 |
+| 10.4 | Denúncia, ocultação automática (gatilho na Function) e tela mínima de moderação (feita) | T43, T44, T45 |
 | 10.5 | Pesquisa, "Meus reportes" (editar e excluir) e reportes na exportação e na exclusão de conta | T57, T58, T59, T60 |
 | 10.6 | Cartão "Golpe da semana" na tela inicial | T61 |
 | 10.7 | Curadoria: transformar reporte validado em rascunho de ficha da base | T46 |
@@ -1316,6 +1317,19 @@ A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perf
 > **Pontos para a equipe:**
 > - Curtida não se desfaz: as regras só aceitam +1, para impedir voto duplicado (RF06). Permitir "descurtir" exige regra e teste novos.
 > - "Em alta" ordena só por curtidas, como diz o RF08. Se a equipe quiser contar também as incidências ("também recebi"), é uma mudança pequena na consulta e no índice.
+
+### Etapa 10.4 — Denúncia e moderação (concluída, 2026-11-16)
+
+- **Denúncia (RF11, T43):** "Denunciar este reporte" no detalhe de qualquer alerta, com os quatro motivos das regras: informação falsa ou que não é golpe, conteúdo ofensivo, repete outro reporte, acusa uma empresa ou órgão legítimo. Uma por conta: depois, o botão vira "Você denunciou este reporte". A denúncia grava +1 no reporte junto com a marca da conta e o motivo.
+- **Ocultação automática (T44):** Function `ocultarReporteDenunciado` (`functions/src/index.ts`), acionada pela gravação da denúncia. Em transação, passa a `oculto` o reporte **pendente** que chega a 3 denúncias (`LIMIAR_DENUNCIAS_OCULTACAO` em `functions/src/config.ts`; regra em `functions/src/moderacao.ts`). O log traz só o identificador do reporte, nunca texto, motivo ou conta.
+- **Moderação (T45):** `ModeracaoPage`, aberta pelo escudo na barra da aba Comunidade, que só aparece para contas em `moderadores`. Listas "Ocultos" (primeira, a dos que esperam revisão), "Pendentes" e "Aprovados"; cada reporte mostra denúncias, curtidas, relatos e a contagem por motivo. Ações: aprovar, ocultar e excluir de vez (com confirmação). Quem barra o acesso são as regras; o botão escondido é só conveniência.
+- **Testes:** 6 da regra de ocultação na Function (93 no total); 2 das regras (moderação lista ocultos e lê os motivos; conta comum não), 62 no total; 13 no app (denúncia, moderação e a tela de moderação no teste de letra muito grande), 736 no total.
+- **Conferido no emulador:** uma denúncia pelo app e duas de contas fictícias criadas só no emulador, todas pelas regras reais. Na terceira, a Function ocultou o reporte e ele saiu do feed. A conta de teste do app foi registrada como moderadora no emulador (como a equipe fará pelo console); a moderação mostrou o reporte com "Informação falsa ou que não é golpe: 3", e ao aprovar ele voltou ao feed.
+
+> **Pontos para a equipe:**
+> - **Reporte aprovado não é ocultado de novo** por novas denúncias: a aprovação já é a revisão manual que o RF11 pede. Se a equipe preferir reocultar com novas denúncias depois da aprovação, é preciso contar só as posteriores (mudança no modelo de dados).
+> - **Excluir pela moderação** remove o reporte público, mas não a autoria privada do autor (`users/{uid}/reportes/{id}`), que só o dono apaga, nem as marcas de curtida e denúncia (o Firestore não apaga subcoleções sozinho). Nada disso aparece no app; "Meus reportes" (10.5) deve tratar a autoria de reporte que não existe mais.
+> - Para moderar, a conta precisa de um documento em `moderadores/{uid}`, criado pela equipe no console (ou na interface do emulador).
 
 ---
 

@@ -19,13 +19,16 @@ import path from "node:path";
 
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
+import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import { onRequest } from "firebase-functions/v2/https";
 
 import { analisarTextoGemini, textoValido } from "./analiseTexto";
 import {
   DIMENSAO_EMBEDDING,
   JANELA_LIMITE_MS,
+  LIMIAR_DENUNCIAS_OCULTACAO,
   LIMIAR_SIMILARIDADE,
   LIMITE_ANALISES_TEXTO_POR_USUARIO,
   LIMITE_REQUISICOES_POR_USUARIO,
@@ -42,6 +45,7 @@ import {
   VARIAVEL_MODELO_GEMINI,
 } from "./config";
 import { LimiteRequisicoes } from "./limiteRequisicoes";
+import { deveOcultar } from "./moderacao";
 import { carregarIndice, consultarBase } from "./recuperacao";
 import { consultarSafeBrowsing, urlValida } from "./safeBrowsing";
 
@@ -250,6 +254,43 @@ export const analiseTexto = onRequest(
           .status(200)
           .json({ status: "nao_concluida", motivo: "indisponivel" });
       }
+    }
+  },
+);
+
+/**
+ * Ocultação automática (RF11; arquitetura, 5.7). Acionada pela gravação de
+ * uma denúncia, que as regras só aceitam junto com o +1 no contador do
+ * reporte. Ao atingir o limiar, o reporte pendente passa a `oculto` e sai do
+ * feed até a revisão da equipe. Em transação, para que duas denúncias
+ * simultâneas não se atrapalhem.
+ *
+ * Privacidade: o log traz só o identificador do reporte, nunca o texto, o
+ * motivo nem a conta que denunciou.
+ */
+export const ocultarReporteDenunciado = onDocumentCreated(
+  { document: "reportes/{reporteId}/denuncias/{uid}", region: REGIAO },
+  async (evento) => {
+    const reporteId = evento.params.reporteId;
+    const banco = getFirestore();
+    const reporte = banco.collection("reportes").doc(reporteId);
+    try {
+      const ocultou = await banco.runTransaction(async (transacao) => {
+        const atual = await transacao.get(reporte);
+        if (!atual.exists) return false;
+        if (!deveOcultar(atual.data(), LIMIAR_DENUNCIAS_OCULTACAO)) {
+          return false;
+        }
+        transacao.update(reporte, { status: "oculto" });
+        return true;
+      });
+      if (ocultou) {
+        logger.info("Reporte ocultado por denúncias", { reporteId });
+      }
+    } catch {
+      // Sem relançar: a denúncia já está gravada e conta para a revisão;
+      // a próxima denúncia tenta de novo.
+      logger.error("Falha ao conferir denúncias do reporte", { reporteId });
     }
   },
 );

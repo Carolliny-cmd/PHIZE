@@ -1,3 +1,4 @@
+import 'motivo_denuncia.dart';
 import 'reporte_comunidade.dart';
 
 /// Leitura do feed e curtidas da comunidade (RF06, RF08). A implementação
@@ -18,4 +19,13 @@ abstract class FeedRepository {
   /// conta, uma vez só (RF06). Lança exceção se não for possível, inclusive
   /// se a conta já tinha curtido.
   Future<void> curtir(String reporteId);
+
+  /// Se a conta atual já denunciou o reporte.
+  Future<bool> jaDenunciou(String reporteId);
+
+  /// Registra a denúncia da conta atual com o motivo: +1 no reporte junto
+  /// com a marca da conta, uma vez só (RF11). Com 3 denúncias, uma Function
+  /// oculta o reporte até a revisão da equipe. Lança exceção se não for
+  /// possível, inclusive se a conta já tinha denunciado.
+  Future<void> denunciar(String reporteId, MotivoDenuncia motivo);
 }
