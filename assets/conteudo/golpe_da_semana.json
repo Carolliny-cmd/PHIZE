@@ -1,0 +1,543 @@
+{
+  "origem": "Gerado por tool/gerar_golpe_da_semana.dart a partir de functions/base-conhecimento/fichas. Não editar à mão.",
+  "fichas": [
+    {
+      "id": "boleto-falso-ipva-licenciamento",
+      "modalidade": "Boleto falso de IPVA ou licenciamento",
+      "categoria": "cobranca_ou_boleto_falso",
+      "canais": [
+        "WhatsApp",
+        "SMS",
+        "E-mail",
+        "Site"
+      ],
+      "frasesComuns": [
+        "seu IPVA vence hoje, pague com desconto",
+        "pendência no licenciamento do seu veículo",
+        "desconto especial para pagamento por Pix",
+        "acesse o link para emitir a guia do IPVA",
+        "regularize o débito do veículo para evitar multa"
+      ],
+      "oQuePedem": "Pagamento de boleto ou Pix por site ou link falso; o dinheiro vai para o golpista e o imposto continua em aberto.",
+      "oQueFazer": "Emita a guia só no site ou aplicativo oficial da Secretaria da Fazenda ou do Detran, digitando o endereço. O órgão não envia guia por WhatsApp, SMS ou e-mail. Antes de pagar, confira se o beneficiário é o governo do estado.",
+      "fontes": [
+        {
+          "publicador": "Secretaria de Fazenda de Mato Grosso",
+          "titulo": "Sefaz alerta para falsos boletos e sites fraudulentos em golpes no IPVA"
+        }
+      ]
+    },
+    {
+      "id": "comprovante-pix-falso",
+      "modalidade": "Golpe do comprovante de Pix falso ou agendado",
+      "categoria": "outro_golpe",
+      "canais": [
+        "WhatsApp",
+        "Marketplace e anúncios de venda",
+        "Compra presencial"
+      ],
+      "frasesComuns": [
+        "quero levar o produto, já paguei, olha o print do Pix",
+        "o pagamento foi feito, mas o banco leva umas horas para liberar",
+        "agendei a transferência para amanhã cedo, pode separar a mercadoria",
+        "o comprovante está aqui, pode entregar para o meu portador",
+        "mandei a imagem do Pix, não precisa conferir no aplicativo",
+        "o valor já saiu da minha conta, deve aparecer daqui a pouco"
+      ],
+      "oQuePedem": "O golpista não paga: apresenta um comprovante de Pix editado, de valor alterado ou de um agendamento que depois cancela, para receber o produto ou o serviço antes de o dinheiro entrar na conta do vendedor.",
+      "oQueFazer": "Só entregue o produto depois de ver o valor no saldo ou no extrato da sua conta; o comprovante sozinho não prova o pagamento. Desconfie de comprovante com as palavras agendado, agendamento ou programado, de print cortado e de pagador com nome diferente do comprador. Na dúvida, suspenda a venda.",
+      "fontes": [
+        {
+          "publicador": "Cielo",
+          "titulo": "Golpe do Pix agendado: como funciona e como se proteger?"
+        },
+        {
+          "publicador": "Serasa",
+          "titulo": "Como se proteger contra o golpe do Pix agendado"
+        },
+        {
+          "publicador": "Neon",
+          "titulo": "Golpe do comprovante de Pix falso: como identificar um?"
+        }
+      ]
+    },
+    {
+      "id": "devolucao-de-emprestimo",
+      "modalidade": "Golpe da devolução do empréstimo",
+      "categoria": "falsa_central_ou_instituicao",
+      "canais": [
+        "Ligação",
+        "WhatsApp"
+      ],
+      "frasesComuns": [
+        "caiu na sua conta um empréstimo por engano",
+        "precisamos cancelar o empréstimo contratado em seu nome",
+        "devolva o valor por Pix para cancelar",
+        "pague este boleto para estornar o empréstimo"
+      ],
+      "oQuePedem": "Devolução, por Pix ou boleto, de um empréstimo que o próprio golpista contratou em nome da vítima.",
+      "oQueFazer": "Não devolva valores a pessoas ou empresas desconhecidas. Procure o banco pelos canais oficiais: devoluções verdadeiras são feitas pela própria instituição.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024"
+        }
+      ]
+    },
+    {
+      "id": "falsa-central-falso-funcionario",
+      "modalidade": "Falsa central telefônica ou falso funcionário do banco",
+      "categoria": "falsa_central_ou_instituicao",
+      "canais": [
+        "Ligação",
+        "WhatsApp",
+        "SMS"
+      ],
+      "frasesComuns": [
+        "aqui é da central de segurança do seu banco",
+        "identificamos uma movimentação suspeita na sua conta",
+        "seus dados estão desatualizados",
+        "precisamos regularizar sua conta ou seu cartão",
+        "confirme sua senha para cancelar a compra",
+        "faça uma transferência para estornar o valor"
+      ],
+      "oQuePedem": "Senha, dados pessoais, código de segurança ou transferência apresentada como estorno ou regularização.",
+      "oQueFazer": "Bancos não pedem senha, código de segurança nem transferência para estorno. Desligue e ligue para o banco pelos canais oficiais, de outro telefone.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024"
+        }
+      ]
+    },
+    {
+      "id": "falsa-cobranca-divida-ativa",
+      "modalidade": "Falsa cobrança ou negociação de dívida em nome da PGFN",
+      "categoria": "cobranca_ou_boleto_falso",
+      "canais": [
+        "Correspondência",
+        "WhatsApp",
+        "E-mail",
+        "Aplicativo falso"
+      ],
+      "frasesComuns": [
+        "quite sua dívida com a União com desconto",
+        "pague por Pix para regularizar sua pendência",
+        "você tem uma restituição ou reembolso a receber",
+        "nosso escritório é parceiro da PGFN",
+        "baixe o aplicativo para negociar sua dívida"
+      ],
+      "oQuePedem": "Pagamento por Pix ou transferência, dados pessoais e bancários ou instalação de aplicativo falso.",
+      "oQueFazer": "Dívidas com a União são negociadas só no REGULARIZE e pagas por documento de arrecadação (DARF, DAS, GPS ou GRRF), nunca por Pix. A PGFN não tem escritórios parceiros nem aplicativo do REGULARIZE para celular.",
+      "fontes": [
+        {
+          "publicador": "Procuradoria-Geral da Fazenda Nacional",
+          "titulo": "Alerta sobre tentativas de golpes e fraudes em nome da PGFN"
+        }
+      ]
+    },
+    {
+      "id": "falsa-vaga-de-emprego",
+      "modalidade": "Falsa vaga de emprego",
+      "categoria": "oferta_ou_premio_falso",
+      "canais": [
+        "WhatsApp",
+        "E-mail",
+        "Redes sociais"
+      ],
+      "frasesComuns": [
+        "vaga imperdível com salário acima da média",
+        "oportunidade irrecusável, poucas exigências",
+        "para garantir a vaga, faça o curso obrigatório",
+        "pague o exame admissional para seguir no processo",
+        "mande foto dos documentos e seus dados bancários"
+      ],
+      "oQuePedem": "Taxas de curso, exame ou inscrição, além de documentos e dados bancários usados depois em outros golpes.",
+      "oQueFazer": "Empresas sérias não cobram para participar de seleção, exame ou curso. Confirme a vaga no site oficial da empresa e não envie documentos nem dados bancários antes de uma entrevista.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Febraban alerta para o golpe do falso emprego"
+        }
+      ]
+    },
+    {
+      "id": "falsa-venda",
+      "modalidade": "Falsa venda em loja, site ou perfil falso",
+      "categoria": "oferta_ou_premio_falso",
+      "canais": [
+        "Redes sociais",
+        "Site",
+        "WhatsApp"
+      ],
+      "frasesComuns": [
+        "promoção só hoje",
+        "últimas unidades com desconto",
+        "preço bem abaixo do que se vê em outras lojas",
+        "pagamento só por Pix",
+        "liquidação de estoque",
+        "envio imediato depois do pagamento"
+      ],
+      "oQuePedem": "Pagamento antecipado, geralmente por Pix ou boleto, por produto que não existe ou não será entregue.",
+      "oQueFazer": "Desconfie de preço muito abaixo do mercado. Pesquise a reputação da loja, prefira sites conhecidos e não compre por links recebidos em mensagens.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024"
+        }
+      ]
+    },
+    {
+      "id": "falso-boleto",
+      "modalidade": "Falso boleto",
+      "categoria": "cobranca_ou_boleto_falso",
+      "canais": [
+        "E-mail",
+        "WhatsApp",
+        "Correspondência"
+      ],
+      "frasesComuns": [
+        "segue o boleto atualizado",
+        "o boleto anterior foi cancelado, pague este",
+        "segunda via com novo vencimento",
+        "evite juros, pague ainda hoje"
+      ],
+      "oQuePedem": "Pagamento de boleto adulterado, cujo dinheiro vai para a conta do golpista.",
+      "oQueFazer": "Antes de pagar, confira o nome e o CPF ou CNPJ do beneficiário, o valor e o vencimento. Na dúvida, fale com a empresa pelo SAC oficial.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024"
+        }
+      ]
+    },
+    {
+      "id": "falso-consignado-inss",
+      "modalidade": "Falsa oferta de consignado em nome do INSS",
+      "categoria": "falsa_central_ou_instituicao",
+      "canais": [
+        "Ligação",
+        "WhatsApp",
+        "E-mail",
+        "Redes sociais"
+      ],
+      "frasesComuns": [
+        "aqui é do INSS, temos um empréstimo consignado liberado para você",
+        "condição especial para aposentados e pensionistas",
+        "você tem um valor alto a receber da sua aposentadoria",
+        "é só dizer que aceita para liberar",
+        "confirme seus dados bancários para liberar o crédito",
+        "para cancelar, faça o estorno nesta outra conta"
+      ],
+      "oQuePedem": "Concordância verbal, foto e dados usados para contratar consignado em nome da vítima; quando ela tenta cancelar, pedem o \"estorno\" para conta de terceiro.",
+      "oQueFazer": "O INSS não oferece empréstimo por ligação, mensagem ou e-mail e não manda ninguém à sua casa. Não passe senha nem dados bancários. É possível bloquear a contratação de consignado pelo Meu INSS ou pela Central 135.",
+      "fontes": [
+        {
+          "publicador": "INSS",
+          "titulo": "INSS alerta para golpes com consignado"
+        },
+        {
+          "publicador": "Procon Goiás",
+          "titulo": "Procon Goiás alerta aposentados e pensionistas do INSS para golpe do empréstimo consignado"
+        }
+      ]
+    },
+    {
+      "id": "falso-investimento",
+      "modalidade": "Falso investimento",
+      "categoria": "oferta_ou_premio_falso",
+      "canais": [
+        "Redes sociais",
+        "WhatsApp",
+        "Anúncios"
+      ],
+      "frasesComuns": [
+        "rendimento garantido toda semana",
+        "lucro alto e rápido, sem risco",
+        "veja quanto meus clientes já ganharam",
+        "últimas vagas, decida hoje",
+        "comece com pouco e veja o retorno",
+        "invista mais para liberar o saque"
+      ],
+      "oQuePedem": "Depósitos em supostos investimentos; pequenos retornos iniciais estimulam valores maiores, que somem.",
+      "oQueFazer": "Desconfie de retornos muito acima do mercado e de pressão para decidir rápido. Verifique se a empresa é autorizada a operar antes de investir.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024"
+        }
+      ]
+    },
+    {
+      "id": "falso-leilao-de-veiculos",
+      "modalidade": "Falso leilão de veículos em site que imita o Detran",
+      "categoria": "oferta_ou_premio_falso",
+      "canais": [
+        "Site",
+        "Redes sociais",
+        "WhatsApp"
+      ],
+      "frasesComuns": [
+        "leilão oficial de veículos do Detran",
+        "carros e caminhões apreendidos com lance abaixo da tabela",
+        "você arrematou o veículo, segue o boleto",
+        "envio do certificado de arrematação após o pagamento",
+        "pague hoje para garantir o lote"
+      ],
+      "oQuePedem": "Pagamento de boleto ou Pix por veículo supostamente arrematado em leilão que não existe.",
+      "oQueFazer": "Os leilões verdadeiros são conduzidos por leiloeiros oficiais, com edital publicado no site do Detran. Acesse o site oficial digitando o endereço e desconfie de preço muito abaixo do mercado.",
+      "fontes": [
+        {
+          "publicador": "Detran-PR",
+          "titulo": "Detran-PR alerta sobre golpe de falsos leilões de veículos"
+        }
+      ]
+    },
+    {
+      "id": "falso-motoboy",
+      "modalidade": "Falso motoboy",
+      "categoria": "falsa_central_ou_instituicao",
+      "canais": [
+        "Ligação"
+      ],
+      "frasesComuns": [
+        "seu cartão foi clonado",
+        "corte o cartão ao meio",
+        "informe a senha para bloquearmos o cartão",
+        "um portador vai buscar o cartão para perícia"
+      ],
+      "oQuePedem": "Entrega do cartão (cortado, com o chip intacto) e da senha a um falso portador.",
+      "oQueFazer": "Nenhum banco pede o cartão de volta nem manda alguém buscá-lo. Desligue e ligue para o banco de outro aparelho.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024"
+        }
+      ]
+    },
+    {
+      "id": "falso-parente-numero-novo",
+      "modalidade": "Falso parente ou amigo com número novo",
+      "categoria": "falso_contato",
+      "canais": [
+        "WhatsApp"
+      ],
+      "frasesComuns": [
+        "oi, troquei de número, salva esse",
+        "meu celular quebrou, esse é meu número novo",
+        "estou sem acesso ao aplicativo do banco",
+        "preciso pagar uma conta urgente hoje",
+        "me empresta um dinheiro que eu te devolvo amanhã",
+        "faz um Pix para essa chave, é de um conhecido meu",
+        "não posso falar agora, só por mensagem"
+      ],
+      "oQuePedem": "Pix ou pagamento de conta, em geral para conta de terceiro, com urgência.",
+      "oQueFazer": "Antes de enviar dinheiro, confirme que é mesmo a pessoa: ligue para o número antigo ou faça uma chamada de vídeo. Desconfie de pedido de dinheiro feito só por mensagem.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Golpe do Whatsapp"
+        }
+      ]
+    },
+    {
+      "id": "falso-premio-sorteio",
+      "modalidade": "Falso prêmio ou sorteio",
+      "categoria": "oferta_ou_premio_falso",
+      "canais": [
+        "WhatsApp",
+        "SMS",
+        "E-mail"
+      ],
+      "frasesComuns": [
+        "parabéns, você foi sorteado",
+        "você ganhou um prêmio do programa de nota fiscal",
+        "pague a taxa para liberar o seu prêmio",
+        "resgate seu prêmio pelo link antes que expire",
+        "você ganhou um carro no sorteio"
+      ],
+      "oQuePedem": "Pagamento de taxa para liberar um prêmio que não existe.",
+      "oQueFazer": "Nunca pague para receber prêmio. Confira no site ou aplicativo oficial do programa e não clique em links nem ligue para números enviados na mensagem.",
+      "fontes": [
+        {
+          "publicador": "Secretaria da Fazenda do Paraná",
+          "titulo": "Secretaria da Fazenda alerta sobre golpe com falsos prêmios do Nota Paraná"
+        }
+      ]
+    },
+    {
+      "id": "falso-sequestro",
+      "modalidade": "Falso sequestro de familiar",
+      "categoria": "ameaca_ou_extorsao",
+      "canais": [
+        "Ligação"
+      ],
+      "frasesComuns": [
+        "estamos com seu filho",
+        "não desligue e não fale com ninguém",
+        "seu parente sofreu um acidente, aqui é da polícia",
+        "faça o que eu mandar ou ele vai sofrer"
+      ],
+      "oQuePedem": "A fonte descreve a busca por dados pessoais e pelos nomes de parentes, usados para pressionar a vítima; não detalha o pagamento exigido.",
+      "oQueFazer": "Mantenha a calma e não dê dados pessoais nem nomes de parentes. Desligue e ligue para a pessoa que estaria sequestrada; se não conseguir, procure alguém que esteja com ela. Desconfie de ligações a cobrar ou de número restrito.",
+      "fontes": [
+        {
+          "publicador": "Secretaria de Justiça e Segurança Pública de Mato Grosso do Sul",
+          "titulo": "Dica da Polícia Civil: Alerta sobre o golpe do falso sequestro"
+        }
+      ]
+    },
+    {
+      "id": "golpe-do-amor",
+      "modalidade": "Golpe do amor (estelionato amoroso)",
+      "categoria": "outro_golpe",
+      "canais": [
+        "Redes sociais",
+        "Aplicativos de relacionamento",
+        "WhatsApp"
+      ],
+      "frasesComuns": [
+        "nunca senti isso por ninguém",
+        "estou com um problema e só posso contar com você",
+        "preciso de ajuda com dinheiro, depois te devolvo",
+        "não posso fazer chamada de vídeo agora",
+        "não conte para ninguém sobre nós"
+      ],
+      "oQuePedem": "Dinheiro ou outros favores financeiros, pedidos cedo no relacionamento e justificados por emergências.",
+      "oQueFazer": "Desconfie de relacionamento que avança rápido demais e de pedido de dinheiro logo no começo. Prefira chamada de vídeo e converse com alguém de confiança antes de transferir qualquer valor.",
+      "fontes": [
+        {
+          "publicador": "Agência Brasília (Governo do Distrito Federal)",
+          "titulo": "Golpe do amor: Como prevenir, identificar e denunciar estelionato amoroso"
+        }
+      ]
+    },
+    {
+      "id": "mao-fantasma",
+      "modalidade": "Golpe da mão fantasma (acesso remoto ao celular)",
+      "categoria": "falsa_central_ou_instituicao",
+      "canais": [
+        "Ligação",
+        "WhatsApp",
+        "SMS"
+      ],
+      "frasesComuns": [
+        "sua conta foi invadida",
+        "detectamos movimentações suspeitas",
+        "instale este aplicativo para proteger sua conta",
+        "baixe o aplicativo do link para resolvermos agora"
+      ],
+      "oQuePedem": "Instalação de aplicativo que dá ao golpista acesso ao celular e às contas da vítima.",
+      "oQueFazer": "Não instale aplicativos indicados por quem ligou ou mandou mensagem. Desligue e confirme o caso com o banco pelos canais oficiais, de outro telefone.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024"
+        }
+      ]
+    },
+    {
+      "id": "phishing-link-falso",
+      "modalidade": "Phishing: link para página falsa",
+      "categoria": "roubo_de_dados",
+      "canais": [
+        "SMS",
+        "E-mail",
+        "WhatsApp"
+      ],
+      "frasesComuns": [
+        "clique no link para atualizar seus dados",
+        "sua conta será bloqueada, acesse o link",
+        "confirme seu cadastro no link abaixo",
+        "você tem um valor a receber, acesse aqui",
+        "regularize sua situação pelo link"
+      ],
+      "oQuePedem": "Não há pedido financeiro direto: a página falsa coleta dados pessoais, senhas e dados de cartão.",
+      "oQueFazer": "Não clique em links recebidos por mensagem ou e-mail. Na dúvida, entre no site ou aplicativo oficial digitando o endereço você mesmo, ou consulte o banco.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024"
+        }
+      ]
+    },
+    {
+      "id": "pix-enviado-por-engano",
+      "modalidade": "Golpe do Pix errado (devolução para outra conta)",
+      "categoria": "outro_golpe",
+      "canais": [
+        "WhatsApp",
+        "Ligação"
+      ],
+      "frasesComuns": [
+        "fiz um Pix para você por engano",
+        "errei a chave, pode me devolver?",
+        "devolve nessa outra chave, por favor",
+        "preciso desse dinheiro de volta com urgência"
+      ],
+      "oQuePedem": "Devolução de um Pix recebido para uma chave diferente da de origem; depois o golpista pede o estorno ao banco e fica com os dois valores.",
+      "oQueFazer": "Devolva só pela função de devolução do próprio aplicativo do banco, para a conta de origem. Nunca faça um novo Pix para outra chave. Na dúvida, ligue para o seu banco antes.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Febraban faz alerta sobre o golpe do Pix errado"
+        }
+      ]
+    },
+    {
+      "id": "taxa-falsa-encomenda-internacional",
+      "modalidade": "Taxa falsa para liberar encomenda internacional",
+      "categoria": "cobranca_ou_boleto_falso",
+      "canais": [
+        "WhatsApp",
+        "SMS",
+        "E-mail",
+        "Ligação"
+      ],
+      "frasesComuns": [
+        "sua encomenda está retida na Receita Federal",
+        "pague os impostos para liberar a encomenda",
+        "taxa de despesas postais pendente",
+        "pague por Pix ou QR Code para evitar a devolução",
+        "seu nome será negativado se não pagar"
+      ],
+      "oQuePedem": "Pagamento de imposto ou taxa falsa por Pix, QR Code, cartão ou transferência.",
+      "oQueFazer": "A Receita Federal não liga nem manda mensagem cobrando para liberar mercadoria e não aceita Pix, QR Code ou cartão. Encomendas dos Correios: pague só pelo Minhas Importações, no site ou aplicativo dos Correios.",
+      "fontes": [
+        {
+          "publicador": "Receita Federal",
+          "titulo": "Golpes em Compras Internacionais"
+        }
+      ]
+    },
+    {
+      "id": "whatsapp-pedido-de-codigo",
+      "modalidade": "Golpe do WhatsApp: pedido do código de verificação",
+      "categoria": "roubo_de_dados",
+      "canais": [
+        "WhatsApp",
+        "SMS"
+      ],
+      "frasesComuns": [
+        "somos do atendimento da loja onde você tem cadastro",
+        "precisamos atualizar o seu cadastro",
+        "estamos fazendo uma manutenção na sua conta",
+        "você vai receber um código por SMS, me informe para confirmar",
+        "me passa o código de 6 dígitos que chegou no seu celular",
+        "é só para gerar o número do protocolo"
+      ],
+      "oQuePedem": "Não há pedido financeiro direto: o golpista pede o código de verificação do WhatsApp para clonar a conta e depois pedir dinheiro aos contatos da vítima.",
+      "oQueFazer": "Nunca informe a ninguém o código que chega por SMS. Ative a confirmação em duas etapas do WhatsApp e deixe a foto de perfil visível só para contatos.",
+      "fontes": [
+        {
+          "publicador": "Febraban",
+          "titulo": "Golpe do Whatsapp"
+        },
+        {
+          "publicador": "Febraban",
+          "titulo": "Saiba quais foram os 10 golpes mais aplicados contra clientes bancários em 2024"
+        }
+      ]
+    }
+  ]
+}

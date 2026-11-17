@@ -86,6 +86,11 @@ flutter:
         - asset: assets/fonts/PlusJakartaSans-800.ttf
           weight: 800
 
+  # Conteúdo do cartão "Golpe da semana" (RF17), gerado das fichas
+  # revisadas por tool/gerar_golpe_da_semana.dart.
+  assets:
+    - assets/conteudo/golpe_da_semana.json
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

@@ -8,6 +8,7 @@ import 'package:phize/shared/domain/categoria_ameaca.dart';
 import 'package:phize/features/analise/domain/exemplo_tutorial_link.dart';
 import 'package:phize/features/analise/domain/exemplo_tutorial_print.dart';
 import 'package:phize/features/analise/domain/faixa_risco.dart';
+import 'package:phize/features/analise/domain/golpe_da_semana.dart';
 import 'package:phize/features/analise/domain/resultado_analise_link.dart';
 import 'package:phize/features/analise/domain/resultado_analise_print.dart';
 import 'package:phize/features/analise/domain/verificacao_link.dart';
@@ -80,6 +81,22 @@ final _historico = [
       data: DateTime(2026, 11, 12),
     ),
 ];
+
+const _golpeDaSemana = FichaEducativa(
+  id: 'falsa-central-falso-funcionario',
+  modalidade: 'Falsa central de atendimento ou falso funcionário do banco',
+  categoria: CategoriaAmeaca.falsaCentralOuInstituicao,
+  canais: ['Ligação', 'WhatsApp', 'SMS'],
+  frasesComuns: [
+    'identificamos uma compra suspeita no seu cartão',
+    'vou transferir para o setor de segurança',
+  ],
+  oQuePedem: 'Senha, código de verificação ou transferência para conta segura.',
+  oQueFazer:
+      'Desligue e ligue você mesmo para o número do verso do cartão. O banco '
+      'não pede senha nem transferência para proteger a conta.',
+  fontes: [(publicador: 'Fonte pública de exemplo', titulo: 'Alerta')],
+);
 
 Future<void> _abrir(
   WidgetTester tester, {
@@ -168,6 +185,7 @@ void main() {
         'comunidade': (AppRoutes.comunidade, null),
         'detalhe do reporte': (AppRoutes.detalheReporte, reporteDeTeste()),
         'moderação': (AppRoutes.moderacao, null),
+        'golpe da semana': (AppRoutes.golpeDaSemana, _golpeDaSemana),
         'pesquisa da comunidade': (AppRoutes.pesquisaComunidade, null),
         'meus reportes': (AppRoutes.meusReportes, null),
         'editar reporte': (AppRoutes.editarReporte, reporteDeTeste()),

@@ -16,7 +16,7 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
   - Teste de todos os fluxos no emulador e correção dos achados: build de release do Android, aquecimento das Functions (`tool/emuladores/aquecer_functions.sh`), títulos com letra muito grande.
   - Decisão de usar só recursos gratuitos: limitação acadêmica declarada no RNF07 e nos demais documentos; consentimento na versão 2 ("Use só conversas de teste").
   - RAG: etapa 2 (só as mensagens recebidas do print), etapa 3 (situações legítimas testadas e retiradas do prompt, sem ganho confirmado) e etapa 4 (três fichas novas). Com a base: 63 de 63 golpes do conjunto de teste detectados e as 26 legítimas verdes.
-- **Testes:** 765 no app, 93 na Function e 76 das regras do Firestore.
+- **Testes:** 781 no app, 93 na Function e 76 das regras do Firestore.
 - **Correções aplicadas na Fase 6.3:** D1 a D4 (primeira auditoria); D1-a, D3-a e D3-b (segunda auditoria) — falha de rede ao obter o token deixou de ser tratada como falha de autenticação nos clientes de análise de texto e de reputação de domínio; texto da tela de seleção ajustado ao que de fato é enviado
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
 - **Fase 9 fechada no app (2026-11-16):** texto do "Cálculo do risco" aprovado, limitação do RNF03 declarada, UC03 sem RAG no link, sem login com a Apple, teste em Android real declarado como não feito por enquanto. Ficam para o fim o ícone e as mudanças nos .docx e nas imagens dos diagramas.
@@ -26,7 +26,8 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Etapa 10.3 feita (2026-11-16):** aba Comunidade, com feed "Em alta" e "Mais recentes", detalhe, curtir e compartilhar; barra inferior com quatro abas.
 - **Etapa 10.4 feita (2026-11-16):** denúncia com motivo, ocultação automática com 3 denúncias (gatilho na Function) e tela mínima de moderação.
 - **Etapa 10.5 feita (2026-11-17):** pesquisa por palavras ou link, "Meus reportes" (editar e excluir) e a comunidade na exportação e na exclusão de conta.
-- **Próximo passo:** etapa 10.6 (cartão "Golpe da semana" na tela inicial); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Etapa 10.6 feita (2026-11-17):** cartão "Golpe da semana" no Início, com rodízio semanal entre as 21 fichas revisadas.
+- **Próximo passo:** etapa 10.7 (curadoria: transformar reporte validado em rascunho de ficha da base); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -1276,7 +1277,7 @@ Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe 
 | 10.3 | Aba "Comunidade": feed ("Em alta" e "Mais recentes"), detalhe, curtir e compartilhar (feita) | T40, T41, T42 |
 | 10.4 | Denúncia, ocultação automática (gatilho na Function) e tela mínima de moderação (feita) | T43, T44, T45 |
 | 10.5 | Pesquisa, "Meus reportes" (editar e excluir) e reportes na exportação e na exclusão de conta (feita) | T57, T58, T59, T60 |
-| 10.6 | Cartão "Golpe da semana" na tela inicial | T61 |
+| 10.6 | Cartão "Golpe da semana" na tela inicial (feita) | T61 |
 | 10.7 | Curadoria: transformar reporte validado em rascunho de ficha da base | T46 |
 | 10.8 | Comentários (opcional, a reavaliar) | — |
 
@@ -1355,6 +1356,19 @@ A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perf
 > - `moderadores/{uid}` continua depois da exclusão de uma conta moderadora: só a equipe edita essa lista, pelo console. Remover a pessoa da lista faz parte de desligá-la da moderação.
 > - Curtidas e denúncias gravadas antes desta etapa não têm o índice privado e não seriam achadas na exclusão de conta. Na versão acadêmica, os dados do emulador são fictícios e somem quando ele reinicia; numa base real, seria preciso migrar.
 > - A pesquisa por palavras faz duas consultas (pendentes e aprovados) e ordena no aparelho, até 50 de cada. Com muitos reportes, rever. Os índices compostos estão em `firestore.indexes.json`.
+
+### Etapa 10.6 — Golpe da semana (concluída, 2026-11-17)
+
+- **Conteúdo (RF17, T61):** `tool/gerar_golpe_da_semana.dart` copia das fichas revisadas (curadoria preenchida) nome, categoria, canais, gatilhos ("frases que costumam aparecer"), pedido financeiro ("o que pedem"), orientação preventiva ("o que fazer") e publicador e título das fontes, sem reescrita, para `assets/conteudo/golpe_da_semana.json`, embutido no app. Ficam de fora quem revisou, os links das fontes e as situações legítimas. Um teste compara o arquivo com as fichas e falha se estiver desatualizado; o passo foi incluído em `functions/base-conhecimento/README.md`.
+- **Por que embutido:** a exibição não faz chamada de rede nem envia nada (RF17), funciona sem conexão e não depende da Function. Contrapartida: ficha nova só entra no cartão numa nova versão do app.
+- **Rodízio:** semana contada no horário de Brasília, virando na segunda-feira à meia-noite, independente do fuso do aparelho; a ficha é a da posição `semana % total`, em ordem de identificador. Todos os usuários da mesma versão veem a mesma modalidade na mesma semana.
+- **Telas:** cartão no Início, abaixo de "Analisar link", com o nome e a primeira frase típica; o toque abre o detalhe com canais, frases, o que pedem, o que fazer, a fonte e a nota de que o conteúdo é revisado pela equipe e muda toda semana. Se o arquivo não puder ser lido, o cartão some e o Início segue normal.
+- **Testes:** 16 novos (781 no total): virada da semana, independência do fuso, rodízio, sincronia com as fichas, ausência de quem revisou e de links, curadoria obrigatória, cartão, detalhe e o detalhe no teste de letra muito grande.
+- **Conferido no emulador:** semana de 16/11/2026, "Falsa venda em loja, site ou perfil falso", com as seis frases, o pedido, a orientação e a fonte (Febraban).
+
+> **Pontos para a equipe:**
+> - Incluir ou retirar uma ficha muda o tamanho do rodízio e, com isso, a ficha das semanas seguintes. Não é problema para a versão acadêmica; se a ordem importar, dá para fixar uma lista de rodízio.
+> - O RF17 também prevê notícias de fontes externas como evolução posterior (só título, fonte, data e link). Não entrou nesta etapa.
 
 ---
 

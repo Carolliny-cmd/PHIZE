@@ -5,11 +5,19 @@ import '../../../../core/routing/app_routes.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/marca_phize.dart';
 import '../../../../shared/widgets/phize_bottom_nav.dart';
+import '../../domain/golpe_da_semana.dart';
+import '../widgets/cartao_golpe_da_semana.dart';
 
 /// Tela inicial: uma pergunta e duas ações, analisar print ou link (RF03,
-/// RF04). O print vem primeiro por ser o caso mais comum.
+/// RF04). O print vem primeiro por ser o caso mais comum. Abaixo, o cartão
+/// "Golpe da semana" (RF17).
 class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+  const DashboardPage({super.key, this.golpeDaSemanaRepository, this.agora});
+
+  final GolpeDaSemanaRepository? golpeDaSemanaRepository;
+
+  /// Relógio do rodízio semanal, para os testes.
+  final DateTime Function()? agora;
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +49,9 @@ class DashboardPage extends StatelessWidget {
               ),
               onPressed: kIsWeb
                   ? null
-                  : () => Navigator.of(
-                      context,
-                    ).pushNamed(AppRoutes.analisarPrint),
+                  : () =>
+                        Navigator.of(context)
+                            .pushNamed(AppRoutes.analisarPrint),
               icon: const Icon(Icons.image_outlined),
               label: const Text('Analisar print'),
             ),
@@ -71,6 +79,11 @@ class DashboardPage extends StatelessWidget {
                   Navigator.of(context).pushNamed(AppRoutes.analisarLink),
               icon: const Icon(Icons.link),
               label: const Text('Analisar link'),
+            ),
+            const SizedBox(height: 32),
+            CartaoGolpeDaSemana(
+              repositorio: golpeDaSemanaRepository,
+              agora: agora,
             ),
           ],
         ),

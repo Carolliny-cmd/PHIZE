@@ -14,6 +14,7 @@ import '../../shared/domain/captura_imagem.dart';
 import '../../features/analise/domain/consentimento_repository.dart';
 import '../../features/analise/domain/consulta_idade_dominio.dart';
 import '../../features/analise/domain/consulta_reputacao_dominio.dart';
+import '../../features/analise/domain/golpe_da_semana.dart';
 import '../../features/analise/domain/historico_repository.dart';
 import '../../features/analise/domain/rdap_client.dart';
 import '../../shared/domain/reconhecedor_texto.dart';
@@ -27,6 +28,7 @@ import '../../features/analise/presentation/pages/analisar_print_page.dart';
 import '../../features/analise/presentation/pages/analise_compartilhada_page.dart';
 import '../../features/analise/presentation/pages/dashboard_page.dart';
 import '../../features/analise/presentation/pages/detalhe_historico_page.dart';
+import '../../features/analise/presentation/pages/golpe_da_semana_page.dart';
 import '../../features/analise/presentation/pages/historico_page.dart';
 import '../../features/analise/presentation/pages/resultado_analise_page.dart';
 import '../../features/auth/domain/auth_repository.dart';
@@ -73,6 +75,7 @@ class AppRouter {
     CompartilhadorTexto? compartilhadorTexto,
     ModeracaoRepository? moderacaoRepository,
     MeusReportesRepository? meusReportesRepository,
+    GolpeDaSemanaRepository? golpeDaSemanaRepository,
   }) {
     final caixa = caixaCompartilhamento ?? CaixaCompartilhamento.instancia;
 
@@ -105,7 +108,15 @@ class AppRouter {
           ),
         );
       case AppRoutes.dashboard:
-        return MaterialPageRoute(builder: (_) => const DashboardPage());
+        return MaterialPageRoute(
+          builder: (_) =>
+              DashboardPage(golpeDaSemanaRepository: golpeDaSemanaRepository),
+        );
+      case AppRoutes.golpeDaSemana:
+        return MaterialPageRoute(
+          builder: (_) =>
+              GolpeDaSemanaPage(ficha: settings.arguments as FichaEducativa),
+        );
       case AppRoutes.historico:
         return MaterialPageRoute(
           builder: (_) =>

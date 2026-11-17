@@ -58,7 +58,12 @@ Nunca use conversa real de alguém como fonte ou como gatilho (RNF01, RNF07). Os
    npm run indexar-base
    ```
    O script valida todas as fichas e para com a lista de erros se alguma estiver incompleta. Com as fichas válidas, gera embedding só para as novas ou alteradas e reaproveita as demais. Precisa de `GEMINI_API_KEY` em `functions/.env.local`. Recusas temporárias do provedor (503, 429) são repetidas automaticamente.
-3. Faça commit da ficha **e** do `indice.json` juntos.
+3. **[TERMINAL]**, na pasta raiz do projeto, atualize o conteúdo do cartão "Golpe da semana" do app (RF17):
+   ```
+   dart run tool/gerar_golpe_da_semana.dart
+   ```
+   O script copia os textos das fichas revisadas, sem mudança, para `assets/conteudo/golpe_da_semana.json`. Um teste do app falha se esse arquivo estiver desatualizado. A ficha nova só aparece no cartão numa nova versão do app.
+4. Faça commit da ficha, do `indice.json` e do `golpe_da_semana.json` juntos.
 
 ## Rascunhos
 
