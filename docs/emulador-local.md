@@ -77,6 +77,16 @@ npm --prefix functions test
 ```
 Os testes simulam o Safe Browsing e não acessam a rede.
 
+### Testes das regras do Firestore (comunidade)
+
+Com o emulador do Firestore ligado (porta 8085):
+
+**[TERMINAL]**
+```
+npm --prefix functions run test:regras
+```
+Usam o projeto de teste `demo-phize-regras`, separado do app, e só conteúdo fictício. Detalhes em `docs/comunidade-dados.md`.
+
 ## Verificação rápida sem o app
 
 Sem token, a Function deve recusar a chamada com `401`:

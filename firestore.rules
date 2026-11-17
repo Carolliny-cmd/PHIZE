@@ -29,6 +29,173 @@ service cloud.firestore {
           && request.auth.uid == uid
           && analiseValida(request.resource.data);
       }
+
+      // Autoria dos reportes (RF05, RF16). Fica só aqui, fora do reporte
+      // público, para que o feed não identifique o autor. Criada na mesma
+      // gravação do reporte; apagá-la sem apagar o reporte dissocia a
+      // autoria (exclusão de conta, RF12).
+      match /reportes/{reporteId} {
+        allow read, delete: if request.auth != null && request.auth.uid == uid;
+        allow create: if request.auth != null
+          && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['criadoEm'])
+          && request.resource.data.criadoEm == request.time
+          && !exists(/databases/$(database)/documents/reportes/$(reporteId))
+          && existsAfter(/databases/$(database)/documents/reportes/$(reporteId));
+      }
+
+      // Marca de "também recebi este golpe" (UC05, ameaça já reportada):
+      // uma por conta e por reporte, gravada junto com o +1 do contador.
+      match /incidencias/{reporteId} {
+        allow read, delete: if request.auth != null && request.auth.uid == uid;
+        allow create: if request.auth != null
+          && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['criadoEm'])
+          && request.resource.data.criadoEm == request.time
+          && contadorMaisUm(reporteId, 'incidencias');
+      }
+    }
+
+    // Moderadores (RF11): lista mantida só pela equipe, pelo console. Cada
+    // conta lê apenas o próprio documento, para saber se modera.
+    match /moderadores/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Reportes da comunidade (RF05, RF06, RF08, RF11, RF16). Sem autor, sem
+    // link em texto puro (arquitetura, 5.5). Reporte de link usa a hash como
+    // identificador, o que impede dois reportes do mesmo link: o segundo vira
+    // incidência. Ocultos (RF11) só são lidos por moderadores, e as consultas
+    // do feed precisam filtrar o status.
+    match /reportes/{reporteId} {
+      allow read: if request.auth != null
+        && (resource.data.status != 'oculto' || moderador());
+
+      allow create: if request.auth != null
+        && reporteNovoValido(request.resource.data, reporteId)
+        && existsAfter(/databases/$(database)/documents/users/$(request.auth.uid)/reportes/$(reporteId));
+
+      allow update: if request.auth != null && (
+        // Autor corrige título e relato (RF16); o link nunca muda.
+        (autor(reporteId)
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['titulo', 'relato', 'palavras', 'editadoEm'])
+          && request.resource.data.editadoEm == request.time
+          && textosReporteValidos(request.resource.data))
+        // Contadores: só +1, sempre junto com a marca da conta (uma por
+        // conta), o que impede voto ou denúncia duplicados (RF06, RF11).
+        || maisUmCom('curtidas',
+             /databases/$(database)/documents/reportes/$(reporteId)/curtidas/$(request.auth.uid))
+        || maisUmCom('denuncias',
+             /databases/$(database)/documents/reportes/$(reporteId)/denuncias/$(request.auth.uid))
+        || maisUmCom('incidencias',
+             /databases/$(database)/documents/users/$(request.auth.uid)/incidencias/$(reporteId))
+        // Moderação (RF11): aprovar, ocultar ou devolver a pendente.
+        || (moderador()
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['status'])
+          && request.resource.data.status in ['pendente', 'aprovado', 'oculto'])
+      );
+
+      allow delete: if request.auth != null
+        && (autor(reporteId) || moderador());
+
+      match /curtidas/{uid} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow create: if request.auth != null
+          && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['criadoEm'])
+          && request.resource.data.criadoEm == request.time
+          && contadorMaisUm(reporteId, 'curtidas');
+      }
+
+      match /denuncias/{uid} {
+        allow read: if request.auth != null
+          && (request.auth.uid == uid || moderador());
+        allow create: if request.auth != null
+          && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['motivo', 'criadoEm'])
+          && request.resource.data.motivo in [
+               'falso', 'ofensivo', 'duplicado', 'acusa_organizacao_legitima']
+          && request.resource.data.criadoEm == request.time
+          && contadorMaisUm(reporteId, 'denuncias');
+      }
+    }
+
+    // Hashes de ameaças validadas (RF12, RF16): ficam sem autor e continuam
+    // aqui mesmo depois que o reporte de origem é excluído. Só a moderação
+    // grava.
+    match /ameacas/{hash} {
+      allow read: if request.auth != null;
+      allow create, update: if moderador()
+        && hash.matches('^[0-9a-f]{64}$')
+        && request.resource.data.keys().hasOnly(['validadoEm'])
+        && request.resource.data.validadoEm == request.time;
+      allow delete: if moderador();
+    }
+
+    function moderador() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/moderadores/$(request.auth.uid));
+    }
+
+    function autor(reporteId) {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid)/reportes/$(reporteId));
+    }
+
+    // O reporte só ganha +1 em [campo] e a marca da conta nasce nesta mesma
+    // gravação (não existia antes).
+    function maisUmCom(campo, marca) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([campo])
+        && request.resource.data[campo] == resource.data[campo] + 1
+        && !exists(marca)
+        && existsAfter(marca);
+    }
+
+    function contadorMaisUm(reporteId, campo) {
+      return getAfter(/databases/$(database)/documents/reportes/$(reporteId)).data[campo]
+        == get(/databases/$(database)/documents/reportes/$(reporteId)).data[campo] + 1;
+    }
+
+    function textosReporteValidos(dados) {
+      return dados.titulo is string
+        && dados.titulo.size() >= 3
+        && dados.titulo.size() <= 80
+        && dados.relato is string
+        && dados.relato.size() <= 1000
+        && (dados.tipo == 'link' || dados.relato.size() >= 1)
+        && dados.palavras is list
+        && dados.palavras.size() <= 20;
+    }
+
+    function reporteNovoValido(dados, reporteId) {
+      return dados.keys().hasOnly([
+            'tipo', 'titulo', 'relato', 'categoria', 'hashLink', 'palavras',
+            'curtidas', 'denuncias', 'incidencias', 'status', 'criadoEm'])
+        && dados.keys().hasAll([
+            'tipo', 'titulo', 'relato', 'categoria', 'palavras',
+            'curtidas', 'denuncias', 'incidencias', 'status', 'criadoEm'])
+        && dados.tipo in ['link', 'print', 'relato']
+        && (dados.tipo == 'link') == ('hashLink' in dados)
+        && (!('hashLink' in dados) || (
+              dados.hashLink is string
+              && dados.hashLink.matches('^[0-9a-f]{64}$')
+              && reporteId == dados.hashLink))
+        && dados.categoria in [
+              'falso_contato',
+              'falsa_central_ou_instituicao',
+              'cobranca_ou_boleto_falso',
+              'oferta_ou_premio_falso',
+              'ameaca_ou_extorsao',
+              'roubo_de_dados',
+              'outro_golpe'
+            ]
+        && textosReporteValidos(dados)
+        && dados.curtidas == 0
+        && dados.denuncias == 0
+        && dados.incidencias == 1
+        && dados.status == 'pendente'
+        && dados.criadoEm == request.time;
     }
 
     function perfilValido(dados, uid) {

@@ -21,7 +21,8 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Base de conhecimento:** 21 fichas revisadas e indexadas (2026-11-12: entraram `comprovante-pix-falso`, `falso-sequestro` e `falso-consignado-inss`); nenhum rascunho pendente
 - **Fase 9 fechada no app (2026-11-16):** texto do "Cálculo do risco" aprovado, limitação do RNF03 declarada, UC03 sem RAG no link, sem login com a Apple, teste em Android real declarado como não feito por enquanto. Ficam para o fim o ícone e as mudanças nos .docx e nas imagens dos diagramas.
 - **Fase 10 planejada (2026-11-16):** sete decisões da equipe e etapa 10.0 (requisitos e documentos) feita; RF15, RF16 e RF17 criados.
-- **Próximo passo:** etapa 10.1 (modelo de dados e regras do Firestore da comunidade); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Etapa 10.1 feita (2026-11-16):** modelo de dados e regras da comunidade, com 56 testes das regras (`docs/comunidade-dados.md`).
+- **Próximo passo:** etapa 10.2 (reportar golpe); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -1266,7 +1267,7 @@ Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe 
 | Etapa | Entrega | Tarefas |
 | --- | --- | --- |
 | 10.0 | Requisitos e documentos (feita) | — |
-| 10.1 | Modelo de dados e regras do Firestore (reportes, votos, denúncias, moderadores), com testes das regras no emulador | T39 (base) |
+| 10.1 | Modelo de dados e regras do Firestore (reportes, votos, denúncias, moderadores), com testes das regras no emulador (feita) | T39 (base) |
 | 10.2 | Reportar golpe: link com hash, relato e print mascarados, aviso de duplicado, recusa de marca oficial | T36, T37, T38, T39, T56 |
 | 10.3 | Aba "Comunidade": feed ("Em alta" e "Mais recentes"), detalhe, curtir e compartilhar | T40, T41, T42 |
 | 10.4 | Denúncia, ocultação automática (gatilho na Function) e tela mínima de moderação | T43, T44, T45 |
@@ -1276,6 +1277,16 @@ Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe 
 | 10.8 | Comentários (opcional, a reavaliar) | — |
 
 A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perfil.
+
+### Etapa 10.1 — Modelo de dados e regras (concluída, 2026-11-16)
+
+- **Modelo:** `docs/comunidade-dados.md`. Reporte público em `reportes/{id}`, sem autor e sem link em texto puro; autoria privada em `users/{uid}/reportes/{id}`; marcas de curtida, denúncia e incidência, uma por conta; `moderadores/{uid}` editável só pelo console; `ameacas/{hash}` para as hashes validadas (RF12).
+- **Regras:** `firestore.rules`. Reporte de link usa a hash como identificador (um reporte por link); contadores só sobem de 1 em 1, junto com a marca da conta; só o autor edita título e relato e exclui; só a moderação muda o status e lê ocultos.
+- **Testes:** 56 testes das regras contra o emulador do Firestore, num projeto de teste separado (`cd functions && npm run test:regras`). Dependências novas, só de desenvolvimento: `@firebase/rules-unit-testing` 6.0.0 e `firebase` 13.1.0. Os 87 testes da Function seguem passando.
+
+> **Pontos para a equipe:**
+> - O `npm audit` aponta vulnerabilidades em dependências indiretas (gRPC, body-parser e outras). As novas são só de desenvolvimento e rodam na máquina local; revisar antes de qualquer publicação.
+> - Para moderar, a conta precisa de um documento em `moderadores/{uid}`, criado pela equipe no console do Firestore (ou na interface do emulador).
 
 > **Pontos para a equipe:**
 > - A comunidade só terá conteúdo fictício (RNF07, limitação de escopo acadêmico): serve para demonstrar o funcionamento, não para medir engajamento.
