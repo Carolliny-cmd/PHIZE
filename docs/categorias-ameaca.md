@@ -5,7 +5,7 @@ Este documento é a **fonte** das categorias de ameaça atribuídas à análise 
 O código espelha esta lista em três pontos, que devem mudar junto com ela:
 
 - `functions/src/analiseTexto.ts` (`CATEGORIAS_PERMITIDAS`), que restringe a resposta do modelo;
-- `lib/features/analise/domain/categoria_ameaca.dart` (`CategoriaAmeaca`), que valida a resposta no app;
+- `lib/shared/domain/categoria_ameaca.dart` (`CategoriaAmeaca`), que valida a resposta no app;
 - `firestore.rules` (`analiseValida`), que recusa categoria fora da lista na gravação do histórico.
 
 ## Versão 1.0 (2026-10-07)

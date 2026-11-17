@@ -13,4 +13,5 @@ class AppRoutes {
   static const String analiseCompartilhada = '/analise-compartilhada';
   static const String perfil = '/perfil';
   static const String exclusaoPendente = '/exclusao-pendente';
+  static const String reportarGolpe = '/comunidade/reportar';
 }

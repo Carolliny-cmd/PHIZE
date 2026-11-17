@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'core/config/emulator_config.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/app_routes.dart';
-import 'features/analise/data/limpeza_copias_seletor.dart';
+import 'shared/data/limpeza_copias_seletor.dart';
 import 'features/analise/data/receptor_compartilhamento.dart';
 import 'features/analise/domain/caixa_compartilhamento.dart';
 import 'features/analise/presentation/recepcao_compartilhamento.dart';

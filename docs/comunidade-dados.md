@@ -38,14 +38,14 @@ Nenhum outro campo é aceito: não há onde gravar autor, link em texto puro ou 
 - **Edição (RF16):** só o autor, só título, relato e palavras. Categoria, tipo, link e status não mudam.
 - **Exclusão (RF16):** o autor exclui o reporte e a autoria juntos. Apagar só a autoria dissocia o autor e mantém o reporte (exclusão de conta com reporte validado, RF12).
 - **Moderação (RF11):** só contas em `moderadores` mudam o status, leem ocultos e excluem reportes de outras contas. Ninguém se torna moderador pelo app.
-- **Feed:** reporte oculto não é lido por conta comum; por isso, as consultas do feed precisam filtrar o status (`pendente` e `aprovado`).
+- **Feed:** reporte oculto não é lido por conta comum; por isso, as consultas do feed precisam filtrar o status (`pendente` e `aprovado`). Ler um reporte que ainda não existe é permitido: é assim que o app confere se o link já foi reportado antes de publicar.
 - **Hashes validadas (RF12):** `ameacas/{hash}` só guarda a data de validação e continua lá depois da exclusão do reporte de origem.
 
 ## O que fica para as próximas etapas
 
 - **Ocultação automática com 3 denúncias (RF11):** feita por função acionada pela gravação da denúncia, na etapa 10.4. As regras já guardam o contador.
-- **Mascaramento, normalização e hash:** feitos no aparelho, na etapa 10.2; as regras não leem o conteúdo, só o formato.
-- **Recusa de domínio oficial (RF05):** feita no aparelho, na etapa 10.2.
+- **Mascaramento, normalização e hash:** feitos no aparelho (etapa 10.2, `lib/features/comunidade/domain/preparacao_reporte.dart`); as regras não leem o conteúdo, só o formato. A hash é o SHA-256 do domínio normalizado.
+- **Recusa de domínio oficial (RF05):** feita no aparelho (etapa 10.2).
 
 ## Como rodar os testes das regras
 

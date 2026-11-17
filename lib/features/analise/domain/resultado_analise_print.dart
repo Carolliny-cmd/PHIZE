@@ -1,4 +1,4 @@
-import 'categoria_ameaca.dart';
+import '../../../shared/domain/categoria_ameaca.dart';
 import 'resposta_modelo.dart';
 import 'resultado_score.dart';
 import 'sinal_texto_print.dart';

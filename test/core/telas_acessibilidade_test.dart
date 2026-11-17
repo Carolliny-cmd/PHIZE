@@ -4,7 +4,7 @@ import 'package:phize/core/routing/app_router.dart';
 import 'package:phize/core/routing/app_routes.dart';
 import 'package:phize/core/theme/app_theme.dart';
 import 'package:phize/features/analise/domain/analise_risco.dart';
-import 'package:phize/features/analise/domain/categoria_ameaca.dart';
+import 'package:phize/shared/domain/categoria_ameaca.dart';
 import 'package:phize/features/analise/domain/exemplo_tutorial_link.dart';
 import 'package:phize/features/analise/domain/exemplo_tutorial_print.dart';
 import 'package:phize/features/analise/domain/faixa_risco.dart';

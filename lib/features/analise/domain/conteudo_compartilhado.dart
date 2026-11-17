@@ -1,4 +1,4 @@
-import 'imagem_em_memoria.dart';
+import '../../../shared/domain/imagem_em_memoria.dart';
 
 /// Conteúdo recebido pelo menu de compartilhamento do sistema (RF10 / UC11),
 /// mantido só em memória (RNF01). Quem o recebe chama [descartar] ao terminar

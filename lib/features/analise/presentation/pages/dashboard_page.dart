@@ -72,6 +72,16 @@ class DashboardPage extends StatelessWidget {
               icon: const Icon(Icons.link),
               label: const Text('Analisar link'),
             ),
+            const SizedBox(height: 24),
+            // Entrada provisória da comunidade (RF05) até a aba Comunidade
+            // (etapa 10.3 da Fase 10).
+            TextButton.icon(
+              key: const Key('dashboard_reportar_golpe'),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.reportarGolpe),
+              icon: const Icon(Icons.campaign_outlined),
+              label: const Text('Reportar um golpe à comunidade'),
+            ),
           ],
         ),
       ),

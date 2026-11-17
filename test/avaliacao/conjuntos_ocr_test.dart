@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:phize/features/analise/domain/mascaramento_local.dart';
-import 'package:phize/features/analise/domain/organizacao_texto_print.dart';
+import 'package:phize/shared/domain/mascaramento_local.dart';
+import 'package:phize/shared/domain/organizacao_texto_print.dart';
 
 /// Etapa 2 do plano do RAG: monta, a partir do OCR dos prints sintéticos,
 /// três conjuntos de teste com o texto como o app o enviaria:

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:phize/core/routing/app_router.dart';
 import 'package:phize/core/routing/app_routes.dart';
 import 'package:phize/features/analise/domain/analise_risco.dart';
-import 'package:phize/features/analise/domain/categoria_ameaca.dart';
+import 'package:phize/shared/domain/categoria_ameaca.dart';
 import 'package:phize/features/analise/domain/faixa_risco.dart';
 import 'package:phize/features/analise/domain/resultado_analise_print.dart';
 import 'package:phize/features/analise/domain/rotulos_risco.dart';

@@ -22,7 +22,8 @@ Cada fase contém os prompts a serem usados e os pontos de verificação.
 - **Fase 9 fechada no app (2026-11-16):** texto do "Cálculo do risco" aprovado, limitação do RNF03 declarada, UC03 sem RAG no link, sem login com a Apple, teste em Android real declarado como não feito por enquanto. Ficam para o fim o ícone e as mudanças nos .docx e nas imagens dos diagramas.
 - **Fase 10 planejada (2026-11-16):** sete decisões da equipe e etapa 10.0 (requisitos e documentos) feita; RF15, RF16 e RF17 criados.
 - **Etapa 10.1 feita (2026-11-16):** modelo de dados e regras da comunidade, com 56 testes das regras (`docs/comunidade-dados.md`).
-- **Próximo passo:** etapa 10.2 (reportar golpe); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
+- **Etapa 10.2 feita (2026-11-16):** reportar golpe (link, relato e print), com código comum movido para `lib/shared/`.
+- **Próximo passo:** etapa 10.3 (aba Comunidade: feed, detalhe, curtir e compartilhar); depois a nova rodada de design. Projeto só com recursos gratuitos (decisão de 2026-11-12).
 - **Pendências sem pressa:** levar aos .docx acadêmicos as mudanças de RF13, RF14 e RNF07; no RAG, a ficha vizinha apontada em `consignado-informal`, a medição geral com 3 repetições e o "vetor por gatilho".
 - **Depois do MVP:** notícias e comunidade (Fase 10) e, em seguida, nova rodada de design.
 
@@ -945,7 +946,7 @@ A coleta de mensagens com outras pessoas ficou inviável para a equipe agora. Pl
 - **Feito (etapa 5):** faixas com e sem a base calculadas pelo motor do app (`test/avaliacao/`), a partir dos sinais gravados por `avaliar-analise`. Os pesos continuam só em `ScoreConfig`.
 - **Resultado do modelo:** nenhuma correspondência errada em 14 legítimas e 5 golpes fora da base que receberam fichas; 51 de 54 correspondências certas. Com a base, 28 golpes subiram de amarelo para vermelho, e nenhuma mensagem legítima subiu de faixa. O comprovante falso de pagamento passou sem sinal: candidato a ficha nova (etapa 4).
 
-- **Feito (etapa 2):** 89 prints sintéticos (`tool/prints_sinteticos/`) passados pelo ML Kit no emulador, como o app faz. `organizarTextoPrint` (`lib/features/analise/domain/organizacao_texto_print.dart`) põe o texto em ordem de leitura, tira a interface e fica só com as mensagens recebidas; `ReconhecedorTextoMlKit` passou a usá-la. Detalhes em `docs/calibracao-recuperacao.md`, seção sobre texto de print.
+- **Feito (etapa 2):** 89 prints sintéticos (`tool/prints_sinteticos/`) passados pelo ML Kit no emulador, como o app faz. `organizarTextoPrint` (`lib/shared/domain/organizacao_texto_print.dart`) põe o texto em ordem de leitura, tira a interface e fica só com as mensagens recebidas; `ReconhecedorTextoMlKit` passou a usá-la. Detalhes em `docs/calibracao-recuperacao.md`, seção sobre texto de print.
 - **Resultado:** na busca, a ficha certa em 1º lugar cai de 52 para 45 de 54 com o texto bruto e volta a 52 só com as recebidas. No modelo, só com as recebidas: 53 correspondências certas (50 no bruto) e o falso vermelho do bruto (`legit-leilao-judicial` ligado a `falso-leilao-de-veiculos`) some. Resta `legit-codigo-proprio`, que subiu de verde para amarelo, ligado a `whatsapp-pedido-de-codigo` (candidato à etapa 3), e `consignado-informal`, que aponta a ficha vizinha `devolucao-de-emprestimo` sem mudar a faixa.
 
 - **Feito (etapa 3, parte 1):** campo opcional `situacoesLegitimas` nas fichas (schema, prompt e trava contra cópia), com duas situações reais por ficha escritas com ajuda da IA a partir da orientação e das fontes de cada uma. Não entra no embedding: busca e limiar inalterados, índice regravado sem vetor novo. `avaliar-analise` ganhou `--sufixo` e `--sem-base-de` (refaz só a análise com a base). Detalhes em `docs/calibracao-recuperacao.md`, seção "Situações legítimas nas fichas".
@@ -1235,7 +1236,7 @@ Build de debug no emulador Android (API 37), com Functions, Auth e Firestore emu
 
 Observados no ensaio dos testes com pessoas (`docs/roteiro-testes-pessoas.md`, seção 11). Todos tratados em 2026-11-16.
 
-1. ~~**Links oficiais `www.gov.br/...` dão amarelo.**~~ **Corrigido em 2026-11-16.** Causa: o app tratava `gov.br` como domínio registrável e consultava a categoria no RDAP, que não tem data de registro. A lista de categorias `.br` também tinha só 5 itens (com, gov, org, net, edu), e por isso `www.tse.jus.br` consultava `jus.br`. Agora `lib/features/analise/domain/dominio_registravel.dart` traz as 147 categorias do Registro.br (Lista de Sufixos Públicos); quando o endereço é a própria categoria, a idade é dada como concluída sem sinal, com explicação na tela. Conferido no emulador: `www.gov.br/inss` deu 0, verde. **Decisão da equipe (2026-11-16):** mantido; o próprio `gov.br` conta como verificação concluída.
+1. ~~**Links oficiais `www.gov.br/...` dão amarelo.**~~ **Corrigido em 2026-11-16.** Causa: o app tratava `gov.br` como domínio registrável e consultava a categoria no RDAP, que não tem data de registro. A lista de categorias `.br` também tinha só 5 itens (com, gov, org, net, edu), e por isso `www.tse.jus.br` consultava `jus.br`. Agora `lib/shared/domain/dominio_registravel.dart` traz as 147 categorias do Registro.br (Lista de Sufixos Públicos); quando o endereço é a própria categoria, a idade é dada como concluída sem sinal, com explicação na tela. Conferido no emulador: `www.gov.br/inss` deu 0, verde. **Decisão da equipe (2026-11-16):** mantido; o próprio `gov.br` conta como verificação concluída.
 2. ~~**Tutorial do link diferente da tela real.**~~ **Corrigido em 2026-11-16:** a tela "Analisar link" ganhou o botão "Colar" dentro do campo, como na cena do tutorial (desenho pedido pela equipe em 2026-11-12). Ele lê a área de transferência só quando tocado; sem nada copiado, explica como copiar o link. Conferido no emulador.
 3. ~~**Resultado do link mostra o motivo do vermelho por último.**~~ **Corrigido em 2026-11-16:** as verificações aparecem em ordem de importância: as que encontraram sinal, depois as não concluídas e por último as sem sinal (o tutorial segue a mesma ordem). Conferido no emulador: a lista do Google aparece primeiro, na primeira tela.
 4. ~~**"Está demorando um pouco mais que o normal" aparece cedo.**~~ **Corrigido em 2026-11-16.** Causa: os 10 segundos do aviso começavam a contar ao tocar em "Escolher print", com a galeria ainda aberta; o tempo de escolha entrava na conta. Agora a contagem começa quando a imagem é escolhida. Conferido no emulador com 20 segundos na galeria: sem aviso. Na mesma conferência apareceu um defeito anterior: quando um sinal tinha duas frases destacadas, a tela de resultado quebrava (chave repetida; bloco vermelho em depuração, cinza na versão final). Corrigido junto, com teste.
@@ -1268,7 +1269,7 @@ Comunidade (RF05, RF06, RF08, RF09, RF11, RF15, RF16; UC05, UC07–UC10), golpe 
 | --- | --- | --- |
 | 10.0 | Requisitos e documentos (feita) | — |
 | 10.1 | Modelo de dados e regras do Firestore (reportes, votos, denúncias, moderadores), com testes das regras no emulador (feita) | T39 (base) |
-| 10.2 | Reportar golpe: link com hash, relato e print mascarados, aviso de duplicado, recusa de marca oficial | T36, T37, T38, T39, T56 |
+| 10.2 | Reportar golpe: link com hash, relato e print mascarados, aviso de duplicado, recusa de marca oficial (feita) | T36, T37, T38, T39, T56 |
 | 10.3 | Aba "Comunidade": feed ("Em alta" e "Mais recentes"), detalhe, curtir e compartilhar | T40, T41, T42 |
 | 10.4 | Denúncia, ocultação automática (gatilho na Function) e tela mínima de moderação | T43, T44, T45 |
 | 10.5 | Pesquisa, "Meus reportes" (editar e excluir) e reportes na exportação e na exclusão de conta | T57, T58, T59, T60 |
@@ -1287,6 +1288,15 @@ A barra inferior passa a ter quatro abas: Início, Comunidade, Histórico e Perf
 > **Pontos para a equipe:**
 > - O `npm audit` aponta vulnerabilidades em dependências indiretas (gRPC, body-parser e outras). As novas são só de desenvolvimento e rodam na máquina local; revisar antes de qualquer publicação.
 > - Para moderar, a conta precisa de um documento em `moderadores/{uid}`, criado pela equipe no console do Firestore (ou na interface do emulador).
+
+### Etapa 10.2 — Reportar golpe (concluída, 2026-11-16)
+
+- **Tela:** `ReportarGolpePage` (`lib/features/comunidade/presentation/pages/`), com Link, Relato ou Print, título, tipo de golpe (as 7 categorias, sem "Sem indícios") e texto. Aviso fixo de que o reporte é público, sem nome, e de que só conteúdo de teste deve ser usado. Entrada provisória no Início ("Reportar um golpe à comunidade") até a aba Comunidade (10.3).
+- **No aparelho, antes do envio** (`preparacao_reporte.dart`): título e texto passam pelo mascaramento local e têm links trocados por `[LINK]` (função nova `esconderLinks`); o link vira SHA-256 do domínio normalizado; domínio oficial de marca da lista, ou a própria categoria `gov.br`, é recusado com explicação. O print é lido pelo OCR no aparelho e o texto mascarado aparece no campo para revisão; a imagem é descartada logo depois (RNF01).
+- **Publicação** (`ReporteRepositoryFirestore`): reporte e autoria gravados juntos; link já reportado vira +1 incidência; a mesma conta não conta duas vezes; falha de envio mantém o reporte só na tela, sem cache.
+- **Código compartilhado:** mascaramento, normalização de URL, domínio registrável, marcas conhecidas, categorias e a captura e leitura de imagem passaram de `lib/features/analise/` para `lib/shared/`, por serem usados pelas duas features (CLAUDE.md, seção 6). Pacote `crypto` 3.0.6 passou a dependência direta (SHA-256).
+- **Achado na conferência no emulador:** ler um reporte que ainda não existe era negado pelas regras (a condição de status falhava sem documento), e o app mostrava "Link em revisão" para um link novo. Regra corrigida, com teste (57 testes das regras).
+- **Testes:** 23 novos no app (preparação, campos gravados, tela); 701 no total. Conferido no emulador: link novo publicado, a variante `www.entrega-taxa.example/?id=9` reconhecida como o mesmo link ("Você já reportou este link"), e o print 4 publicado com `[CPF]` e `[TELEFONE]`; no Firestore, nenhum autor, link ou imagem.
 
 > **Pontos para a equipe:**
 > - A comunidade só terá conteúdo fictício (RNF07, limitação de escopo acadêmico): serve para demonstrar o funcionamento, não para medir engajamento.

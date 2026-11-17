@@ -6,18 +6,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:phize/features/analise/domain/analisador_print.dart';
 import 'package:phize/features/analise/domain/analise_texto_client.dart';
 import 'package:phize/features/analise/domain/calculadora_score.dart';
-import 'package:phize/features/analise/domain/captura_imagem.dart';
-import 'package:phize/features/analise/domain/categoria_ameaca.dart';
+import 'package:phize/shared/domain/captura_imagem.dart';
+import 'package:phize/shared/domain/categoria_ameaca.dart';
 import 'package:phize/features/analise/domain/faixa_risco.dart';
-import 'package:phize/features/analise/domain/imagem_em_memoria.dart';
+import 'package:phize/shared/domain/imagem_em_memoria.dart';
 import 'package:phize/features/analise/domain/limite_texto_ocr.dart';
-import 'package:phize/features/analise/domain/mascaramento_local.dart';
-import 'package:phize/features/analise/domain/reconhecedor_texto.dart';
+import 'package:phize/shared/domain/mascaramento_local.dart';
+import 'package:phize/shared/domain/reconhecedor_texto.dart';
 import 'package:phize/features/analise/domain/resultado_analise_print.dart';
-import 'package:phize/features/analise/domain/seletor_imagem.dart';
+import 'package:phize/shared/domain/seletor_imagem.dart';
 import 'package:phize/features/analise/domain/sinais_identificados.dart';
 import 'package:phize/features/analise/domain/sinal_texto_print.dart';
-import 'package:phize/features/analise/domain/texto_em_memoria.dart';
+import 'package:phize/shared/domain/texto_em_memoria.dart';
 
 /// Texto de golpe com CPF, telefone e e-mail: passa nas duas verificações
 /// de volume mínimo e tem dados que o mascaramento precisa ocultar.

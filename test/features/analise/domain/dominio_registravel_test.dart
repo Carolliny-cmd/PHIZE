@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:phize/features/analise/domain/dominio_registravel.dart';
+import 'package:phize/shared/domain/dominio_registravel.dart';
 
 void main() {
   group('registravelDe', () {

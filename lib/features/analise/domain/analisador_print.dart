@@ -4,17 +4,17 @@ import 'package:flutter/foundation.dart';
 
 import 'analise_texto_client.dart';
 import 'calculadora_score.dart';
-import 'captura_imagem.dart';
-import 'imagem_em_memoria.dart';
+import '../../../shared/domain/captura_imagem.dart';
+import '../../../shared/domain/imagem_em_memoria.dart';
 import 'limite_texto_ocr.dart';
-import 'mascaramento_local.dart';
-import 'reconhecedor_texto.dart';
+import '../../../shared/domain/mascaramento_local.dart';
+import '../../../shared/domain/reconhecedor_texto.dart';
 import 'resposta_modelo.dart';
 import 'resultado_analise_print.dart';
-import 'seletor_imagem.dart';
+import '../../../shared/domain/seletor_imagem.dart';
 import 'sinais_identificados.dart';
 import 'sinal_texto_print.dart';
-import 'texto_em_memoria.dart';
+import '../../../shared/domain/texto_em_memoria.dart';
 
 /// Etapas informadas à tela durante a análise (RNF03). Nenhuma leva conteúdo.
 enum EtapaAnalisePrint {

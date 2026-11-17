@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:phize/features/analise/domain/captura_imagem.dart';
-import 'package:phize/features/analise/domain/imagem_em_memoria.dart';
-import 'package:phize/features/analise/domain/seletor_imagem.dart';
+import 'package:phize/shared/domain/captura_imagem.dart';
+import 'package:phize/shared/domain/imagem_em_memoria.dart';
+import 'package:phize/shared/domain/seletor_imagem.dart';
 
 /// Dublê do arquivo temporário do seletor: registra cada operação pedida.
 /// A porta não tem operação de escrita, então nenhuma escrita é possível;

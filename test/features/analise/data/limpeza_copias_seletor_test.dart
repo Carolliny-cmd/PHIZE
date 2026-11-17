@@ -3,7 +3,7 @@ import 'dart:io' as io;
 import 'package:file/file.dart';
 import 'package:file/memory.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:phize/features/analise/data/limpeza_copias_seletor.dart';
+import 'package:phize/shared/data/limpeza_copias_seletor.dart';
 
 /// Todos os testes usam sistema de arquivos em memória (`package:file`) e
 /// rodam com o sistema de arquivos real bloqueado: qualquer tentativa de

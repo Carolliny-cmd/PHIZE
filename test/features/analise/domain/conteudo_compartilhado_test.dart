@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:phize/features/analise/data/receptor_compartilhamento.dart';
 import 'package:phize/features/analise/domain/caixa_compartilhamento.dart';
 import 'package:phize/features/analise/domain/conteudo_compartilhado.dart';
-import 'package:phize/features/analise/domain/imagem_em_memoria.dart';
+import 'package:phize/shared/domain/imagem_em_memoria.dart';
 import 'package:phize/features/analise/presentation/recepcao_compartilhamento.dart';
 
 void main() {

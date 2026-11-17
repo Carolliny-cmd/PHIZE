@@ -8,7 +8,7 @@ import '../../data/historico_repository_firestore.dart';
 import '../../data/tutorial_repository_local.dart';
 import '../../domain/analisador_print.dart';
 import '../../domain/analise_risco.dart';
-import '../../domain/captura_imagem.dart';
+import '../../../../shared/domain/captura_imagem.dart';
 import '../../domain/consentimento_repository.dart';
 import '../../domain/historico_repository.dart';
 import '../../domain/resultado_analise_print.dart';

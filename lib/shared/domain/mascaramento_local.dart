@@ -299,3 +299,12 @@ String mascararTextoLocal(String texto) {
 
   return resultado;
 }
+
+/// Troca links e domínios por `[LINK]`, com os mesmos padrões que
+/// [mascararTextoLocal] usa para isolá-los. Usada no conteúdo público da
+/// comunidade, que não guarda link em texto puro (arquitetura, 5.5; RF05):
+/// a análise mantém o link no texto porque ele é sinal de golpe, mas um
+/// reporte publicado não pode exibi-lo.
+String esconderLinks(String texto) => texto
+    .replaceAll(_regexUrl, '[LINK]')
+    .replaceAll(_regexDominio, '[LINK]');

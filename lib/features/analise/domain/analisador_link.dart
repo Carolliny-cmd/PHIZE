@@ -4,7 +4,7 @@ import 'analisador_typosquatting.dart';
 import 'calculadora_score.dart';
 import 'consulta_idade_dominio.dart';
 import 'consulta_reputacao_dominio.dart';
-import 'marcas_conhecidas.dart';
+import '../../../shared/domain/marcas_conhecidas.dart';
 import 'resultado_analise_dominio.dart';
 import 'resultado_analise_link.dart';
 import 'resultado_consulta_dominio.dart';

@@ -1,4 +1,4 @@
-import 'mascaramento_local.dart';
+import '../../../shared/domain/mascaramento_local.dart';
 
 /// Volume mínimo de texto extraído por OCR para que a análise de print
 /// prossiga (UC04, etapa 5; RF04).

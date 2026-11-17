@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:phize/features/analise/domain/analise_risco.dart';
 import 'package:phize/features/analise/domain/calculadora_score.dart';
-import 'package:phize/features/analise/domain/categoria_ameaca.dart';
+import 'package:phize/shared/domain/categoria_ameaca.dart';
 import 'package:phize/features/analise/domain/faixa_risco.dart';
 import 'package:phize/features/analise/domain/resultado_analise_link.dart';
 import 'package:phize/features/analise/domain/resultado_analise_print.dart';

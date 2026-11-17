@@ -12,7 +12,7 @@ import '../../domain/caixa_compartilhamento.dart';
 import '../../domain/consentimento_repository.dart';
 import '../../domain/conteudo_compartilhado.dart';
 import '../../domain/historico_repository.dart';
-import '../../domain/imagem_em_memoria.dart';
+import '../../../../shared/domain/imagem_em_memoria.dart';
 import '../../domain/resultado_analise_print.dart';
 import '../registro_historico.dart';
 import '../widgets/progresso_analise.dart';

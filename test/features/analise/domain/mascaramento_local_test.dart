@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:phize/features/analise/domain/mascaramento_local.dart';
+import 'package:phize/shared/domain/mascaramento_local.dart';
 
 void main() {
   group('CPF', () {

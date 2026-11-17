@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:phize/features/analise/domain/normalizacao_url.dart';
+import 'package:phize/shared/domain/normalizacao_url.dart';
 
 void main() {
   group('normalizarUrlReputacao', () {

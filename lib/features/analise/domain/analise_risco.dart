@@ -1,4 +1,4 @@
-import 'categoria_ameaca.dart';
+import '../../../shared/domain/categoria_ameaca.dart';
 import 'faixa_risco.dart';
 import 'resultado_analise_link.dart';
 import 'resultado_analise_print.dart';

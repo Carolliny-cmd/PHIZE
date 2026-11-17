@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:phize/features/analise/domain/organizacao_texto_print.dart';
+import 'package:phize/shared/domain/organizacao_texto_print.dart';
 
 const _largura = 1080.0;
 

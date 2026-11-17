@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../domain/conteudo_compartilhado.dart';
-import '../domain/imagem_em_memoria.dart';
+import '../../../shared/domain/imagem_em_memoria.dart';
 
 /// Converte a mensagem do código nativo em [ConteudoCompartilhado].
 ///

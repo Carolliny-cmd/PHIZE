@@ -133,7 +133,7 @@ O conjunto de teste tem frases limpas. No app, porém, o texto de um print vem d
    - `teste-ocr-ordenado.json`: em ordem de leitura e sem a interface;
    - `teste-ocr-recebidas.json`: além disso, só as mensagens recebidas (lado esquerdo).
 
-A organização é feita por `organizarTextoPrint` (`lib/features/analise/domain/organizacao_texto_print.dart`), função pura usada pelo próprio app desde esta medição.
+A organização é feita por `organizarTextoPrint` (`lib/shared/domain/organizacao_texto_print.dart`), função pura usada pelo próprio app desde esta medição.
 
 ### Resultado da busca (2026-11-11)
 

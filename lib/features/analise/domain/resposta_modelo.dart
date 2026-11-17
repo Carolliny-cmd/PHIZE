@@ -1,4 +1,4 @@
-import 'categoria_ameaca.dart';
+import '../../../shared/domain/categoria_ameaca.dart';
 import 'sinal_texto_print.dart';
 
 /// Frase da mensagem que motivou um sinal (RF04; UC04, passo 9). Vem do texto

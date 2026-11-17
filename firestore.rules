@@ -68,8 +68,13 @@ service cloud.firestore {
     // incidência. Ocultos (RF11) só são lidos por moderadores, e as consultas
     // do feed precisam filtrar o status.
     match /reportes/{reporteId} {
+      // `resource == null`: ler um reporte que ainda não existe é permitido
+      // (o app confere se o link já foi reportado antes de publicar), e não
+      // revela nada além da ausência.
       allow read: if request.auth != null
-        && (resource.data.status != 'oculto' || moderador());
+        && (resource == null
+          || resource.data.status != 'oculto'
+          || moderador());
 
       allow create: if request.auth != null
         && reporteNovoValido(request.resource.data, reporteId)

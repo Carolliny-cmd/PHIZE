@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../domain/analise_risco.dart';
-import '../domain/categoria_ameaca.dart';
+import '../../../shared/domain/categoria_ameaca.dart';
 import '../domain/faixa_risco.dart';
 import '../domain/historico_repository.dart';
 import '../domain/resultado_analise_print.dart';

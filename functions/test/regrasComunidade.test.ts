@@ -188,6 +188,10 @@ describe("ler (RF08, RF11)", () => {
     await assertSucceeds(getDoc(doc(db("bia"), "reportes", "r1")));
   });
 
+  test("conta logada confere se um link ainda não foi reportado", async () => {
+    await assertSucceeds(getDoc(doc(db("bia"), "reportes", HASH_A)));
+  });
+
   test("sem login não lê", async () => {
     await semear();
     await assertFails(getDoc(doc(db(), "reportes", "r1")));

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:phize/features/analise/data/seletor_imagem_galeria.dart';
+import 'package:phize/shared/data/seletor_imagem_galeria.dart';
 
 /// Só a regra de caminho é testável sem Android: a seleção e a remoção
 /// reais exigem dispositivo (ver documentação de SeletorImagemGaleria).

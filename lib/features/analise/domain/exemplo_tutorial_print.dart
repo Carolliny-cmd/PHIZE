@@ -1,5 +1,5 @@
 import 'calculadora_score.dart';
-import 'mascaramento_local.dart';
+import '../../../shared/domain/mascaramento_local.dart';
 import 'resultado_score.dart';
 import 'sinais_identificados.dart';
 import 'sinal_texto_print.dart';

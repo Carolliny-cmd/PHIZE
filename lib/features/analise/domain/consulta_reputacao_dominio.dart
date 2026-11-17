@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'normalizacao_url.dart';
+import '../../../shared/domain/normalizacao_url.dart';
 import 'reputacao_dominio_client.dart';
 import 'resultado_consulta_reputacao.dart';
 

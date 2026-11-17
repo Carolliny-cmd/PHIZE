@@ -5,9 +5,9 @@
 /// (algoritmo de Levenshtein), incluindo os apelidos de cada marca.
 library;
 
-import 'dominio_registravel.dart';
-import 'marcas_conhecidas.dart';
-import 'normalizacao_url.dart';
+import '../../../shared/domain/dominio_registravel.dart';
+import '../../../shared/domain/marcas_conhecidas.dart';
+import '../../../shared/domain/normalizacao_url.dart';
 import 'resultado_analise_dominio.dart';
 
 class AnalisadorTyposquatting {
